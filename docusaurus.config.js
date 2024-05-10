@@ -8,7 +8,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'ELVIRA - Academic digital library',
+  title: 'ELVIRA - Digital academic library',
   tagline: 'Open and easy to use tools for document distribution',
   favicon: 'img/favicon.ico',
 
