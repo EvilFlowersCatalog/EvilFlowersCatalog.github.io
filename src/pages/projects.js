@@ -5,26 +5,39 @@ import styles from './projects.module.css';
 
 const projects = [
 	{
-		title: "Project 1",
-		description: "This project focuses on developing a tool for easy document distribution.",
-		image: "/img/project1.png",
-		repoLink: "https://github.com/project1",
+		title: "ELVIRA Portal",
+		description: "The user-interface for students and library staff for accessing, searching and managing information on the document server.",
+		image: "/img/portal.png",
 		status: "Production Ready"
 	},
 	{
-		title: "Project 2",
-		description: "This project aims to ensure legal compliance in digital document handling.",
-		image: "/img/project2.png",
-		repoLink: "https://github.com/project2",
-		status: "In Development"
-	},
-	{
-		title: "Project 3",
-		description: "A project designed to centralize access to study materials.",
-		image: "/img/project3.png",
+		title: "EvilFlowersReader",
+		description: "EvilFlowersViewer is a PDF viewer based on pdf.js library that allows users to view and interact with PDF documents directly in the browser.",
+		image: "/img/reader.png",
+		repoLink: "https://github.com/EvilFlowersCatalog/EvilFlowersViewer",
 		status: "Production Ready"
 	},
-	// Add more projects as needed
+	{
+		title: "EvilFlowersCatalog",
+		description: "A publication catalog server compatible with OPDS 1.2, written in Python with a straightforward management REST API for CRUD operations.",
+		image: "/img/evilflowers-logo.png",
+		status: "Production Ready",
+		repoLink: "https://github.com/EvilFlowersCatalog/EvilFlowersCatalog"
+	},
+	{
+		title: "calibre-evilflowers",
+		description: "Calibre plugin for bi-directional sync with EvilFlowersCatalog server ",
+		image: "/img/evilflowers-logo.png",
+		status: "In Development",
+		repoLink: "https://github.com/EvilFlowersCatalog/calibre-evilflowers"
+	},
+	{
+		title: "notion-opds",
+		description: "Flask-based OPDS server acting as a proxy to Notion Database, with Redis caching and OPDS Acquisitions and Facets derived from Notion Page properties.",
+		image: "/img/evilflowers-logo.png",
+		status: "In Development",
+		repoLink: "https://github.com/EvilFlowersCatalog/notion-opds"
+	},
 ];
 
 const getStatusIcon = (status) => {

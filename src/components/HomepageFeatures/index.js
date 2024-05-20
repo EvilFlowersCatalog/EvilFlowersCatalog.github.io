@@ -8,7 +8,8 @@ const FeatureList = [
     Svg: require('@site/static/img/read.svg').default,
     description: (
       <>
-        We have created an open-source PDF reader on top of pdf.js called.
+        We have created an open-source PDF reader on top of pdf.js called <code>EvilFlowersViewer</code> for easy
+        document browsing with basic tools for taking notes, exporting citations and document sharing.
       </>
     ),
   },
@@ -17,8 +18,8 @@ const FeatureList = [
     Svg: require('@site/static/img/organize.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        You can easily organize your document be creating multiple catalogs with RBAC which is configurable using web
+        interface or REST API.
       </>
     ),
   },
@@ -27,8 +28,8 @@ const FeatureList = [
     Svg: require('@site/static/img/distribute.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Our projects are designed to be interopable and support many different communication protocols such as OPDS,
+        REST API, OAI and Z39.50 (currently in progress). We support also multiple storage backends for easy deployment.
       </>
     ),
   },
