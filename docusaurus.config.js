@@ -58,8 +58,9 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
+          {to: '/projects', label: 'Projects', position: 'left'},
           {to: '/goals', label: 'Goals', position: 'left'},
-          {to: '/docs', label: 'Documents', position: 'left'},
+          {to: '/documents', label: 'Documents', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
         ],
       },
