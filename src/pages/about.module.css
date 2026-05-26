@@ -1,0 +1,150 @@
+.hero {
+  padding: 4rem 0 2.5rem;
+  background: var(--ifm-background-color);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.kicker {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: clamp(2rem, 3.4vw, 2.6rem);
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+  max-width: 720px;
+}
+
+.lede {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  max-width: 680px;
+  color: var(--ifm-color-emphasis-800);
+  margin: 0;
+}
+
+.section {
+  margin-bottom: 3rem;
+  max-width: 760px;
+}
+
+.section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+}
+
+.section p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ifm-color-emphasis-800);
+  margin-bottom: 1rem;
+}
+
+.deploymentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.deploymentCard {
+  display: block;
+  padding: 1.1rem 1.25rem;
+  border-radius: 12px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.deploymentCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--ifm-color-primary);
+  text-decoration: none;
+  color: inherit;
+}
+
+.deploymentCard strong {
+  display: block;
+  font-size: 1.05rem;
+  margin-bottom: 0.15rem;
+}
+
+.deploymentCard span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ifm-color-emphasis-600);
+  margin-bottom: 0.6rem;
+}
+
+.deploymentCard p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.contactCard {
+  padding: 1.25rem 1.4rem;
+  border-radius: 12px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.contactCard h3 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+}
+
+.contactCard p {
+  margin: 0 0 0.85rem;
+  font-size: 0.93rem;
+  line-height: 1.65;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.emailList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.85rem;
+}
+
+.emailList li {
+  margin-bottom: 0.3rem;
+}
+
+.address {
+  font-style: normal;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--ifm-color-emphasis-700);
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--ifm-color-emphasis-300);
+}
+
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.linkRow .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}

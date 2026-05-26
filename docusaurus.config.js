@@ -1,34 +1,25 @@
 // @ts-check
 // `@type` JSDoc annotations allow editor autocompletion and type checking
 // (when paired with `@ts-check`).
-// There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'ELVIRA - Digital academic library',
-  tagline: 'Open and easy to use tools for document distribution',
+  title: 'ELVIRA',
+  tagline: 'Open OPDS catalog, portal and PDF viewer — built at FIIT STU.',
   favicon: 'img/favicon.ico',
 
-  // Set the production url of your site here
   url: 'https://elvira.digital',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'EvilFlowersCatalog', // Usually your GitHub org/user name.
-  projectName: 'EvilFlowersCatalog.github.io', // Usually your repo name.
+  organizationName: 'EvilFlowersCatalog',
+  projectName: 'EvilFlowersCatalog.github.io',
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -39,6 +30,11 @@ const config = {
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
+        docs: {
+          sidebarPath: './sidebars.js',
+          editUrl:
+            'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog.github.io/edit/main/',
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -49,32 +45,103 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
       image: 'img/social-card.jpg',
+      colorMode: {
+        defaultMode: 'light',
+        respectPrefersColorScheme: true,
+      },
       navbar: {
-        title: 'Elvira',
+        title: 'ELVIRA',
         logo: {
-          alt: 'Elvira logo',
+          alt: 'ELVIRA — FIIT STU',
           src: 'img/logo.svg',
         },
         items: [
+          {to: '/ecosystem', label: 'Ecosystem', position: 'left'},
           {to: '/projects', label: 'Projects', position: 'left'},
-          {to: '/goals', label: 'Goals', position: 'left'},
-          {to: '/documents', label: 'Documents', position: 'left'},
+          {to: '/docs/intro', label: 'Docs', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
+          {
+            href: 'https://elvira.digital/EvilFlowersCatalog/',
+            label: 'API',
+            position: 'right',
+          },
+          {
+            href: 'https://github.com/EvilFlowersCatalog',
+            label: 'GitHub',
+            position: 'right',
+          },
         ],
       },
       footer: {
         style: 'dark',
         logo: {
-          alt: 'FIIT STU',
+          alt: 'Faculty of Informatics and Information Technologies, STU',
           src: 'img/fiit-logo.png',
           href: 'https://www.fiit.stuba.sk',
           width: 164,
           height: 54,
         },
-        links: [],
-        copyright: `Copyright © ${new Date().getFullYear()} FIIT STU.`,
+        links: [
+          {
+            title: 'Project',
+            items: [
+              {label: 'Ecosystem', to: '/ecosystem'},
+              {label: 'Projects', to: '/projects'},
+              {label: 'Documentation', to: '/docs/intro'},
+              {label: 'About', to: '/about'},
+            ],
+          },
+          {
+            title: 'Resources',
+            items: [
+              {
+                label: 'Wiki',
+                href: 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/wiki',
+              },
+              {
+                label: 'OpenAPI reference',
+                href: 'https://elvira.digital/EvilFlowersCatalog/',
+              },
+              {
+                label: 'Protocol spec',
+                href: 'https://github.com/EvilFlowersCatalog/evilflowers-protocol',
+              },
+              {
+                label: 'Container image',
+                href: 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/pkgs/container/evilflowerscatalog',
+              },
+            ],
+          },
+          {
+            title: 'Community',
+            items: [
+              {
+                label: 'GitHub',
+                href: 'https://github.com/EvilFlowersCatalog',
+              },
+              {
+                label: 'Discussions',
+                href: 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/discussions',
+              },
+              {label: 'Contact', to: '/about'},
+            ],
+          },
+        ],
+        copyright: `
+          <div class="footerAttribution">
+            <p>
+              Developed at
+              <a href="https://www.fiit.stuba.sk/" target="_blank" rel="noopener noreferrer">FIIT STU</a>
+              in Bratislava. In production at FIIT STU and
+              <a href="https://www.ku.sk/" target="_blank" rel="noopener noreferrer">KU Ružomberok</a>.
+            </p>
+            <p>
+              © ${new Date().getFullYear()} EvilFlowers Catalog · MIT &amp; BSD-3-Clause ·
+              <a href="https://github.com/EvilFlowersCatalog" target="_blank" rel="noopener noreferrer">github.com/EvilFlowersCatalog</a>
+            </p>
+          </div>
+        `,
       },
       prism: {
         theme: prismThemes.github,

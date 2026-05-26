@@ -1,93 +1,224 @@
-import React from 'react';
+import React, {useMemo, useState} from 'react';
 import Layout from '@theme/Layout';
-import { FaGithub, FaCheckCircle, FaHourglassHalf } from 'react-icons/fa';
+import {
+  FaGithub,
+  FaCircle,
+  FaCodeBranch,
+  FaArchive,
+  FaExternalLinkAlt,
+} from 'react-icons/fa';
+
+import {NODES, CATEGORIES, STATUSES, ORG_URL} from '@site/src/data/ecosystem';
 import styles from './projects.module.css';
 
-const projects = [
-	{
-		title: "ELVIRA Portal",
-		description: "The user-interface for students and library staff for accessing, searching and managing information on the document server.",
-		image: "/img/portal.png",
-		status: "Production Ready"
-	},
-	{
-		title: "EvilFlowersReader",
-		description: "EvilFlowersViewer is a PDF viewer based on pdf.js library that allows users to view and interact with PDF documents directly in the browser.",
-		image: "/img/reader.png",
-		repoLink: "https://github.com/EvilFlowersCatalog/EvilFlowersViewer",
-		status: "Production Ready"
-	},
-	{
-		title: "EvilFlowersCatalog",
-		description: "A publication catalog server compatible with OPDS 1.2, written in Python with a straightforward management REST API for CRUD operations.",
-		image: "/img/evilflowers-logo.png",
-		status: "Production Ready",
-		repoLink: "https://github.com/EvilFlowersCatalog/EvilFlowersCatalog"
-	},
-	{
-		title: "calibre-evilflowers",
-		description: "Calibre plugin for bi-directional sync with EvilFlowersCatalog server ",
-		image: "/img/evilflowers-logo.png",
-		status: "In Development",
-		repoLink: "https://github.com/EvilFlowersCatalog/calibre-evilflowers"
-	},
-	{
-		title: "notion-opds",
-		description: "Flask-based OPDS server acting as a proxy to Notion Database, with Redis caching and OPDS Acquisitions and Facets derived from Notion Page properties.",
-		image: "/img/evilflowers-logo.png",
-		status: "In Development",
-		repoLink: "https://github.com/EvilFlowersCatalog/notion-opds"
-	},
+const STATUS_ORDER = ['active', 'maintenance', 'stale', 'archived'];
+const CATEGORY_ORDER = [
+  'core',
+  'worker',
+  'protocol',
+  'team',
 ];
+const FILTERS = ['all', ...CATEGORY_ORDER];
+const HIDDEN_CATEGORIES = new Set(['standard', 'devops']);
 
-const getStatusIcon = (status) => {
-	switch (status) {
-		case "Production Ready":
-			return <FaCheckCircle className={styles.statusIcon} style={{color: 'green'}} />;
-		case "In Development":
-			return <FaHourglassHalf className={styles.statusIcon} style={{color: 'orange'}} />;
-		default:
-			return null;
-	}
-};
+function statusIcon(status) {
+  if (!status) return null;
+  if (status === 'archived') return <FaArchive />;
+  if (status === 'stale') return <FaCircle />;
+  return <FaCircle />;
+}
 
-const ProjectsPage = () => {
-	return (
-		<Layout title="Projects">
-			<div className="container">
-				<h1 className={styles.title}>Our Projects</h1>
-				<div className={styles.projectsGrid}>
-					{projects.map((project, index) => (
-						<div className={styles.projectCard} key={index}>
-							<img src={project.image} alt={`${project.title} screenshot`} className={styles.projectImage} />
-							<div className={styles.projectContent}>
-								<h2>{project.title}</h2>
-								<p>{project.description}</p>
-								<table className={styles.projectTable}>
-									<tbody>
-									<tr>
-										<td className={styles.tableHeader}>Status</td>
-										<td>{getStatusIcon(project.status)} {project.status}</td>
-									</tr>
-									{project.repoLink && (
-										<tr>
-											<td className={styles.tableHeader}>Repository</td>
-											<td>
-												<a href={project.repoLink} target="_blank" rel="noopener noreferrer">
-													<FaGithub className={styles.repoIcon} /> View Repository
-												</a>
-											</td>
-										</tr>
-									)}
-									</tbody>
-								</table>
-							</div>
-						</div>
-					))}
-				</div>
-			</div>
-		</Layout>
-	);
-};
+function ProjectCard({node}) {
+  const cat = CATEGORIES[node.category];
+  const status = STATUSES[node.status];
+  const issuesUrl = node.repo
+    ? `${node.repo}/issues`
+    : null;
+  return (
+    <article
+      className={`${styles.card} ${
+        node.category === 'legacy' ? styles.cardLegacy : ''
+      }`}>
+      <header className={styles.cardHeader}>
+        <span
+          className={styles.cardCategory}
+          style={{color: cat?.color, borderColor: cat?.color}}>
+          {cat?.label}
+        </span>
+        {status && (
+          <span
+            className={styles.cardStatus}
+            style={{color: status.color}}
+            title={`Status: ${status.label}`}>
+            <span
+              className={styles.statusDot}
+              style={{background: status.color}}
+            />
+            {status.label}
+          </span>
+        )}
+      </header>
+      <h3 className={styles.cardTitle}>{node.name}</h3>
+      <p className={styles.cardDescription}>{node.description}</p>
+      {node.highlights && (
+        <ul className={styles.cardHighlights}>
+          {node.highlights.slice(0, 3).map((h) => (
+            <li key={h}>{h}</li>
+          ))}
+        </ul>
+      )}
+      <div className={styles.cardMeta}>
+        {node.language && (
+          <span className={styles.metaChip}>{node.language}</span>
+        )}
+        {node.version && (
+          <span className={styles.metaChip}>{node.version}</span>
+        )}
+        {node.pushed_at && (
+          <span className={styles.metaChipMuted}>
+            pushed {node.pushed_at}
+          </span>
+        )}
+      </div>
+      <div className={styles.cardActions}>
+        {node.repo && (
+          <a
+            href={node.repo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.actionPrimary}>
+            <FaGithub /> Repository
+          </a>
+        )}
+        {issuesUrl && (
+          <a
+            href={issuesUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.actionSecondary}>
+            <FaCodeBranch /> Issues
+          </a>
+        )}
+        {node.api && (
+          <a
+            href={node.api}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.actionSecondary}>
+            <FaExternalLinkAlt /> API
+          </a>
+        )}
+        {node.docs && (
+          <a
+            href={node.docs}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.actionSecondary}>
+            <FaExternalLinkAlt /> Docs
+          </a>
+        )}
+      </div>
+    </article>
+  );
+}
 
-export default ProjectsPage;
+function CategorySection({category, nodes}) {
+  if (!nodes.length) return null;
+  const cat = CATEGORIES[category];
+  return (
+    <section className={styles.section} id={`cat-${category}`}>
+      <header
+        className={styles.sectionHeader}
+        style={{borderColor: cat.color}}>
+        <h2 style={{color: cat.color}}>{cat.label}</h2>
+        <p>{cat.description}</p>
+      </header>
+      <div className={styles.grid}>
+        {nodes.map((n) => (
+          <ProjectCard key={n.id} node={n} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export default function ProjectsPage() {
+  const [filter, setFilter] = useState('all');
+
+  const visibleNodes = useMemo(
+    () => NODES.filter((n) => n.repo && !HIDDEN_CATEGORIES.has(n.category)),
+    [],
+  );
+
+  const filteredNodes = useMemo(
+    () =>
+      visibleNodes
+        .filter((n) => filter === 'all' || n.category === filter)
+        .sort((a, b) => {
+          const sa = STATUS_ORDER.indexOf(a.status);
+          const sb = STATUS_ORDER.indexOf(b.status);
+          if (sa !== sb) return sa - sb;
+          return (b.pushed_at || '').localeCompare(a.pushed_at || '');
+        }),
+    [filter, visibleNodes],
+  );
+
+  const grouped = useMemo(() => {
+    const out = {};
+    for (const cat of CATEGORY_ORDER) out[cat] = [];
+    for (const n of filteredNodes) {
+      if (out[n.category]) out[n.category].push(n);
+    }
+    return out;
+  }, [filteredNodes]);
+
+  return (
+    <Layout
+      title="Projects"
+      description="Repositories under the EvilFlowersCatalog organisation, grouped by role, with status and links to issues.">
+      <header className={styles.hero}>
+        <div className="container">
+          <span className={styles.kicker}>Repositories</span>
+          <h1 className={styles.title}>Projects</h1>
+          <p className={styles.lede}>
+            {visibleNodes.length} repositories under{' '}
+            <a
+              href={ORG_URL}
+              target="_blank"
+              rel="noopener noreferrer">
+              @EvilFlowersCatalog
+            </a>
+            . Filter by role below; each card links to the repo and its
+            issues.
+          </p>
+          <div className={styles.filterBar}>
+            {FILTERS.map((f) => {
+              const label = f === 'all' ? 'All' : CATEGORIES[f].label;
+              return (
+                <button
+                  key={f}
+                  type="button"
+                  className={`${styles.filterChip} ${
+                    filter === f ? styles.filterChipActive : ''
+                  }`}
+                  onClick={() => setFilter(f)}>
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </header>
+
+      <main className="container margin-vert--lg">
+        {CATEGORY_ORDER.map((cat) => (
+          <CategorySection
+            key={cat}
+            category={cat}
+            nodes={grouped[cat] || []}
+          />
+        ))}
+      </main>
+    </Layout>
+  );
+}

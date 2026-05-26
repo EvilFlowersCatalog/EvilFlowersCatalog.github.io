@@ -1,30 +1,125 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Global Infima overrides + ELVIRA design tokens.
  */
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #01A9E0;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #01a9e0;
+  --ifm-color-primary-dark: #0298c9;
+  --ifm-color-primary-darker: #028fbe;
+  --ifm-color-primary-darkest: #02769d;
+  --ifm-color-primary-light: #1cb6e4;
+  --ifm-color-primary-lighter: #2ebbe5;
+  --ifm-color-primary-lightest: #66ceec;
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ifm-heading-font-weight: 700;
+  --ifm-navbar-shadow: 0 1px 0 var(--ifm-color-emphasis-200);
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.08);
+
+  /* ELVIRA accent palette — used in modules for swatches and gradients. */
+  --elvira-accent-purple: #7c5cff;
+  --elvira-accent-coral: #f25c77;
+  --elvira-accent-amber: #f1a33a;
+  --elvira-accent-mint: #34c38f;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #01A9E0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: #2ebbe5;
+  --ifm-color-primary-dark: #18b1e0;
+  --ifm-color-primary-darker: #16a7d4;
+  --ifm-color-primary-darkest: #1289ae;
+  --ifm-color-primary-light: #4ec5e9;
+  --ifm-color-primary-lighter: #62ccec;
+  --ifm-color-primary-lightest: #9cdef4;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.1);
+}
+
+html,
+body {
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+}
+
+/* Tighten the navbar visually so the new ecosystem CTA breathes. */
+.navbar__title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.navbar__link {
+  font-weight: 600;
+}
+
+/* Add a discreet "Powered by FIIT STU" strip under the navbar on light mode. */
+.navbar {
+  backdrop-filter: saturate(160%) blur(10px);
+}
+
+/* Buttons feel a little chunkier — fits the design language. */
+.button {
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.button--lg {
+  font-size: 1rem;
+}
+
+.hero {
+  --ifm-hero-background-color: transparent;
+  --ifm-hero-text-color: var(--ifm-color-emphasis-900);
+}
+
+.hero__title,
+.hero__subtitle {
+  color: inherit;
+}
+
+/* Code blocks blend better with surface cards. */
+code {
+  border-radius: 6px;
+}
+
+/* Footer polish — slightly more spaced, classic dark. */
+.footer--dark {
+  --ifm-footer-background-color: #0f1622;
+  --ifm-footer-color: #c7ccd6;
+  --ifm-footer-link-color: #ffffff;
+  --ifm-footer-title-color: #ffffff;
+}
+
+.footer__title {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.footer__copyright {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.footerAttribution p {
+  margin: 0 0 0.5rem;
+  max-width: 64ch;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.55;
+}
+
+.footerAttribution p:last-child {
+  margin-bottom: 0;
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.footerAttribution a {
+  color: var(--ifm-footer-link-color);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.25);
+  text-underline-offset: 3px;
+}
+
+.footerAttribution a:hover {
+  text-decoration-color: var(--ifm-color-primary-light);
 }

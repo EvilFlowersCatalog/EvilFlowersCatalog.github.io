@@ -1,0 +1,69 @@
+.hero {
+  background:
+    radial-gradient(circle at 15% 30%, rgba(1, 169, 224, 0.15), transparent 60%),
+    radial-gradient(circle at 85% 70%, rgba(124, 92, 255, 0.12), transparent 60%),
+    var(--ifm-background-color);
+  padding: 4rem 0 2.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.kicker {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+  margin-bottom: 0.55rem;
+}
+
+.title {
+  font-size: clamp(2rem, 3.6vw, 2.7rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.9rem;
+  max-width: 720px;
+}
+
+.lede {
+  font-size: 1.02rem;
+  line-height: 1.65;
+  max-width: 720px;
+  color: var(--ifm-color-emphasis-800);
+  margin: 0;
+}
+
+.legend {
+  margin-top: 2.5rem;
+  padding: 1.75rem 2rem;
+  border-radius: 16px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.legendCol h3 {
+  font-size: 1rem;
+  margin: 0 0 0.6rem;
+}
+
+.legendCol ul {
+  padding-left: 0;
+  list-style: none;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.legendCol ul li {
+  margin-bottom: 0.35rem;
+}
+
+.legendCol p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ifm-color-emphasis-800);
+  margin-bottom: 1rem;
+}
