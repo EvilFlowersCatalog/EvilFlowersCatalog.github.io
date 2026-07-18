@@ -31,7 +31,7 @@ const CHAPTERS = [
   {
     year: 'The start',
     title: 'A backup that got out of hand',
-    body: 'Jakub Dubec was procrastinating on his master’s thesis when an OS reinstall wiped his entire Calibre library. He wanted a centralized Calibre backend so it couldn’t happen again. That backend became EvilFlowersCatalog.',
+    body: 'Jakub was procrastinating on his master’s thesis when an OS reinstall wiped his entire Calibre library. He wanted a centralized Calibre backend so it couldn’t happen again. That backend became EvilFlowersCatalog.',
   },
   {
     year: '2022',
