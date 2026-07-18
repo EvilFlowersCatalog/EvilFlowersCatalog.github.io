@@ -13,12 +13,13 @@ function DeployLogo({deployment}) {
       target="_blank"
       rel="noopener noreferrer"
       className={styles.chip}
-      title={deployment.name}>
-      <img src={src} alt="" className={styles.chipLogo} loading="lazy" />
-      <span className={styles.chipText}>
-        <strong>{deployment.name}</strong>
-        <span>{deployment.place}</span>
-      </span>
+      title={`${deployment.name} — ${deployment.place}`}>
+      <img
+        src={src}
+        alt={deployment.name}
+        className={styles.chipLogo}
+        loading="lazy"
+      />
     </a>
   );
 }

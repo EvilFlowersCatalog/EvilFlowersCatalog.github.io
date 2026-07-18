@@ -221,7 +221,14 @@ function DeployCard({d, index}) {
         rel="noopener noreferrer"
         className={styles.deployLink}>
         <div className={styles.deployTop}>
-          <img src={logo} alt="" className={styles.deployLogo} loading="lazy" />
+          <span className={styles.deployPlaque}>
+            <img
+              src={logo}
+              alt={d.name}
+              className={styles.deployLogo}
+              loading="lazy"
+            />
+          </span>
           <span className={styles.deploySince}>Since {d.since}</span>
         </div>
         <h3 className={styles.deployName}>{d.name}</h3>
@@ -272,7 +279,8 @@ function OpenSource() {
               The catalog, the reader and the wire protocol are all public
               and permissively licensed. ELVIRA speaks the standards
               e-readers already know — OPDS for catalogs, Readium LCP for
-              lending — so nothing here is locked to us.
+              lending — so nothing here is locked to us. It&rsquo;s open
+              source, and we help faculties and universities run it.
             </p>
           </div>
           <div className={styles.osActions}>
@@ -306,7 +314,7 @@ function ClosingCTA() {
           <p>
             ELVIRA is free to stand up and built on standards e-readers
             already speak. Start with the docs, or read how it grew from a
-            lockdown fix into a campus library.
+            side project into a campus library.
           </p>
           <div className={styles.closingButtons}>
             <Link

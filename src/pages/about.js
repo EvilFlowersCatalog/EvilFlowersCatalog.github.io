@@ -29,14 +29,14 @@ const STANDARDS = [
 
 const CHAPTERS = [
   {
-    year: '2020',
-    title: 'The campus closed',
-    body: 'Lockdown shut the buildings and the library with them. ELVIRA started as a way to get study materials to students legally, from home, while nothing else was open.',
+    year: 'The start',
+    title: 'A backup that got out of hand',
+    body: 'Jakub Dubec was procrastinating on his master’s thesis when an OS reinstall wiped his entire Calibre library. He wanted a centralized Calibre backend so it couldn’t happen again. That backend became EvilFlowersCatalog.',
   },
   {
     year: '2022',
     title: 'The first team',
-    body: 'A FIIT STU student team took the stopgap and turned it into a real platform — a proper catalog, a portal, a reader. Where ELVIRA as we know it actually started.',
+    body: 'A FIIT STU student team took the side project and turned it into a real platform — a proper catalog, a portal, a reader. Where ELVIRA as we know it actually started.',
   },
   {
     year: 'Every year since',
@@ -132,12 +132,12 @@ function DeploymentCard({d, index}) {
         target="_blank"
         rel="noopener noreferrer"
         className={styles.deploymentLink}>
-        <img src={logo} alt="" className={styles.deploymentLogo} loading="lazy" />
-        <div>
-          <strong>{d.name}</strong>
-          <span>{d.place} · since {d.since}</span>
-          <p>{d.note}</p>
-        </div>
+        <span className={styles.deploymentPlaque}>
+          <img src={logo} alt={d.name} className={styles.deploymentLogo} loading="lazy" />
+        </span>
+        <strong>{d.name}</strong>
+        <span className={styles.deploymentPlace}>{d.place} · since {d.since}</span>
+        <p>{d.note}</p>
       </a>
     </Reveal>
   );
@@ -159,12 +159,13 @@ export default function AboutPage() {
             A university library, built in the open
           </h1>
           <p className={styles.lede}>
-            ELVIRA began in 2020 as a way to keep books reaching students
-            while the campus was locked. Six years and a dozen student teams
-            later, it catalogs a whole university&rsquo;s publications, lends
-            them, searches them across languages, and is teaching itself to
-            answer questions about them — all open source, all built at FIIT
-            STU.
+            ELVIRA began as a side project — somewhere to keep books that
+            wouldn&rsquo;t vanish on the next OS reinstall — and grew into a
+            library that now runs a whole university. A dozen student teams
+            later it catalogs, lends and searches publications across
+            languages, and is teaching itself to answer questions about them.
+            It&rsquo;s open source, built mainly at FIIT STU, and supported for
+            the faculties and universities that run it.
           </p>
         </div>
       </header>
@@ -175,7 +176,7 @@ export default function AboutPage() {
             <Reveal>
               <div className={styles.sectionLabel}>The story</div>
               <h2 className={styles.sectionTitle}>
-                From a lockdown fix to a campus library
+                From a side project to a campus library
               </h2>
             </Reveal>
             <div className={styles.chapters}>
@@ -189,6 +190,15 @@ export default function AboutPage() {
                 </Reveal>
               ))}
             </div>
+            <Reveal as="figure" className={styles.funFact}>
+              <blockquote>
+                “I lost all my books in Calibre after reinstalling my OS, so I
+                wanted a centralized Calibre backend. That was the whole idea.”
+              </blockquote>
+              <figcaption>
+                Jakub Dubec · on how EvilFlowersCatalog started
+              </figcaption>
+            </Reveal>
           </div>
         </section>
 
@@ -215,7 +225,7 @@ export default function AboutPage() {
           <div className="container">
             <Reveal>
               <div className={styles.sectionLabel}>Built with</div>
-              <h2 className={styles.sectionTitle}>Three institutions, one catalog</h2>
+              <h2 className={styles.sectionTitle}>Where it&rsquo;s built and run</h2>
             </Reveal>
             <div className={styles.partnerGrid}>
               {PARTNERS.map((p, i) => (

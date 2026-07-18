@@ -12,9 +12,10 @@ in-browser PDF reader, and a fleet of workers that read every publication so
 it can be searched across languages, borrowed with open DRM, and — soon —
 answered questions about.
 
-It started in 2020 as a lockdown stopgap and is now the real thing: it runs
-across the whole [Slovak University of Technology](https://www.stuba.sk/) at
-`elvira.stuba.sk`, and a second, re-themed instance runs at the
+It started as a side project — a centralized backup for one person&rsquo;s
+Calibre library — and is now the real thing: it runs across the whole
+[Slovak University of Technology](https://www.stuba.sk/) at `elvira.stuba.sk`,
+and a second, re-themed instance runs at the
 [Catholic University in Ružomberok](https://www.ku.sk/). Every part of it is
 developed as open source at [FIIT STU](https://www.fiit.stuba.sk/), the home
 faculty, and defended as student thesis work year after year.

@@ -478,12 +478,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1.1rem;
 }
 
-.deployLogo {
-  width: 52px;
+.deployPlaque {
+  display: inline-flex;
+  align-items: center;
   height: 52px;
+  padding: 0 1rem;
+  background: #fff;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px -8px rgba(9, 30, 55, 0.35);
+}
+
+.deployLogo {
+  max-height: 30px;
+  max-width: 180px;
+  width: auto;
   object-fit: contain;
 }
 

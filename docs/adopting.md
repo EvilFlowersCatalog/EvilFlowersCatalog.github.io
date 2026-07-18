@@ -10,6 +10,10 @@ ELVIRA already runs at more than one institution, and it&rsquo;s built to travel
 This page is the honest version of &ldquo;could we run this?&rdquo; — what you get,
 what you need, and where the edges are.
 
+It&rsquo;s open source, so you can stand it up entirely on your own. You
+don&rsquo;t have to, though — the team supports faculties and universities that
+want a hand running it.
+
 ## Who it&rsquo;s a good fit for
 
 - A **university or faculty library** that wants its publications searchable and
