@@ -18,7 +18,7 @@ This site is the **on-ramp**. For full documentation, here is where to go:
 
 - **[Catalog wiki](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/wiki)** —
   architecture, security, OPDS 2.0, Readium LCP, Thorium setup guide, async
-  tasks, storage notes, async tasks.
+  tasks and storage notes.
 - **[CHANGELOG](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/blob/master/CHANGELOG.md)** —
   every release with feature, change, fix entries.
 

@@ -18,8 +18,6 @@ import Reveal from '@site/src/components/Reveal';
 import {DEPLOYMENTS, ORG_URL} from '@site/src/data/ecosystem';
 import styles from './index.module.css';
 
-const LIBRARY_URL = 'https://elvira.stuba.sk/';
-
 const FEATURES = [
   {
     title: 'Read in the browser',
@@ -76,29 +74,31 @@ function Hero() {
             open in the browser.
           </Heading>
           <p className={styles.heroSubtitle}>
-            ELVIRA holds the university&rsquo;s publications — textbooks,
-            lecture notes, papers and scanned collections. Search the
-            catalog, read on any device and borrow what you need. Nothing
-            to install.
+            ELVIRA holds a university&rsquo;s publications — textbooks,
+            lecture notes, papers and scanned collections — and makes them
+            searchable, readable and lendable in the browser. It runs a
+            whole university today, and every line of it is open source.
           </p>
           <div className={styles.heroButtons}>
-            <Link
+            <a
               className={clsx('button button--primary button--lg', styles.btn)}
-              href={LIBRARY_URL}>
-              Open the library <FaArrowRight />
-            </Link>
+              href="#reader">
+              See how it works <FaArrowRight />
+            </a>
             <a
               className={clsx(
                 'button button--secondary button--lg',
                 styles.btn,
               )}
-              href="#reader">
-              See the reader
+              href={ORG_URL}
+              target="_blank"
+              rel="noopener noreferrer">
+              <FaGithub />&nbsp;Browse the source
             </a>
           </div>
           <p className={styles.heroMeta}>
-            Live at the Slovak University of Technology and KU Ružomberok ·
-            free for students and staff
+            In production across the Slovak University of Technology and at
+            KU Ružomberok · free for the academic community
           </p>
         </div>
         <div className={styles.heroVisual}>
@@ -208,6 +208,33 @@ function Assistant() {
   );
 }
 
+function DeployCard({d, index}) {
+  const logo = useBaseUrl(d.logo);
+  return (
+    <Reveal
+      className={styles.deployCard}
+      style={{'--accent': d.accent}}
+      delay={index * 80}>
+      <a
+        href={d.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.deployLink}>
+        <div className={styles.deployTop}>
+          <img src={logo} alt="" className={styles.deployLogo} loading="lazy" />
+          <span className={styles.deploySince}>Since {d.since}</span>
+        </div>
+        <h3 className={styles.deployName}>{d.name}</h3>
+        <span className={styles.deployPlace}>{d.place}</span>
+        <p className={styles.deployNote}>{d.note}</p>
+        <span className={styles.deployCta}>
+          Visit <FaArrowRight />
+        </span>
+      </a>
+    </Reveal>
+  );
+}
+
 function Deployments() {
   return (
     <section className={styles.deployments}>
@@ -215,29 +242,17 @@ function Deployments() {
         <Reveal>
           <div className={styles.sectionLabel}>Where it runs</div>
           <h2 className={styles.sectionTitle}>
-            In production at two universities
+            Two universities, one codebase
           </h2>
           <p className={styles.sectionLede}>
-            One codebase, themed per campus. The portal changes its branding
-            per deployment; the catalog underneath is the same software.
+            The same catalog and reader run at both — the portal just wears
+            each campus&rsquo;s colours. This isn&rsquo;t a demo: real
+            students borrow real books here every day.
           </p>
         </Reveal>
         <div className={styles.deploymentsGrid}>
           {DEPLOYMENTS.map((d, i) => (
-            <Reveal
-              key={d.short}
-              className={styles.deploymentCard}
-              delay={i * 60}>
-              <a
-                href={d.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.deploymentLink}>
-                <strong>{d.short}</strong>
-                <span>{d.name}</span>
-                <p>{d.note}</p>
-              </a>
-            </Reveal>
+            <DeployCard key={d.short} d={d} index={i} />
           ))}
         </div>
       </div>
@@ -287,16 +302,24 @@ function ClosingCTA() {
     <section className={styles.closing}>
       <div className="container">
         <div className={styles.closingCard}>
-          <h2>Everything the university has, one login away.</h2>
+          <h2>Could your library run on this?</h2>
           <p>
-            Sign in with your university account and start reading. Free for
-            the whole academic community.
+            ELVIRA is free to stand up and built on standards e-readers
+            already speak. Start with the docs, or read how it grew from a
+            lockdown fix into a campus library.
           </p>
-          <Link
-            className={clsx('button button--lg', styles.btnLight)}
-            href={LIBRARY_URL}>
-            Open ELVIRA <FaArrowRight />
-          </Link>
+          <div className={styles.closingButtons}>
+            <Link
+              className={clsx('button button--lg', styles.btnLight)}
+              to="/docs/intro">
+              Read the docs <FaArrowRight />
+            </Link>
+            <Link
+              className={clsx('button button--lg', styles.btnGhost)}
+              to="/about">
+              The story
+            </Link>
+          </div>
         </div>
       </div>
     </section>

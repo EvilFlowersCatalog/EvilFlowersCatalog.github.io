@@ -72,37 +72,55 @@
   margin: 0;
 }
 
-.legend {
-  margin-top: 2.5rem;
-  padding: 1.75rem 2rem;
-  border-radius: 16px;
-  background: var(--ifm-background-surface-color);
+.outro {
+  max-width: 52rem;
+  margin: 3.5rem auto 0;
+  padding: 2.2rem 2.4rem;
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      28rem 18rem at 100% 0%,
+      rgba(124, 92, 255, 0.1),
+      transparent 60%
+    ),
+    var(--ifm-background-surface-color);
   border: 1px solid var(--ifm-color-emphasis-200);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: 1.5fr 1fr;
   gap: 2rem;
+  align-items: center;
 }
 
-.legendCol h3 {
-  font-size: 1rem;
+.outro h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.015em;
   margin: 0 0 0.6rem;
 }
 
-.legendCol ul {
-  padding-left: 0;
-  list-style: none;
-  font-size: 0.92rem;
-  line-height: 1.7;
-  color: var(--ifm-color-emphasis-800);
+.outro p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.66;
+  color: var(--ifm-color-emphasis-700);
 }
 
-.legendCol ul li {
-  margin-bottom: 0.35rem;
+.outroActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
-.legendCol p {
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: var(--ifm-color-emphasis-800);
-  margin-bottom: 1rem;
+.outroActions .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+@media (max-width: 768px) {
+  .outro {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+    padding: 1.8rem 1.6rem;
+  }
 }

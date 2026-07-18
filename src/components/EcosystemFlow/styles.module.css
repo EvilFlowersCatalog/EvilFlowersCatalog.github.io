@@ -1,0 +1,187 @@
+.wrapper {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+/* The spine running through every stage. */
+.flow::before {
+  content: '';
+  position: absolute;
+  left: 21px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    var(--ifm-color-primary) 0%,
+    var(--elvira-accent-purple) 100%
+  );
+  opacity: 0.5;
+}
+
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 1.3rem;
+  padding-bottom: 1.5rem;
+}
+
+.stage:last-child {
+  padding-bottom: 0;
+}
+
+.marker {
+  position: relative;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #01a9e0 0%, #7c5cff 100%);
+  color: #fff;
+  box-shadow: 0 8px 18px -8px rgba(1, 169, 224, 0.6);
+}
+
+.markerNum {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.stageBody {
+  padding: 0.1rem 0 0.4rem;
+}
+
+.stageTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.4rem;
+}
+
+.stageBlurb {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 42rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  color: var(--ifm-color-emphasis-800);
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease,
+    box-shadow 0.15s ease, color 0.15s ease;
+}
+
+a.chip:hover {
+  text-decoration: none;
+  color: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -18px rgba(1, 169, 224, 0.7);
+}
+
+.chipName {
+  white-space: nowrap;
+}
+
+.chipLang {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-500);
+  padding-left: 0.45rem;
+  border-left: 1px solid var(--ifm-color-emphasis-300);
+}
+
+/* ----- Standards footnote ----- */
+
+.standards {
+  margin-top: 2.5rem;
+  padding: 1.4rem 1.5rem;
+  border-radius: 16px;
+  background: var(--ifm-background-surface-color);
+  border: 1px dashed var(--ifm-color-emphasis-300);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem 1.2rem;
+}
+
+.standardsLabel {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.standardsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.standardChip {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  background: var(--ifm-background-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-emphasis-800);
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.standardChip:hover {
+  text-decoration: none;
+  color: var(--elvira-accent-amber);
+  border-color: var(--elvira-accent-amber);
+}
+
+@media (max-width: 600px) {
+  .stage {
+    grid-template-columns: 36px 1fr;
+    gap: 1rem;
+  }
+
+  .flow::before {
+    left: 17px;
+  }
+
+  .marker {
+    width: 36px;
+    height: 36px;
+  }
+
+  .markerNum {
+    font-size: 0.9rem;
+  }
+}

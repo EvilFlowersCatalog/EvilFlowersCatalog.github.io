@@ -8,7 +8,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'ELVIRA',
-  tagline: 'Open OPDS catalog, portal and PDF viewer — built at FIIT STU.',
+  tagline: 'An open digital library for universities — catalog, reader and cross-language search. Built at STU Bratislava.',
   favicon: 'img/favicon.ico',
 
   url: 'https://elvira.digital',
@@ -53,7 +53,7 @@ const config = {
       navbar: {
         title: 'ELVIRA',
         logo: {
-          alt: 'ELVIRA — FIIT STU',
+          alt: 'ELVIRA',
           src: 'img/logo.svg',
         },
         items: [
@@ -75,13 +75,6 @@ const config = {
       },
       footer: {
         style: 'dark',
-        logo: {
-          alt: 'Faculty of Informatics and Information Technologies, STU',
-          src: 'img/fiit-logo.png',
-          href: 'https://www.fiit.stuba.sk',
-          width: 164,
-          height: 54,
-        },
         links: [
           {
             title: 'Project',
@@ -131,10 +124,9 @@ const config = {
         copyright: `
           <div class="footerAttribution">
             <p>
-              Developed at
-              <a href="https://www.fiit.stuba.sk/" target="_blank" rel="noopener noreferrer">FIIT STU</a>
-              in Bratislava. In production at FIIT STU and
-              <a href="https://www.ku.sk/" target="_blank" rel="noopener noreferrer">KU Ružomberok</a>.
+              Open source at
+              <a href="https://www.fiit.stuba.sk/" target="_blank" rel="noopener noreferrer">FIIT STU</a>,
+              Bratislava.
             </p>
             <p>
               © ${new Date().getFullYear()} EvilFlowers Catalog · MIT &amp; BSD-3-Clause ·

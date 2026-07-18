@@ -433,52 +433,109 @@
 .deploymentsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
-.deploymentCard {
-  border-radius: 16px;
+.deployCard {
+  position: relative;
+  border-radius: 18px;
   background: var(--ifm-background-color);
   border: 1px solid var(--ifm-color-emphasis-200);
+  overflow: hidden;
   transition: opacity 0.6s ease, transform 0.6s ease,
     border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.deploymentCard:hover {
-  border-color: rgba(1, 169, 224, 0.5);
-  box-shadow: 0 16px 32px -20px rgba(9, 30, 55, 0.4);
+.deployCard::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--accent, var(--ifm-color-primary));
 }
 
-.deploymentLink {
-  display: block;
-  padding: 1.5rem 1.6rem;
+.deployCard:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 22px 44px -26px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.deployLink {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.7rem 1.7rem 1.5rem;
   text-decoration: none;
   color: inherit;
 }
 
-.deploymentLink:hover {
+.deployLink:hover {
   text-decoration: none;
   color: inherit;
 }
 
-.deploymentLink strong {
-  display: block;
-  font-size: 1.15rem;
-  margin-bottom: 0.2rem;
+.deployTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
 }
 
-.deploymentLink span {
+.deployLogo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.deploySince {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent, var(--ifm-color-primary));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  padding: 0.24rem 0.6rem;
+  border-radius: 999px;
+}
+
+.deployName {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.15rem;
+}
+
+.deployPlace {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--ifm-color-emphasis-600);
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.9rem;
 }
 
-.deploymentLink p {
-  margin: 0;
+.deployNote {
+  margin: 0 0 1.3rem;
   font-size: 0.93rem;
-  line-height: 1.6;
+  line-height: 1.62;
   color: var(--ifm-color-emphasis-700);
+}
+
+.deployCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: auto;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--accent, var(--ifm-color-primary));
+}
+
+.deployCta svg {
+  transition: transform 0.2s ease;
+}
+
+.deployCard:hover .deployCta svg {
+  transform: translateX(4px);
 }
 
 /* ----- Open source card ----- */
@@ -568,6 +625,13 @@
   max-width: 40ch;
 }
 
+.closingButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  justify-content: center;
+}
+
 .btnLight {
   display: inline-flex;
   align-items: center;
@@ -580,6 +644,21 @@
 .btnLight:hover {
   background: #eef3f9;
   color: #0f1622;
+}
+
+.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.btnGhost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
 }
 
 /* ----- Responsive ----- */

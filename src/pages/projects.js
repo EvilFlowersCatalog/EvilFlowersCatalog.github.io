@@ -1,12 +1,11 @@
-import React, {useMemo, useState} from 'react';
-import clsx from 'clsx';
+import React, {useMemo} from 'react';
 import Layout from '@theme/Layout';
+import Link from '@docusaurus/Link';
 import {
   FaGithub,
-  FaCircle,
   FaCodeBranch,
-  FaArchive,
   FaExternalLinkAlt,
+  FaArrowRight,
 } from 'react-icons/fa';
 
 import Reveal from '@site/src/components/Reveal';
@@ -14,36 +13,26 @@ import {NODES, CATEGORIES, STATUSES, ORG_URL} from '@site/src/data/ecosystem';
 import styles from './projects.module.css';
 
 const STATUS_ORDER = ['active', 'maintenance', 'stale', 'archived'];
-const CATEGORY_ORDER = [
-  'core',
-  'worker',
-  'protocol',
-  'team',
-];
-const FILTERS = ['all', ...CATEGORY_ORDER];
+const CATEGORY_ORDER = ['core', 'worker', 'protocol', 'team'];
 const HIDDEN_CATEGORIES = new Set(['standard', 'devops']);
 
-function statusIcon(status) {
-  if (!status) return null;
-  if (status === 'archived') return <FaArchive />;
-  if (status === 'stale') return <FaCircle />;
-  return <FaCircle />;
-}
+// What each layer is *for*, in reader's terms — the thing a category
+// description on the card can't say on its own.
+const GROUP_INTRO = {
+  core: 'Start here. The four pieces you would actually run — the catalog that holds everything, the portal people log into, the reader they open books in, and the importer that fills it.',
+  worker:
+    'The heavy lifting. Independent services on a job queue that read every publication — pulling text, captioning figures, reconstructing equations, transcribing video, encrypting loans — so the catalog can stay simple.',
+  protocol:
+    'The contract. One OpenAPI definition of how the pieces talk, plus the generated client so you don’t hand-write requests.',
+  team: 'The relay. Each FIIT STU student team leaves a repo behind — features and forks defended as thesis work, then handed to the next crew.',
+};
 
 function ProjectCard({node, index = 0}) {
   const cat = CATEGORIES[node.category];
   const status = STATUSES[node.status];
-  const issuesUrl = node.repo
-    ? `${node.repo}/issues`
-    : null;
+  const issuesUrl = node.repo ? `${node.repo}/issues` : null;
   return (
-    <Reveal
-      as="article"
-      delay={(index % 3) * 60}
-      className={clsx(
-        styles.card,
-        node.category === 'legacy' && styles.cardLegacy,
-      )}>
+    <Reveal as="article" delay={(index % 3) * 60} className={styles.card}>
       <header className={styles.cardHeader}>
         <span
           className={styles.cardCategory}
@@ -80,9 +69,7 @@ function ProjectCard({node, index = 0}) {
           <span className={styles.metaChip}>{node.version}</span>
         )}
         {node.pushed_at && (
-          <span className={styles.metaChipMuted}>
-            pushed {node.pushed_at}
-          </span>
+          <span className={styles.metaChipMuted}>pushed {node.pushed_at}</span>
         )}
       </div>
       <div className={styles.cardActions}>
@@ -135,9 +122,14 @@ function CategorySection({category, nodes}) {
       <Reveal
         as="header"
         className={styles.sectionHeader}
-        style={{borderColor: cat.color}}>
-        <h2 style={{color: cat.color}}>{cat.label}</h2>
-        <p>{cat.description}</p>
+        style={{'--cat-color': cat.color}}>
+        <div className={styles.sectionHeaderTop}>
+          <h2 style={{color: cat.color}}>{cat.label}</h2>
+          <span className={styles.sectionCount}>
+            {nodes.length} {nodes.length === 1 ? 'repo' : 'repos'}
+          </span>
+        </div>
+        <p>{GROUP_INTRO[category] || cat.description}</p>
       </Reveal>
       <div className={styles.grid}>
         {nodes.map((n, i) => (
@@ -149,39 +141,32 @@ function CategorySection({category, nodes}) {
 }
 
 export default function ProjectsPage() {
-  const [filter, setFilter] = useState('all');
-
   const visibleNodes = useMemo(
     () => NODES.filter((n) => n.repo && !HIDDEN_CATEGORIES.has(n.category)),
     [],
   );
 
-  const filteredNodes = useMemo(
-    () =>
-      visibleNodes
-        .filter((n) => filter === 'all' || n.category === filter)
-        .sort((a, b) => {
-          const sa = STATUS_ORDER.indexOf(a.status);
-          const sb = STATUS_ORDER.indexOf(b.status);
-          if (sa !== sb) return sa - sb;
-          return (b.pushed_at || '').localeCompare(a.pushed_at || '');
-        }),
-    [filter, visibleNodes],
-  );
-
   const grouped = useMemo(() => {
     const out = {};
     for (const cat of CATEGORY_ORDER) out[cat] = [];
-    for (const n of filteredNodes) {
+    for (const n of visibleNodes) {
       if (out[n.category]) out[n.category].push(n);
     }
+    for (const cat of CATEGORY_ORDER) {
+      out[cat].sort((a, b) => {
+        const sa = STATUS_ORDER.indexOf(a.status);
+        const sb = STATUS_ORDER.indexOf(b.status);
+        if (sa !== sb) return sa - sb;
+        return (b.pushed_at || '').localeCompare(a.pushed_at || '');
+      });
+    }
     return out;
-  }, [filteredNodes]);
+  }, [visibleNodes]);
 
   return (
     <Layout
       title="Projects"
-      description="Repositories under the EvilFlowersCatalog organisation, grouped by role, with status and links to issues.">
+      description="The repositories that make up ELVIRA, grouped by what they do — core platform, AI workers, the protocol, and the student teams that built them.">
       <header className={styles.hero}>
         <div className={styles.heroGlow} aria-hidden="true" />
         <div className="container">
@@ -189,43 +174,60 @@ export default function ProjectsPage() {
             <span className={styles.kickerDot} />
             Repositories
           </span>
-          <h1 className={styles.title}>Everything, on GitHub</h1>
+          <h1 className={styles.title}>ELVIRA is a constellation, not a repo</h1>
           <p className={styles.lede}>
-            The whole platform is open source — {visibleNodes.length}{' '}
-            repositories under{' '}
+            The platform is {visibleNodes.length} small, focused repositories
+            under{' '}
             <a href={ORG_URL} target="_blank" rel="noopener noreferrer">
               @EvilFlowersCatalog
-            </a>
-            . Filter by role below; each card links to the repo and its
-            issues.
+            </a>{' '}
+            — a catalog at the centre, a fleet of workers around it, one
+            protocol tying them together, and the student teams who built the
+            whole thing. Jump to a layer:
           </p>
-          <div className={styles.filterBar}>
-            {FILTERS.map((f) => {
-              const label = f === 'all' ? 'All' : CATEGORIES[f].label;
-              return (
-                <button
-                  key={f}
-                  type="button"
-                  className={`${styles.filterChip} ${
-                    filter === f ? styles.filterChipActive : ''
-                  }`}
-                  onClick={() => setFilter(f)}>
-                  {label}
-                </button>
-              );
-            })}
-          </div>
+          <nav className={styles.jumpNav} aria-label="Jump to a layer">
+            {CATEGORY_ORDER.map((cat) => (
+              <a
+                key={cat}
+                href={`#cat-${cat}`}
+                className={styles.jumpChip}
+                style={{'--cat-color': CATEGORIES[cat].color}}>
+                <span className={styles.jumpDot} />
+                {CATEGORIES[cat].label}
+                <span className={styles.jumpCount}>{grouped[cat].length}</span>
+              </a>
+            ))}
+          </nav>
         </div>
       </header>
 
       <main className="container margin-vert--lg">
         {CATEGORY_ORDER.map((cat) => (
-          <CategorySection
-            key={cat}
-            category={cat}
-            nodes={grouped[cat] || []}
-          />
+          <CategorySection key={cat} category={cat} nodes={grouped[cat] || []} />
         ))}
+
+        <Reveal className={styles.moreCard}>
+          <div>
+            <h2>There’s more under the hood</h2>
+            <p>
+              Deployment manifests, runtime forks, benchmarks and the external
+              standards ELVIRA implements don’t get cards here — they live on
+              the ecosystem map and in the org. That’s where the wiring is.
+            </p>
+          </div>
+          <div className={styles.moreActions}>
+            <Link className="button button--primary" to="/ecosystem">
+              See the ecosystem map <FaArrowRight />
+            </Link>
+            <a
+              className="button button--secondary"
+              href={ORG_URL}
+              target="_blank"
+              rel="noopener noreferrer">
+              <FaGithub />&nbsp;All repos on GitHub
+            </a>
+          </div>
+        </Reveal>
       </main>
     </Layout>
   );

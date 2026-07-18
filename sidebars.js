@@ -14,7 +14,7 @@ const sidebars = {
       type: 'category',
       label: 'Get hands-on',
       collapsed: false,
-      items: ['quickstart'],
+      items: ['quickstart', 'adopting'],
     },
     {
       type: 'category',

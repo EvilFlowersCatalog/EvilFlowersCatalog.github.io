@@ -71,56 +71,93 @@
   margin-bottom: 1.5rem;
 }
 
-.filterBar {
+/* ----- Jump nav (scrolls, never hides) ----- */
+
+.jumpNav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
-.filterChip {
-  font-size: 0.8rem;
+.jumpChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  padding: 0.4rem 0.95rem;
+  padding: 0.45rem 0.95rem;
   border-radius: 999px;
-  background: transparent;
-  border: 1px solid var(--ifm-color-emphasis-300);
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
   color: var(--ifm-color-emphasis-800);
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease,
-    border-color 0.15s ease;
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease,
+    transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.filterChip:hover {
-  border-color: var(--ifm-color-primary);
-  color: var(--ifm-color-primary);
+.jumpChip:hover {
+  text-decoration: none;
+  color: var(--cat-color);
+  border-color: var(--cat-color);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -14px var(--cat-color);
 }
 
-.filterChipActive {
-  background: var(--ifm-color-primary);
-  border-color: var(--ifm-color-primary);
-  color: white;
+.jumpDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cat-color);
+}
+
+.jumpCount {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ifm-color-emphasis-600);
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 999px;
+  padding: 0.05rem 0.45rem;
 }
 
 .section {
-  margin-bottom: 3rem;
+  margin-bottom: 3.25rem;
+  scroll-margin-top: 5rem;
 }
 
 .sectionHeader {
-  border-left: 3px solid;
-  padding: 0.25rem 0 0.25rem 0.9rem;
-  margin-bottom: 1.25rem;
+  position: relative;
+  border-left: 3px solid var(--cat-color);
+  padding: 0.1rem 0 0.2rem 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.sectionHeaderTop {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin-bottom: 0.35rem;
 }
 
 .sectionHeader h2 {
-  margin: 0 0 0.2rem;
-  font-size: 1.4rem;
+  margin: 0;
+  font-size: 1.45rem;
+  letter-spacing: -0.01em;
+}
+
+.sectionCount {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
 }
 
 .sectionHeader p {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: 0.96rem;
+  line-height: 1.6;
   color: var(--ifm-color-emphasis-700);
-  max-width: 720px;
+  max-width: 760px;
 }
 
 .grid {
@@ -272,4 +309,59 @@
   color: var(--ifm-color-primary);
   text-decoration: none;
   transform: translateY(-1px);
+}
+
+/* ----- Closing "there's more" card ----- */
+
+.moreCard {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 2.2rem 2.4rem;
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      28rem 18rem at 100% 0%,
+      rgba(124, 92, 255, 0.1),
+      transparent 60%
+    ),
+    var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.moreCard h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.6rem;
+}
+
+.moreCard p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.64;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 52ch;
+}
+
+.moreActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.moreActions .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+@media (max-width: 768px) {
+  .moreCard {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+    padding: 1.8rem 1.6rem;
+  }
 }

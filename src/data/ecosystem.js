@@ -448,22 +448,84 @@ export const LINKS = [
 /**
  * Where ELVIRA actually runs in production.
  *
- * FIIT STU is the home faculty (where the project is developed).
- * The Catholic University in Ružomberok is the second deployment,
- * theming the portal with their branding.
+ * The whole Slovak University of Technology runs on one instance at
+ * elvira.stuba.sk. FIIT STU is the home faculty — where the project is
+ * built — but it is no longer a separate entry point. The Catholic
+ * University in Ružomberok runs a second instance, themed for KU on the
+ * same catalog software.
  */
 export const DEPLOYMENTS = [
   {
-    short: 'STU Bratislava',
-    name: 'Slovak University of Technology in Bratislava',
+    short: 'STU',
+    name: 'Slovak University of Technology',
+    place: 'Bratislava',
     url: 'https://elvira.stuba.sk/',
-    note: 'Primary production deployment. ELVIRA runs STU-wide; FIIT STU is the home faculty where the project is developed (instance at elvira.fiit.stuba.sk).',
+    logo: '/img/stu-logo.svg',
+    accent: '#0a9185',
+    since: '2020',
+    note: 'The whole university, one instance. Built at the Faculty of Informatics and Information Technologies (FIIT STU) and rolled out campus-wide.',
   },
   {
-    short: 'KU Ružomberok',
-    name: 'Catholic University in Ružomberok (Katolícka univerzita v Ružomberku)',
+    short: 'KU',
+    name: 'Catholic University in Ružomberok',
+    place: 'Ružomberok',
     url: 'https://www.ku.sk/',
-    note: 'Second deployment site. Portal themed for KU, same catalog software underneath.',
+    logo: '/img/ku-logo.png',
+    accent: '#c99a2e',
+    since: '2024',
+    note: 'A second home. The same catalog and reader underneath, re-themed in KU’s colours for their students and staff.',
+  },
+];
+
+/**
+ * The people and partners behind ELVIRA. Shown on the About page.
+ */
+export const PEOPLE = [
+  {
+    name: 'Jakub Dubec',
+    role: 'Project lead · FIIT STU',
+    bio: 'Started ELVIRA during the 2020 lockdown and has kept it moving ever since — from a stopgap for closed campuses to the research line on AI processing of multimodal library content.',
+    email: 'jakub.dubec@stuba.sk',
+  },
+  {
+    name: 'Pavol Batalík',
+    role: 'Slovak Informatics Library (SIK)',
+    bio: 'The library side of the project through the Slovenská informatická knižnica — the sounding board for what a real catalog has to get right for readers and librarians.',
+  },
+  {
+    name: 'Tomáš Kordoš',
+    role: 'Developer',
+    bio: 'Day-to-day engineering across the catalog, portal and workers — keeping the moving parts in sync.',
+  },
+];
+
+/**
+ * Institutions ELVIRA is built and run with. Shown on the About page.
+ */
+export const PARTNERS = [
+  {
+    short: 'FIIT STU',
+    name: 'Faculty of Informatics and Information Technologies',
+    place: 'Slovak University of Technology, Bratislava',
+    url: 'https://www.fiit.stuba.sk/',
+    logo: '/img/fiit-logo.png',
+    role: 'Home faculty — where ELVIRA is designed, built and defended as thesis work.',
+  },
+  {
+    short: 'SIK',
+    name: 'Slovenská informatická knižnica',
+    place: 'Slovak Informatics Library',
+    url: null,
+    logo: null,
+    role: 'Library partner — the practitioner’s view of cataloguing, lending and what readers actually need.',
+  },
+  {
+    short: 'KU',
+    name: 'Catholic University in Ružomberok',
+    place: 'Ružomberok',
+    url: 'https://www.ku.sk/',
+    logo: '/img/ku-logo.png',
+    role: 'Second deployment — proof the platform travels beyond the faculty that made it.',
   },
 ];
 

@@ -86,8 +86,8 @@ discoverability of STU research outputs.
 
 | Environment                         | Status                |
 | ----------------------------------- | --------------------- |
-| `elvira.fiit.stuba.sk` (FIIT STU)   | Production            |
-| `elvira.stuba.sk` (STU-wide)        | Production            |
+| `elvira.stuba.sk` (STU, campus-wide) | Production           |
+| `ku.sk` instance (KU Ružomberok)    | Production            |
 | `elvira.digital` (project home)     | Public project site   |
 | AI microservices                    | Internal dev → staged rollout to production |
 
