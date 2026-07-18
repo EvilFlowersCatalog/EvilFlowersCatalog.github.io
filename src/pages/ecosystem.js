@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import EcosystemGraph from '@site/src/components/EcosystemGraph';
+import Reveal from '@site/src/components/Reveal';
 import {ORG_URL} from '@site/src/data/ecosystem';
 import styles from './ecosystem.module.css';
 
@@ -11,8 +12,12 @@ export default function EcosystemPage() {
       title="Ecosystem"
       description="Layered architecture map of the ELVIRA / EvilFlowersCatalog stack — standards, protocol, core, services, workers, and the adjacent repos that orbit them.">
       <header className={styles.hero}>
+        <div className={styles.heroGlow} aria-hidden="true" />
         <div className="container">
-          <span className={styles.kicker}>Map</span>
+          <span className={styles.kicker}>
+            <span className={styles.kickerDot} />
+            Architecture
+          </span>
           <h1 className={styles.title}>How it all fits together</h1>
           <p className={styles.lede}>
             Four layers, top to bottom: standards we speak, the protocol that
@@ -27,7 +32,7 @@ export default function EcosystemPage() {
       <main className="container margin-vert--lg">
         <EcosystemGraph />
 
-        <section className={styles.legend}>
+        <Reveal as="section" className={styles.legend}>
           <div className={styles.legendCol}>
             <h3>The arrows</h3>
             <ul>
@@ -65,7 +70,7 @@ export default function EcosystemPage() {
               Browse the GitHub org
             </Link>
           </div>
-        </section>
+        </Reveal>
       </main>
     </Layout>
   );

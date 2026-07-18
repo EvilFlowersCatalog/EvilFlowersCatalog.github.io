@@ -1,35 +1,74 @@
 .hero {
-  background:
-    radial-gradient(circle at 15% 30%, rgba(1, 169, 224, 0.15), transparent 60%),
-    radial-gradient(circle at 85% 70%, rgba(124, 92, 255, 0.12), transparent 60%),
-    var(--ifm-background-color);
-  padding: 4rem 0 2.5rem;
+  position: relative;
+  padding: 4.5rem 0 2.75rem;
+  overflow: hidden;
   border-bottom: 1px solid var(--ifm-color-emphasis-200);
 }
 
+.heroGlow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      38rem 24rem at 90% -20%,
+      rgba(1, 169, 224, 0.15),
+      transparent 60%
+    ),
+    radial-gradient(
+      30rem 22rem at 6% 120%,
+      rgba(124, 92, 255, 0.1),
+      transparent 60%
+    );
+}
+
+.hero .container {
+  position: relative;
+}
+
 .kicker {
-  display: inline-block;
-  font-size: 0.74rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.32rem 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ifm-color-primary);
-  margin-bottom: 0.55rem;
+  color: var(--ifm-color-primary-darkest);
+  background: rgba(1, 169, 224, 0.1);
+  border: 1px solid rgba(1, 169, 224, 0.25);
+  border-radius: 999px;
+  margin-bottom: 1.1rem;
+}
+
+[data-theme='dark'] .kicker {
+  color: var(--ifm-color-primary-lightest);
+  background: rgba(1, 169, 224, 0.14);
+}
+
+.kickerDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--elvira-accent-mint);
+  box-shadow: 0 0 0 4px rgba(52, 195, 143, 0.18);
 }
 
 .title {
-  font-size: clamp(2rem, 3.6vw, 2.7rem);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.1rem, 3.6vw, 2.9rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
   margin-bottom: 0.9rem;
   max-width: 720px;
 }
 
 .lede {
-  font-size: 1.02rem;
+  font-size: 1.05rem;
   line-height: 1.65;
-  max-width: 720px;
-  color: var(--ifm-color-emphasis-800);
+  max-width: 46rem;
+  color: var(--ifm-color-emphasis-700);
   margin: 0;
 }
 

@@ -1,4 +1,5 @@
 import React, {useMemo, useState} from 'react';
+import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import {
   FaGithub,
@@ -8,6 +9,7 @@ import {
   FaExternalLinkAlt,
 } from 'react-icons/fa';
 
+import Reveal from '@site/src/components/Reveal';
 import {NODES, CATEGORIES, STATUSES, ORG_URL} from '@site/src/data/ecosystem';
 import styles from './projects.module.css';
 
@@ -28,17 +30,20 @@ function statusIcon(status) {
   return <FaCircle />;
 }
 
-function ProjectCard({node}) {
+function ProjectCard({node, index = 0}) {
   const cat = CATEGORIES[node.category];
   const status = STATUSES[node.status];
   const issuesUrl = node.repo
     ? `${node.repo}/issues`
     : null;
   return (
-    <article
-      className={`${styles.card} ${
-        node.category === 'legacy' ? styles.cardLegacy : ''
-      }`}>
+    <Reveal
+      as="article"
+      delay={(index % 3) * 60}
+      className={clsx(
+        styles.card,
+        node.category === 'legacy' && styles.cardLegacy,
+      )}>
       <header className={styles.cardHeader}>
         <span
           className={styles.cardCategory}
@@ -118,7 +123,7 @@ function ProjectCard({node}) {
           </a>
         )}
       </div>
-    </article>
+    </Reveal>
   );
 }
 
@@ -127,15 +132,16 @@ function CategorySection({category, nodes}) {
   const cat = CATEGORIES[category];
   return (
     <section className={styles.section} id={`cat-${category}`}>
-      <header
+      <Reveal
+        as="header"
         className={styles.sectionHeader}
         style={{borderColor: cat.color}}>
         <h2 style={{color: cat.color}}>{cat.label}</h2>
         <p>{cat.description}</p>
-      </header>
+      </Reveal>
       <div className={styles.grid}>
-        {nodes.map((n) => (
-          <ProjectCard key={n.id} node={n} />
+        {nodes.map((n, i) => (
+          <ProjectCard key={n.id} node={n} index={i} />
         ))}
       </div>
     </section>
@@ -177,15 +183,17 @@ export default function ProjectsPage() {
       title="Projects"
       description="Repositories under the EvilFlowersCatalog organisation, grouped by role, with status and links to issues.">
       <header className={styles.hero}>
+        <div className={styles.heroGlow} aria-hidden="true" />
         <div className="container">
-          <span className={styles.kicker}>Repositories</span>
-          <h1 className={styles.title}>Projects</h1>
+          <span className={styles.kicker}>
+            <span className={styles.kickerDot} />
+            Repositories
+          </span>
+          <h1 className={styles.title}>Everything, on GitHub</h1>
           <p className={styles.lede}>
-            {visibleNodes.length} repositories under{' '}
-            <a
-              href={ORG_URL}
-              target="_blank"
-              rel="noopener noreferrer">
+            The whole platform is open source — {visibleNodes.length}{' '}
+            repositories under{' '}
+            <a href={ORG_URL} target="_blank" rel="noopener noreferrer">
               @EvilFlowersCatalog
             </a>
             . Filter by role below; each card links to the repo and its
