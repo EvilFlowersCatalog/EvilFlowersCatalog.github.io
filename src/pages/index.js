@@ -269,7 +269,7 @@ function Features() {
 }
 
 function Reader() {
-  const readerImg = useBaseUrl('/img/reader.png');
+  const readerImg = useBaseUrl('/img/viewer-preview.jpg');
   return (
     <section id="reader" className={styles.showcase}>
       <div className={clsx('container', styles.showcaseInner)}>
