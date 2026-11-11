@@ -1,82 +1,96 @@
 ---
-sidebar_position: 2
-title: Architecture overview
-description: How the catalog, portal, viewer, workers and microservices fit together.
+sidebar_position: 3
+title: Architecture
+description: The catalog, its clients, its workers and how they connect, with a component diagram.
 ---
 
-# Architecture overview
+import ArchitectureMap from '@site/src/components/ArchitectureMap';
 
-ELVIRA is a **distributed system with a small, boring core**. That&rsquo;s the
-whole design idea: keep the catalog simple and dependable, and push everything
-expensive — OCR, captioning, embeddings, encryption — out to independent
-workers on a job queue. A new capability becomes a new service, not a change to
-the thing holding the entire library.
+# Architecture
 
-It has a practical upside too: each worker can be a student team&rsquo;s project,
-built and defended on its own, without risking the catalog everyone depends on.
+ELVIRA has **one catalog server and everything else around it**. Clients reach
+the catalog over HTTP. The catalog keeps its records in PostgreSQL and hands
+slow work to workers through a Redis queue. Workers report back to the catalog
+and do not call each other, with two exceptions: the lending path (the
+lcpencrypt worker registers files with the LCP server) and the extraction
+pipeline (the analyzer hands work to the other extraction workers).
 
-## The pieces
+<ArchitectureMap />
+
+## The catalog and its interfaces
+
+[EvilFlowersCatalog](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog)
+is a Django application with Celery for background tasks. It owns every
+record (catalogs, publications, files, users, loans, annotations),
+and it is the only component that writes to the database. It exposes:
+
+| Interface | Used by | What it serves |
+| --- | --- | --- |
+| `/api/v1` | portal, scripts, digitalizer | REST API for everything; [OpenAPI docs](https://elvira.digital/EvilFlowersCatalog/) |
+| `/data/v1` | portal, reader | file downloads for the reader and apps |
+| `/opds/v1.2`, `/opds/v2` | e-reader apps | catalog feeds, search, borrowing |
+| `/readium/v1` | portal, e-reader apps | LCP licenses, reservations, and the License Status Document proxy |
+| `/assistant/v1` | portal | the AI assistant's chats (development) |
+| `/mcp/v1` | AI agents | a [Model Context Protocol](https://modelcontextprotocol.io/) server: search and curation tools |
+| `/extraction/v1` | extraction workers | where workers post their results (development) |
+
+## Components
 
 ### Core
 
-| Component | Repo | What it does |
+| Component | Repository | What it does |
 | --- | --- | --- |
-| **Catalog** | [`EvilFlowersCatalog`](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog) | Django app and the source of truth — catalogs, entries, acquisitions, users, ACLs. Serves OPDS 1.2, OPDS 2.0 and a REST management API. Multi-tenant: one install hosts many libraries. |
-| **Portal** | [`elvira-portal`](https://github.com/EvilFlowersCatalog/elvira-portal) | React + Vite app for students and staff. One codebase, themed per deployment (`fiit`, `ku`, …). University SSO, shelves, search. |
-| **Viewer** | [`EvilFlowersViewer`](https://github.com/EvilFlowersCatalog/EvilFlowersViewer) | Embeddable PDF reader on pdf.js. In-document search, annotations, page-range sharing, citation export. Also published on npm. |
-| **Importer** | [`evilflowers-importer`](https://github.com/EvilFlowersCatalog/evilflowers-importer) | Pulls publications from Kramerius and WebDAV and uses an LLM (OpenAI or Ollama) to fill missing metadata. Emits JSON the catalog ingests. |
+| Catalog | [`EvilFlowersCatalog`](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog) | The server above. |
+| Portal | [`elvira-portal`](https://github.com/EvilFlowersCatalog/elvira-portal) | React web app for readers and librarians. A static build: the catalog address and the theme are set at build time. |
+| Reader | [`EvilFlowersViewer`](https://github.com/EvilFlowersCatalog/EvilFlowersViewer) | PDF reader on pdf.js, used inside the portal and published on npm. |
+| Database | [`evilflowers-postgresql`](https://github.com/EvilFlowersCatalog/evilflowers-postgresql) | PostgreSQL 18 image with pgvector and pg_search. |
 
-### Workers
+### Lending
 
-Every worker is a Celery consumer on the same broker. The catalog emits an
-event when a publication arrives; workers pick up what concerns them and write
-their results back the same way. None of them is on the request path — the
-catalog stays responsive whether or not the fleet is busy.
-
-| Worker | Repo | Job |
+| Component | Repository | What it does |
 | --- | --- | --- |
-| **Analyzer** | [`evilflowers-analyzer-service`](https://github.com/EvilFlowersCatalog/evilflowers-analyzer-service) | Orchestrates the rest — routes a new publication to the right services and aggregates results. |
-| **Text** | [`evilflowers-text-service`](https://github.com/EvilFlowersCatalog/evilflowers-text-service) | Extracts text (with full Slovak diacritics) from born-digital PDFs. |
-| **OCR** | [`evilflowers-ocr-worker`](https://github.com/EvilFlowersCatalog/evilflowers-ocr-worker) | Adds a searchable text layer to scans, via `ocrmypdf`. |
-| **Image** | [`evilflowers-image-service`](https://github.com/EvilFlowersCatalog/evilflowers-image-service) | Extracts figures, captions them (PaliGemma) and classifies them (ViT / ResNet50). |
-| **Equation** | [`evilflowers-equation-service`](https://github.com/EvilFlowersCatalog/evilflowers-equation-service) | Reconstructs mathematical formulas as LaTeX, via Nougat. |
-| **Video** | [`evilflowers-video-service`](https://github.com/EvilFlowersCatalog/evilflowers-video-service) | Transcribes audio from video publications (Whisper large-v3), aligned to timestamps. |
-| **Search** | [`evilflowers-search-service`](https://github.com/EvilFlowersCatalog/evilflowers-search-service) | Embeds extracted text into a vector index and serves semantic search behind the catalog. |
-| **LCP encrypt** | [`evilflowers-lcpencrypt-worker`](https://github.com/EvilFlowersCatalog/evilflowers-lcpencrypt-worker) | Encrypts titles for lending (AES-256-CBC) via Readium `lcpencrypt`. |
+| LCP encryption | [`evilflowers-lcpencrypt-worker`](https://github.com/EvilFlowersCatalog/evilflowers-lcpencrypt-worker) | Celery worker. Encrypts a file with Readium's lcpencrypt, registers it with the LCP server and reports the result to the catalog. |
+| LCP server | [`readium-lcp-server`](https://github.com/EvilFlowersCatalog/readium-lcp-server) | Our build of the upstream Readium server. Issues licenses and status documents; only the catalog talks to it. |
 
-### Contract
+### Extraction (in development)
 
-- [`evilflowers-protocol`](https://github.com/EvilFlowersCatalog/evilflowers-protocol) — one OpenAPI 3.1 definition of how catalog, portal, importer and third-party clients talk.
-- [`evilflowers-protocol-python`](https://github.com/EvilFlowersCatalog/evilflowers-protocol-python) — the Python client and Pydantic v2 models generated from it.
+The catalog queues one run per PDF. The analyzer finds the layout and fans
+the work out; every worker posts its results to `/extraction/v1`, and the
+catalog stores them next to the publication.
 
-## How a document flows through
+| Component | Repository | What it does |
+| --- | --- | --- |
+| Analyzer | [`evilflowers-analyzer-service`](https://github.com/EvilFlowersCatalog/evilflowers-analyzer-service) | Page layout with Docling; sends paragraphs and tables to text, figures to image, formulas to equation. |
+| Text | [`evilflowers-text-service`](https://github.com/EvilFlowersCatalog/evilflowers-text-service) | Paragraphs and sentences with their positions, paragraph embeddings, tables as Markdown. Also embeds search queries. |
+| Image | [`evilflowers-image-service`](https://github.com/EvilFlowersCatalog/evilflowers-image-service) | Crops figures. Generated captions are optional, off by default. |
+| Equation | [`evilflowers-equation-service`](https://github.com/EvilFlowersCatalog/evilflowers-equation-service) | Crops formulas and reads them as LaTeX with a LaTeX-OCR model. |
 
-1. **Acquisition.** A PDF (or EPUB, DiViNa, W3C Audiobook) arrives — REST
-   upload, the importer pipeline, or an admin command.
-2. **Extraction.** The catalog publishes an event. The analyzer decides whether
-   the file is born-digital or scanned and routes it to the text service or the
-   OCR worker; image, equation and video services take what they need. Everyone
-   writes results back to the catalog.
-3. **Indexing.** The search service picks up the extracted text, embeds it, and
-   makes it searchable — semantic and classic full-text, side by side.
-4. **Protection (optional).** If `readium_enabled`, the LCP worker encrypts the
-   acquisition. The catalog issues a license and advertises the borrow link over
-   OPDS 2.0; reading apps follow it, fetch the license and decrypt locally.
-5. **Delivery.** The portal and the embedded viewer read everything back through
-   OPDS and the REST API. To the student it&rsquo;s one thing: a library that
-   opens in a tab.
+Search is moving into the catalog: PostgreSQL full-text search, BM25 ranking
+with pg_search and vector search with pgvector, in the same query as
+permissions and facets. The separate
+[`evilflowers-search-service`](https://github.com/EvilFlowersCatalog/evilflowers-search-service)
+will be retired.
 
-## Design principles
+### Getting content in
 
-- **Standards first.** Everything a reader needs is mounted on a well-known
-  OPDS / Readium prefix, so off-the-shelf apps work without bespoke glue. See
-  [Standards](./standards).
-- **Multi-tenant by default.** One deployment hosts many catalogs, each with its
-  own entries, ACLs and theme — that&rsquo;s how the same install serves a whole
-  university and a second one re-themed.
-- **The core does less on purpose.** If a feature can live in a worker, it does.
+| Component | Repository | What it does |
+| --- | --- | --- |
+| Digitalizer | [`evilflowers-books-digitalizer`](https://github.com/EvilFlowersCatalog/evilflowers-books-digitalizer) | Scans to a distribution PDF, a PDF/A-2b master and an EPUB with Slovak OCR; publishes to the catalog. [Docs](https://evilflowerscatalog.github.io/evilflowers-books-digitalizer/). |
+| Protocol | [`evilflowers-protocol`](https://github.com/EvilFlowersCatalog/evilflowers-protocol) | OpenAPI definition of the catalog API. |
+| Python client | [`evilflowers-protocol-python`](https://github.com/EvilFlowersCatalog/evilflowers-protocol-python) | Typed client generated from the protocol. |
 
-## See it move
+## Design rules
 
-For a step-by-step, clickable version of the flow above — with links straight
-to each repository — see the **[ecosystem map](/ecosystem)**.
+- **Standards first.** Readers get OPDS and Readium LCP on their usual paths,
+  so existing apps work without changes. See [Standards](./standards).
+- **One writer.** Only the catalog writes the database. Workers get IDs and
+  file paths through the queue and send results back over HTTP, so a worker
+  can be replaced without a migration.
+- **The core stays small.** If a feature can run as a worker, it does. A
+  worker can fail, or be a student's thesis project, without taking the
+  library down.
+- **Multi-tenant.** One install hosts many catalogs, each with its own
+  publications and permissions.
+
+The [ecosystem page](/ecosystem) follows one publication through these
+components, step by step.

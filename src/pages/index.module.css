@@ -236,7 +236,7 @@
 
 .featuresGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.1rem;
 }
 
@@ -361,44 +361,184 @@
   color: rgba(238, 243, 249, 0.6);
 }
 
-/* ----- AI assistant callout ----- */
+/* ----- Alternate band ----- */
 
-.assistantCard {
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-  padding: 2rem 2.2rem;
+.sectionAlt {
+  padding: 5rem 0;
+  background: var(--ifm-background-surface-color);
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.sectionAlt .featureCard,
+.sectionAlt .startCard {
+  background: var(--ifm-background-color);
+}
+
+/* ----- ELVIRA vs EvilFlowers ----- */
+
+.namesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.1rem;
+}
+
+.nameCard {
+  padding: 1.8rem 1.8rem 1.6rem;
   border-radius: 18px;
   background: var(--ifm-background-surface-color);
   border: 1px solid var(--ifm-color-emphasis-200);
 }
 
-.assistantIcon {
-  flex: none;
-  width: 3.2rem;
-  height: 3.2rem;
-  border-radius: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #7c5cff 0%, #01a9e0 100%);
-  color: #fff;
-  font-size: 1.4rem;
-  box-shadow: 0 8px 18px -6px rgba(124, 92, 255, 0.5);
+.nameCard h3 {
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  margin: 0.6rem 0 0.5rem;
 }
 
-.assistantHead {
+.nameCard p {
+  margin: 0;
+  line-height: 1.65;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.nameTag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+}
+
+/* ----- In development ----- */
+
+.devGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.1rem;
+}
+
+.devCard {
+  padding: 1.5rem 1.6rem;
+  border-radius: 16px;
+  border: 1px dashed color-mix(in srgb, var(--elvira-accent-amber) 55%, transparent);
+  background: color-mix(in srgb, var(--elvira-accent-amber) 5%, transparent);
+}
+
+.devHead {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
   margin-bottom: 0.5rem;
 }
 
-.assistantHead h2 {
-  font-size: 1.4rem;
+.devHead h3 {
   margin: 0;
-  letter-spacing: -0.015em;
+  font-size: 1.1rem;
+}
+
+.devIcon {
+  color: var(--elvira-accent-amber);
+  font-size: 1.1rem;
+}
+
+.devHead .badge {
+  margin-left: auto;
+}
+
+.devCard p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.62;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* ----- Map ----- */
+
+.mapMore {
+  margin-top: 1.2rem;
+  font-weight: 600;
+}
+
+.mapMore a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* ----- Why ----- */
+
+.whyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem 2.4rem;
+}
+
+.whyItem {
+  padding-left: 1.1rem;
+  border-left: 3px solid var(--ifm-color-primary);
+}
+
+.whyItem h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.4rem;
+}
+
+.whyItem p {
+  margin: 0;
+  font-size: 0.96rem;
+  line-height: 1.62;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* ----- Get started ----- */
+
+.startGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+}
+
+.startCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.7rem 1.7rem 1.5rem;
+  border-radius: 16px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  min-width: 0;
+}
+
+.startCard h3 {
+  margin: 0.8rem 0 0.4rem;
+  font-size: 1.2rem;
+}
+
+.startCard p {
+  margin: 0 0 1rem;
+  line-height: 1.62;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.startCard > a {
+  margin-top: auto;
+  font-weight: 600;
+}
+
+.startCard div[class*='codeBlockContainer'] {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.startWide {
+  grid-column: 1 / -1;
+}
+
+.startIcon {
+  font-size: 1.5rem;
+  color: var(--ifm-color-primary);
 }
 
 .badge {
@@ -413,22 +553,7 @@
   border: 1px solid rgba(241, 163, 58, 0.4);
 }
 
-.assistantBody p {
-  margin: 0;
-  font-size: 0.98rem;
-  line-height: 1.62;
-  color: var(--ifm-color-emphasis-700);
-  max-width: 62ch;
-}
-
 /* ----- Deployments ----- */
-
-.deployments {
-  padding: 5rem 0;
-  background: var(--ifm-background-surface-color);
-  border-top: 1px solid var(--ifm-color-emphasis-200);
-  border-bottom: 1px solid var(--ifm-color-emphasis-200);
-}
 
 .deploymentsGrid {
   display: grid;
@@ -551,50 +676,6 @@
   transform: translateX(4px);
 }
 
-/* ----- Open source card ----- */
-
-.osCard {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 2rem;
-  align-items: center;
-  padding: 2.4rem 2.6rem;
-  border-radius: 20px;
-  background:
-    radial-gradient(
-      30rem 20rem at 100% 0%,
-      rgba(1, 169, 224, 0.1),
-      transparent 60%
-    ),
-    var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-200);
-}
-
-.osCard h2 {
-  font-size: clamp(1.5rem, 2.4vw, 2rem);
-  letter-spacing: -0.015em;
-  margin: 0 0 0.7rem;
-}
-
-.osCard p {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.64;
-  color: var(--ifm-color-emphasis-700);
-  max-width: 52ch;
-}
-
-.osActions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  align-items: stretch;
-}
-
-.osActions .btn {
-  justify-content: center;
-}
-
 /* ----- Closing CTA ----- */
 
 .closing {
@@ -696,21 +777,25 @@
     gap: 2.2rem;
   }
 
-  .osCard {
+  .startGrid {
     grid-template-columns: 1fr;
-    gap: 1.6rem;
-    padding: 2rem 1.8rem;
   }
 
-  .assistantCard {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1.7rem 1.6rem;
+  .featuresGrid,
+  .whyGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .featuresGrid,
+  .whyGrid {
+    grid-template-columns: 1fr;
   }
 
   .section,
-  .showcase,
-  .deployments {
+  .sectionAlt,
+  .showcase {
     padding: 3.5rem 0;
   }
 }

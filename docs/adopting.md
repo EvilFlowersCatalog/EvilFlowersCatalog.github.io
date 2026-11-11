@@ -1,62 +1,66 @@
 ---
-sidebar_position: 4
+sidebar_position: 6
 title: Adopting ELVIRA
 description: What it takes to run ELVIRA at your own library or faculty.
 ---
 
 # Adopting ELVIRA
 
-ELVIRA already runs at more than one institution, and it&rsquo;s built to travel.
-This page is the honest version of &ldquo;could we run this?&rdquo; — what you get,
-what you need, and where the edges are.
+ELVIRA runs at two universities on two separate installs. This page covers
+what you get, what you need to bring, and where the limits are.
 
-It&rsquo;s open source, so you can stand it up entirely on your own. You
-don&rsquo;t have to, though — the team supports faculties and universities that
-want a hand running it.
+You can run it entirely on your own. If you would rather have help, the team
+supports faculties and universities setting it up.
 
-## Who it&rsquo;s a good fit for
+## Who it fits
 
-- A **university or faculty library** that wants its publications searchable and
-  readable in the browser, without buying into a closed platform.
-- Anyone who needs **standards-based lending** — OPDS catalogs and Readium LCP —
-  so existing e-readers work out of the box.
-- Teams comfortable running **containers** and a bit of Python. This is
-  research-grade open source, not shrink-wrapped software.
+- A **university or faculty library** that wants its publications searchable
+  and readable in the browser, on its own servers.
+- Anyone who needs **standards-based lending**, so readers can use OPDS apps
+  and Readium LCP.
+- Teams comfortable running **containers** and some Python. Researchers and
+  students build ELVIRA, and you run and update it yourself.
 
-## What you get, out of the box
+## What you get
 
-- A multi-tenant **catalog** — one install can host several libraries, each with
-  its own entries, permissions and theme.
-- OPDS **1.2 and 2.0** feeds, so [reading apps just work](./standards#reading-apps-that-just-work).
-- The **portal** and the embedded **reader**, themable to your institution.
-- The **worker fleet** — text extraction, OCR, figure captioning, equation and
-  video processing, semantic search — added as you need them.
-- Optional **Readium LCP** lending. (Official EdRLab certification is in
-  progress; see the [status report](./status-2026).)
+- A multi-tenant **catalog**: one install, many catalogs, each with its own
+  publications and permissions.
+- OPDS **1.2 and 2.0** feeds, so [reading apps work](./standards#reading-apps).
+- The **portal** and its **reader**, themed for your institution.
+- **Readium LCP** lending, if you want it.
+- A **REST API** and an **MCP server** for scripts and AI agents.
+- Optional workers that you add as needed: **extraction** (paragraphs,
+  figures, tables, formulas), **passage search** and the **assistant**. These
+  are still in development.
 
-## What you&rsquo;ll need to bring
+## What you need
 
-- **Infrastructure.** Somewhere to run containers, a database and the broker.
-  The AI workers want a GPU to be comfortable; the core catalog does not.
-- **Identity.** The portal expects university SSO; wire it to your provider.
-- **A theme.** The portal is one codebase themed per deployment — add yours
-  alongside `fiit` and `ku`.
-- **Content.** Import from Kramerius / WebDAV, or upload over the REST API.
+- **Servers.** Somewhere to run containers, PostgreSQL (our
+  [image](https://github.com/EvilFlowersCatalog/evilflowers-postgresql)
+  includes pgvector) and Redis. Files go on a local disk or any S3-compatible
+  store. The core catalog is light; the extraction workers need much more CPU
+  and memory.
+- **Accounts.** Local users, or connect your LDAP directory.
+- **A theme.** The portal is one codebase with a theme per institution. Add
+  yours next to the existing ones.
+- **Content.** Upload in the portal or over the API, import from Dataverse,
+  or digitize printed books with the digitalizer.
+- **For LCP lending:** a Readium LCP provider certificate. STU is going
+  through EDRLab certification now.
 
 ## How to start
 
-1. Stand up a local catalog with the [Quickstart](./quickstart) — it&rsquo;s a
-   few Docker commands.
-2. Read the [Architecture overview](./architecture) so the moving parts make
-   sense before you scale any of them out.
-3. When you&rsquo;re ready to talk specifics — theming, SSO, LCP, a real
-   deployment — open a
+1. Run a local catalog and portal with the [Quickstart](./quickstart).
+2. Read the [Architecture](./architecture) so you know which pieces you need.
+3. When you want to talk about theming, accounts, LCP or a real deployment,
+   open a
    [discussion](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/discussions)
-   or [get in touch](/about). We&rsquo;d genuinely like to hear from you.
+   or [write to us](/about).
 
-## The catch, stated plainly
+## Limits
 
-ELVIRA is developed by students and researchers and moves at that pace. The core
-is in daily production and dependable; the AI services are newer and evolve
-release to release. Adopt the core with confidence, and treat the worker fleet
-as capable, active research you can grow into.
+ELVIRA is built by students and researchers, and it moves at that pace. The
+catalog, portal and lending have run in production for years. The extraction
+workers, passage search and the assistant are newer and still change from
+release to release. The REST API is still being extended, so pin a release if
+you build on it.

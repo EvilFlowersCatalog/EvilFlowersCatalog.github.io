@@ -1,350 +1,367 @@
 /**
- * Single source of truth for the ELVIRA ecosystem.
+ * Single source of truth for the ELVIRA / EvilFlowers ecosystem.
  *
  * Consumed by:
- *   - /ecosystem (interactive D3 graph)
- *   - /projects  (categorised repo grid)
+ *   - the architecture map (src/components/ArchitectureMap)
+ *   - /ecosystem (the journey of one publication)
+ *   - /projects  (repositories grouped by job)
+ *   - /about     (student team repos)
  *
- * Nodes are repositories (or external standards). Links describe
- * runtime / contract dependencies between them.
+ * `status` says where a component stands today, not how often it is pushed:
+ *   live     — runs in production at STU
+ *   dev      — runs in the development environment, not yet in production
+ *   library  — a package other components use; nothing to deploy
+ *   dormant  — no recent work, nothing runs it
+ *   spec     — an external standard
+ *
+ * Only public repositories are linked.
  */
 
 export const ORG = 'EvilFlowersCatalog';
 export const ORG_URL = `https://github.com/${ORG}`;
-export const SITE_REPO = `${ORG}.github.io`;
 
 export const CATEGORIES = {
   core: {
-    label: 'Core platform',
+    label: 'Core',
     color: '#0077CC',
-    description:
-      'Catalog server, portal, viewer, and importer — the components users interact with directly.',
   },
-  worker: {
-    label: 'Workers',
+  content: {
+    label: 'Ingest',
+    color: '#2BA6A0',
+  },
+  lending: {
+    label: 'Lending',
+    color: '#E0712C',
+  },
+  extraction: {
+    label: 'Extraction',
     color: '#7C5CFF',
-    description:
-      'Celery workers behind the broker. Text extraction, OCR, captioning, transcription, semantic search, LCP encryption.',
   },
-  protocol: {
-    label: 'Protocol',
+  foundation: {
+    label: 'Protocol and data',
     color: '#34C38F',
-    description:
-      'OpenAPI definition of the EvilFlowers protocol, plus generated client bindings.',
+  },
+  team: {
+    label: 'Student team projects',
+    color: '#C77DDB',
+  },
+  earlier: {
+    label: 'Earlier experiments',
+    color: '#8B8FA3',
   },
   standard: {
     label: 'Standard',
     color: '#F1A33A',
-    description:
-      'External standards ELVIRA implements: OPDS 1.2 / 2.0, Readium LCP, LSD, RWPM.',
-    shape: 'diamond',
   },
   devops: {
-    label: 'Infrastructure',
+    label: 'Supporting forks',
     color: '#8B8FA3',
-    description:
-      'Deployment manifests, runtime forks and benchmarks. Operator-facing; hidden from /projects.',
   },
-  team: {
-    label: 'Student team project',
-    color: '#D89BFF',
-    description:
-      'FIIT STU yearly team projects (TP). Student squads contributing features as part of their thesis work.',
-  },
+};
+
+export const STATUSES = {
+  live: {label: 'In production', color: '#2FAE7F'},
+  dev: {label: 'In development', color: '#E59A2F'},
+  library: {label: 'Library', color: '#3B8FD9'},
+  dormant: {label: 'Dormant', color: '#8B8FA3'},
+  spec: {label: 'Specification', color: '#F1A33A'},
 };
 
 const repo = (slug) => `${ORG_URL}/${slug}`;
 
-export const STATUSES = {
-  active: {label: 'Active', color: '#34C38F'},
-  maintenance: {label: 'Maintenance', color: '#F1A33A'},
-  stale: {label: 'Stale', color: '#D17A3A'},
-  archived: {label: 'Archived', color: '#5C5F6B'},
-  spec: {label: 'Specification', color: '#F1A33A'},
-};
-
 export const NODES = [
-  // -------- Core platform --------
+  // -------- Core --------
   {
     id: 'catalog',
     name: 'EvilFlowersCatalog',
     category: 'core',
-    status: 'active',
+    status: 'live',
     language: 'Python',
-    version: '0.13.0 → 0.14.0 (develop)',
-    pushed_at: '2026-05-25',
     repo: repo('EvilFlowersCatalog'),
     docs: 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/wiki',
     api: 'https://elvira.digital/EvilFlowersCatalog/',
     description:
-      'OPDS publication catalog server. Stores publications, exposes them over OPDS 1.2 (Atom) and OPDS 2.0 (JSON), and hosts many libraries from a single install. Django backend, Pydantic schemas, optional Readium LCP lending.',
+      'EvilFlowersCatalog is the server every other component talks to. This Django application stores publications, users and loans, serves them over OPDS 1.2, OPDS 2.0 and a REST API, and can host many separate catalogs in one install.',
     highlights: [
-      'OPDS 1.2 and 2.0 endpoints',
-      'Multi-tenant — separate catalogs, ACLs and themes',
-      'Borrow / reserve / renew / return via Readium LCP',
-      'Dataverse integration for research datasets',
-    ],
-  },
-  {
-    id: 'viewer',
-    name: 'EvilFlowersViewer',
-    category: 'core',
-    status: 'active',
-    language: 'Vue',
-    pushed_at: '2026-05-19',
-    repo: repo('EvilFlowersViewer'),
-    npm: '@evilflowers/evilflowersviewer',
-    description:
-      'Embeddable PDF viewer built on pdf.js. In-document search, citation export (BibTeX/BibLaTeX/RIS), annotation layer, page-range sharing, theming. Ships as an npm package.',
-    highlights: [
-      'Citation export — BibTeX, BibLaTeX, RIS',
-      'Share a page range, not the whole file',
-      'Annotation and highlight layer',
-      'Themeable; published on npm',
+      'OPDS 1.2 and 2.0 feeds, REST API with OpenAPI docs',
+      'Readium LCP lending: borrow, reserve, renew, return',
+      'Local accounts, LDAP, JWT and long-lived API keys',
+      'MCP server and AI assistant endpoints',
     ],
   },
   {
     id: 'portal',
     name: 'elvira-portal',
     category: 'core',
-    status: 'active',
+    status: 'live',
     language: 'TypeScript',
-    pushed_at: '2026-05-25',
     repo: repo('elvira-portal'),
     description:
-      'React + Vite frontend. Catalog browsing, search, user shelves, university SSO. Single codebase, themed per deployment.',
+      'Readers and librarians use the portal to search the catalog, borrow LCP titles, manage loans and reservations, keep a shelf and read PDFs in the built-in reader. It is a React and Vite app in Slovak and English, themed per institution at build time.',
     highlights: [
-      'Per-deployment theming (FIIT STU, Catholic University in Ružomberok)',
-      'Umami analytics',
-      'Feature flags',
+      'Static build, served by any web server',
+      'Theme and API address set per deployment',
+      'Talks to the catalog only through its public API',
     ],
   },
   {
-    id: 'importer',
-    name: 'evilflowers-importer',
+    id: 'viewer',
+    name: 'EvilFlowersViewer',
     category: 'core',
-    status: 'active',
-    language: 'Python',
-    pushed_at: '2025-06-27',
-    repo: repo('evilflowers-importer'),
+    status: 'library',
+    language: 'Vue',
+    repo: repo('EvilFlowersViewer'),
+    npm: '@evilflowers/evilflowersviewer',
+    docs: 'https://www.npmjs.com/package/@evilflowers/evilflowersviewer',
     description:
-      'Imports publications from Kramerius and WebDAV sources, then uses an LLM (OpenAI or Ollama) to fill in missing metadata — titles, authors, abstracts. Outputs JSON the catalog can ingest.',
+      'EvilFlowersViewer is the PDF reader inside the portal. It is built on pdf.js, published on npm, and supports search inside the document, highlights and notes, page-range sharing and citation export.',
+    highlights: [
+      'Citation export: BibTeX, BibLaTeX, RIS',
+      'Share a page range instead of the whole file',
+      'Annotations stored in the catalog',
+    ],
   },
 
-  // -------- Microservices / workers --------
+  // -------- Getting content in --------
+  {
+    id: 'digitalizer',
+    name: 'evilflowers-books-digitalizer',
+    category: 'content',
+    status: 'dev',
+    language: 'Python',
+    repo: repo('evilflowers-books-digitalizer'),
+    docs: 'https://evilflowerscatalog.github.io/evilflowers-books-digitalizer/',
+    description:
+      'The digitalizer takes TIFF scans of printed books, cleans the pages and runs Slovak OCR. For each book it produces a fast distribution PDF, a PDF/A-2b archival master and an EPUB, then publishes the book to the catalog. It runs as a batch job or as a web studio for reviewing books page by page.',
+    highlights: [
+      'Resumable: re-running skips finished books',
+      'Publishes through the catalog API with an API key',
+      'Exports Internet Archive items',
+    ],
+  },
+
+  // -------- Lending --------
+  {
+    id: 'worker-lcp',
+    name: 'evilflowers-lcpencrypt-worker',
+    category: 'lending',
+    status: 'live',
+    language: 'Python',
+    repo: repo('evilflowers-lcpencrypt-worker'),
+    description:
+      'This Celery worker encrypts each file the catalog marks for lending with Readium’s lcpencrypt, registers it with the LCP server and reports the result back to the catalog.',
+  },
+  {
+    id: 'lcp-server',
+    name: 'readium-lcp-server',
+    category: 'lending',
+    status: 'live',
+    language: 'Go',
+    repo: repo('readium-lcp-server'),
+    description:
+      'This repository packages the upstream Readium LCP server for our deployments. The server issues licenses and the License Status Documents reading apps use to renew and return loans. Only the catalog talks to it.',
+  },
+
+  // -------- Extraction --------
+  {
+    id: 'svc-analyzer',
+    name: 'evilflowers-analyzer-service',
+    category: 'extraction',
+    status: 'dev',
+    language: 'Python',
+    repo: repo('evilflowers-analyzer-service'),
+    description:
+      'The analyzer starts each extraction run. It opens the PDF, finds the page layout with Docling, and sends paragraphs and tables to the text service, figures to the image service and formulas to the equation service.',
+  },
   {
     id: 'svc-text',
     name: 'evilflowers-text-service',
-    category: 'worker',
-    status: 'active',
+    category: 'extraction',
+    status: 'dev',
     language: 'Python',
-    pushed_at: '2026-05-14',
     repo: repo('evilflowers-text-service'),
     description:
-      'Celery worker. Extracts text from PDF publications and emits it back to the catalog for indexing and downstream analysis.',
+      'The text service extracts paragraphs and their sentences with positions on the page, and embeds each paragraph so similar passages can be found. It also converts tables to Markdown and embeds the queries for passage search.',
   },
   {
     id: 'svc-image',
     name: 'evilflowers-image-service',
-    category: 'worker',
-    status: 'active',
+    category: 'extraction',
+    status: 'dev',
     language: 'Python',
-    pushed_at: '2025-04-27',
     repo: repo('evilflowers-image-service'),
     description:
-      'Extracts figures from publications and runs captioning (PaliGemma) and classification (ViT / ResNet50). Outputs captions and tags for accessibility and image search.',
+      'The image service crops each figure out of the page so readers can browse a publication’s figures. Generated captions are optional and off by default.',
   },
   {
     id: 'svc-equation',
     name: 'evilflowers-equation-service',
-    category: 'worker',
-    status: 'active',
+    category: 'extraction',
+    status: 'dev',
     language: 'Python',
-    pushed_at: '2025-04-27',
     repo: repo('evilflowers-equation-service'),
     description:
-      'Detects equations in PDF publications and reconstructs them as LaTeX using the Nougat model.',
-  },
-  {
-    id: 'svc-video',
-    name: 'evilflowers-video-service',
-    category: 'worker',
-    status: 'active',
-    language: 'Python',
-    pushed_at: '2025-04-27',
-    repo: repo('evilflowers-video-service'),
-    description:
-      'Transcribes audio tracks from video publications using Whisper large-v3. Output is searchable text aligned to timestamps.',
+      'The equation service crops each formula and reads it back as LaTeX with a LaTeX-OCR model, so equations can be searched and copied.',
   },
   {
     id: 'svc-search',
     name: 'evilflowers-search-service',
-    category: 'worker',
-    status: 'active',
+    category: 'extraction',
+    status: 'dev',
     language: 'Python',
-    pushed_at: '2026-05-14',
     repo: repo('evilflowers-search-service'),
     description:
-      'Semantic search over the extracted text corpus. Sits behind the catalog search endpoint and consumes output from the text service.',
-  },
-  {
-    id: 'svc-analyzer',
-    name: 'evilflowers-analyzer-service',
-    category: 'worker',
-    status: 'active',
-    language: 'Python',
-    pushed_at: '2025-04-27',
-    repo: repo('evilflowers-analyzer-service'),
-    description:
-      'Pipeline orchestrator. Routes a newly ingested publication to the text, image, equation and video services and aggregates their results.',
-  },
-  {
-    id: 'worker-ocr',
-    name: 'evilflowers-ocr-worker',
-    category: 'worker',
-    status: 'active',
-    language: 'Docker',
-    pushed_at: '2024-10-01',
-    repo: repo('evilflowers-ocr-worker'),
-    description:
-      'Dockerised Celery worker wrapping ocrmypdf. Adds a searchable text layer to scanned PDFs ingested by the catalog.',
-  },
-  {
-    id: 'worker-lcp',
-    name: 'evilflowers-lcpencrypt-worker',
-    category: 'worker',
-    status: 'active',
-    language: 'Python',
-    pushed_at: '2026-03-14',
-    repo: repo('evilflowers-lcpencrypt-worker'),
-    description:
-      'Celery worker wrapping Readium lcpencrypt. AES-256-CBC encryption for EPUB 2/3, PDF, Readium Web Pubs and W3C Audiobooks. Filesystem storage only.',
+      'This service keeps a separate keyword and vector index for the catalog’s OPDS search. It will be retired as search moves into the catalog’s own PostgreSQL, with full-text search and pgvector.',
   },
 
-  // -------- Protocol --------
+  // -------- Protocol and data --------
   {
     id: 'protocol',
     name: 'evilflowers-protocol',
-    category: 'protocol',
-    status: 'active',
+    category: 'foundation',
+    status: 'library',
     language: 'OpenAPI',
-    pushed_at: '2026-05-25',
     repo: repo('evilflowers-protocol'),
     description:
-      'OpenAPI 3.1 definition of the EvilFlowers protocol — the wire contract between catalog, portal, importer and third-party clients.',
+      'This repository holds the OpenAPI definition of the catalog API, generated from the catalog source for each catalog branch.',
   },
   {
     id: 'protocol-py',
     name: 'evilflowers-protocol-python',
-    category: 'protocol',
-    status: 'active',
+    category: 'foundation',
+    status: 'library',
     language: 'Python',
-    pushed_at: '2026-03-31',
     repo: repo('evilflowers-protocol-python'),
     description:
-      'Python client and Pydantic v2 models generated from the protocol spec.',
+      'This typed Python client is generated from the protocol. The digitalizer publishes books with it, and you can use it for your own scripts and imports.',
+  },
+  {
+    id: 'postgresql',
+    name: 'evilflowers-postgresql',
+    category: 'foundation',
+    status: 'live',
+    language: 'Docker',
+    repo: repo('evilflowers-postgresql'),
+    description:
+      'This is the PostgreSQL 18 image the catalog runs on, with pgvector for embeddings, pg_search for BM25 ranking, and pg_cron and pgaudit for operations.',
   },
 
-  // -------- Infrastructure / forks --------
-  {
-    id: 'devops',
-    name: 'elvira-devops',
-    category: 'devops',
-    status: 'active',
-    language: 'HTML',
-    pushed_at: '2026-05-25',
-    repo: repo('elvira-devops'),
-    description: 'Deployment manifests, dashboards and operator tooling.',
-  },
-  {
-    id: 'lcp-server',
-    name: 'readium-lcp-server (fork)',
-    category: 'devops',
-    status: 'maintenance',
-    language: 'Go',
-    pushed_at: '2026-04-08',
-    repo: repo('readium-lcp-server'),
-    description:
-      'Fork of the upstream Readium LCP server. Issues and proxies licenses for the catalog borrow flow.',
-  },
-  {
-    id: 'isbnlib',
-    name: 'isbnlib (fork)',
-    category: 'devops',
-    status: 'active',
-    language: 'Python',
-    pushed_at: '2026-05-25',
-    repo: repo('isbnlib'),
-    description:
-      'Patched fork of isbnlib. ISBN validation and metadata lookup for the catalog and importer.',
-  },
-  {
-    id: 'ppc-bench',
-    name: 'ppc64le-cuda-benchmark',
-    category: 'devops',
-    status: 'maintenance',
-    language: 'Python',
-    pushed_at: '2024-10-13',
-    repo: repo('ppc64le-cuda-benchmark'),
-    description:
-      'CUDA benchmarks from the IBM PowerPC platform evaluation. Reference only.',
-  },
-
-  // -------- Team projects --------
+  // -------- Student team projects --------
   {
     id: 'tp2025',
     name: 'TP2025-T23',
     category: 'team',
-    status: 'active',
+    status: 'dormant',
     language: 'TypeScript',
-    pushed_at: '2026-05-08',
     repo: repo('TP2025-T23'),
-    description:
-      'FIIT STU Team 23, 2025/26 academic year. Current student squad.',
+    description: 'Website of FIIT STU team 23, academic year 2025/26.',
   },
   {
     id: 'tp-text-2025',
     name: 'evilflowers-text-service-tp2025',
     category: 'team',
-    status: 'maintenance',
+    status: 'dormant',
     language: 'Python',
-    pushed_at: '2025-12-21',
     repo: repo('evilflowers-text-service-tp2025'),
-    description:
-      'Fork of the text service used by the 2024/25 team. Frozen at the version their thesis was defended against.',
-  },
-  {
-    id: 'tp2024',
-    name: 'TP2024-T5',
-    category: 'team',
-    status: 'maintenance',
-    language: 'MDX',
-    pushed_at: '2025-05-02',
-    repo: repo('TP2024-T5'),
-    description:
-      'FIIT STU Team 5, 2024/25 academic year.',
-  },
-  {
-    id: 'tp2022',
-    name: 'TP2022-T16',
-    category: 'team',
-    status: 'maintenance',
-    language: 'TypeScript',
-    pushed_at: '2023-05-13',
-    repo: repo('TP2022-T16'),
-    description:
-      'FIIT STU Team 16, 2021/22 academic year. Where ELVIRA started.',
+    description: 'The 2025/26 team’s fork of the text service.',
   },
   {
     id: 'ai-agent',
     name: 'elvira-ai-agent',
     category: 'team',
-    status: 'active',
+    status: 'dormant',
     language: 'TypeScript',
-    pushed_at: '2026-02-11',
     repo: repo('elvira-ai-agent'),
     description:
-      'In-portal chat assistant. Searches the catalog, summarises publications and answers questions about library holdings.',
+      'A student prototype of a chat assistant for the portal. The assistant now in development is part of the catalog.',
+  },
+  {
+    id: 'tp2024',
+    name: 'TP2024-T5',
+    category: 'team',
+    status: 'dormant',
+    language: 'MDX',
+    repo: repo('TP2024-T5'),
+    description: 'Website of FIIT STU team 5, academic year 2024/25.',
+  },
+  {
+    id: 'tp2022',
+    name: 'TP2022-T16',
+    category: 'team',
+    status: 'dormant',
+    language: 'TypeScript',
+    repo: repo('TP2022-T16'),
+    description:
+      'Website of FIIT STU team 16, academic year 2022/23, an early team project on ELVIRA.',
+  },
+
+  // -------- Earlier experiments --------
+  {
+    id: 'importer',
+    name: 'evilflowers-importer',
+    category: 'earlier',
+    status: 'dormant',
+    language: 'Python',
+    repo: repo('evilflowers-importer'),
+    description:
+      'A command-line importer that used an LLM to extract metadata into JSON for the catalog.',
+  },
+  {
+    id: 'worker-ocr',
+    name: 'evilflowers-ocr-worker',
+    category: 'earlier',
+    status: 'dormant',
+    language: 'Docker',
+    repo: repo('evilflowers-ocr-worker'),
+    description:
+      'A Celery worker around ocrmypdf. Scanned books now go through the digitalizer instead.',
+  },
+  {
+    id: 'svc-video',
+    name: 'evilflowers-video-service',
+    category: 'earlier',
+    status: 'dormant',
+    language: 'Python',
+    repo: repo('evilflowers-video-service'),
+    description: 'A Whisper transcription prototype for video publications.',
+  },
+  {
+    id: 'calibre',
+    name: 'calibre-evilflowers',
+    category: 'earlier',
+    status: 'dormant',
+    language: 'Python',
+    repo: repo('calibre-evilflowers'),
+    description: 'A Calibre plugin for syncing a library with the catalog.',
+  },
+  {
+    id: 'notion-opds',
+    name: 'notion-opds',
+    category: 'earlier',
+    status: 'dormant',
+    language: 'Python',
+    repo: repo('notion-opds'),
+    description: 'An OPDS feed served from a Notion database.',
+  },
+  {
+    id: 'fe',
+    name: 'EvilFlowersFE',
+    category: 'earlier',
+    status: 'dormant',
+    language: 'TypeScript',
+    repo: repo('EvilFlowersFE'),
+    description: 'The first admin frontend for the catalog, in Angular.',
+  },
+
+  // -------- Supporting forks (not shown on /projects) --------
+  {
+    id: 'isbnlib',
+    name: 'isbnlib (fork)',
+    category: 'devops',
+    status: 'library',
+    language: 'Python',
+    repo: repo('isbnlib'),
+    description: 'Patched fork of isbnlib for ISBN validation and metadata.',
   },
 
   // -------- External standards --------
@@ -353,8 +370,7 @@ export const NODES = [
     name: 'OPDS 1.2',
     category: 'standard',
     status: 'spec',
-    description:
-      'Atom-based catalog feed format for publications. ELVIRA implements it under /opds/v1.2/.',
+    description: 'Atom catalog feeds, read by most e-reader apps.',
     docs: 'https://specs.opds.io/opds-1.2',
   },
   {
@@ -362,8 +378,7 @@ export const NODES = [
     name: 'OPDS 2.0',
     category: 'standard',
     status: 'spec',
-    description:
-      'JSON catalog feed format with paginated browsing, manifests, borrowing and shelves. Mounted under /opds/v2/.',
+    description: 'JSON catalog feeds with search, pagination and borrowing.',
     docs: 'https://drafts.opds.io/opds-2.0',
   },
   {
@@ -371,8 +386,7 @@ export const NODES = [
     name: 'Readium LCP',
     category: 'standard',
     status: 'spec',
-    description:
-      'Lightweight DRM for ebooks and audiobooks. Drives the catalog’s borrow / reserve / renew / return flow.',
+    description: 'Open DRM for lending e-books and PDFs.',
     docs: 'https://readium.org/lcp-specs/',
   },
   {
@@ -380,8 +394,7 @@ export const NODES = [
     name: 'Readium LSD',
     category: 'standard',
     status: 'spec',
-    description:
-      'License Status Document — used to revoke, renew or return active LCP licenses.',
+    description: 'License Status Document: renew, return and revoke loans.',
     docs: 'https://readium.org/lcp-specs/releases/lsd/latest',
   },
   {
@@ -389,70 +402,21 @@ export const NODES = [
     name: 'Readium Web Pub Manifest',
     category: 'standard',
     status: 'spec',
-    description:
-      'JSON manifest format for digital publications shared via OPDS 2.0.',
+    description: 'JSON manifest for publications in OPDS 2.0 feeds.',
     docs: 'https://readium.org/webpub-manifest/',
+  },
+  {
+    id: 'std-mcp',
+    name: 'Model Context Protocol',
+    category: 'standard',
+    status: 'spec',
+    description: 'Lets AI agents search and curate the catalog as tools.',
+    docs: 'https://modelcontextprotocol.io/',
   },
 ];
 
 /**
- * Edges describe a dependency, contract or compatibility relationship.
- *   - depends    runtime dependency (default)
- *   - implements implementation of a standard / protocol
- *   - feeds      data flow into another service
- *   - fork       parent of a fork relationship
- */
-export const LINKS = [
-  // Catalog is the hub.
-  {source: 'catalog', target: 'std-opds12', type: 'implements'},
-  {source: 'catalog', target: 'std-opds20', type: 'implements'},
-  {source: 'catalog', target: 'std-lcp', type: 'implements'},
-  {source: 'catalog', target: 'std-lsd', type: 'implements'},
-  {source: 'catalog', target: 'std-rwpm', type: 'implements'},
-
-  {source: 'catalog', target: 'protocol', type: 'implements'},
-  {source: 'protocol-py', target: 'protocol', type: 'depends'},
-
-  {source: 'portal', target: 'catalog', type: 'depends'},
-  {source: 'portal', target: 'viewer', type: 'depends'},
-  {source: 'portal', target: 'protocol-py', type: 'depends'},
-
-  {source: 'importer', target: 'catalog', type: 'feeds'},
-  {source: 'importer', target: 'isbnlib', type: 'depends'},
-
-  {source: 'svc-text', target: 'catalog', type: 'feeds'},
-  {source: 'svc-search', target: 'catalog', type: 'feeds'},
-  {source: 'svc-search', target: 'svc-text', type: 'depends'},
-  {source: 'svc-image', target: 'catalog', type: 'feeds'},
-  {source: 'svc-equation', target: 'catalog', type: 'feeds'},
-  {source: 'svc-video', target: 'catalog', type: 'feeds'},
-  {source: 'svc-analyzer', target: 'svc-text', type: 'depends'},
-  {source: 'svc-analyzer', target: 'svc-image', type: 'depends'},
-  {source: 'svc-analyzer', target: 'svc-equation', type: 'depends'},
-  {source: 'svc-analyzer', target: 'svc-video', type: 'depends'},
-  {source: 'svc-analyzer', target: 'catalog', type: 'feeds'},
-
-  {source: 'worker-ocr', target: 'catalog', type: 'feeds'},
-  {source: 'worker-lcp', target: 'catalog', type: 'feeds'},
-  {source: 'worker-lcp', target: 'std-lcp', type: 'implements'},
-  {source: 'worker-lcp', target: 'lcp-server', type: 'depends'},
-
-  {source: 'catalog', target: 'isbnlib', type: 'depends'},
-  {source: 'catalog', target: 'lcp-server', type: 'depends'},
-
-  {source: 'tp-text-2025', target: 'svc-text', type: 'fork'},
-  {source: 'tp2025', target: 'portal', type: 'depends'},
-  {source: 'ai-agent', target: 'portal', type: 'depends'},
-];
-
-/**
- * Where ELVIRA actually runs in production.
- *
- * The whole Slovak University of Technology runs on one instance at
- * elvira.stuba.sk. FIIT STU is the home faculty — where the project is
- * built — but it is no longer a separate entry point. The Catholic
- * University in Ružomberok runs a second instance, themed for KU on the
- * same catalog software.
+ * Where ELVIRA runs in production.
  */
 export const DEPLOYMENTS = [
   {
@@ -463,7 +427,7 @@ export const DEPLOYMENTS = [
     logo: '/img/stu-logo.png',
     accent: '#8a1538',
     since: '2020',
-    note: 'The whole university, one instance. Built at the Faculty of Informatics and Information Technologies (FIIT) — the STU faculty behind most of the project — and rolled out campus-wide.',
+    note: 'One instance for the whole university at elvira.stuba.sk. Built at the Faculty of Informatics and Information Technologies (FIIT), which does most of the development.',
   },
   {
     short: 'KU',
@@ -473,7 +437,7 @@ export const DEPLOYMENTS = [
     logo: '/img/ku-logo.png',
     accent: '#c99a2e',
     since: '2024',
-    note: 'A second home. The same catalog and reader underneath, re-themed in KU’s colours for their students and staff.',
+    note: 'Its own instance on its own servers: the same catalog and portal, in KU’s colours.',
   },
 ];
 
@@ -484,18 +448,18 @@ export const PEOPLE = [
   {
     name: 'Jakub Dubec',
     role: 'Project lead · FIIT STU',
-    bio: 'Started EvilFlowersCatalog as a side project — a backup for his own Calibre library — and has kept it moving ever since, into the research line on AI processing of multimodal library content.',
+    bio: 'Started EvilFlowersCatalog as a backup for his own Calibre library and has led it since, including the research on AI processing of library content.',
     email: 'jakub.dubec@stuba.sk',
   },
   {
     name: 'Pavol Batalík',
     role: 'Slovak Informatics Library (SIK) · FIIT STU',
-    bio: 'The library side of the project through the Slovenská informatická knižnica, FIIT STU’s own library — the sounding board for what a real catalog has to get right for readers and librarians.',
+    bio: 'Brings the librarian’s view through the Slovenská informatická knižnica, FIIT STU’s library: what a catalog has to get right for readers and for the people who run it.',
   },
   {
     name: 'Tomáš Kordoš',
     role: 'Developer',
-    bio: 'Day-to-day engineering across the catalog, portal and workers — keeping the moving parts in sync.',
+    bio: 'Day-to-day engineering across the catalog, the portal and the workers.',
   },
 ];
 
@@ -509,7 +473,7 @@ export const PARTNERS = [
     place: 'Slovak University of Technology, Bratislava',
     url: 'https://www.fiit.stuba.sk/',
     logo: '/img/fiit-logo.png',
-    role: 'The STU faculty behind most of the work — where ELVIRA is designed, built and defended as thesis work.',
+    role: 'Where ELVIRA is designed and built, much of it as student team projects and theses.',
   },
   {
     short: 'SIK',
@@ -517,7 +481,7 @@ export const PARTNERS = [
     place: 'The library of FIIT STU',
     url: 'https://www.fiit.stuba.sk/sik.html?page_id=587',
     logo: null,
-    role: 'FIIT’s own library — the practitioner’s view of cataloguing, lending and what readers actually need.',
+    role: 'FIIT’s own library: cataloguing and lending practice, and what readers ask for.',
   },
   {
     short: 'KU',
@@ -525,14 +489,10 @@ export const PARTNERS = [
     place: 'Ružomberok',
     url: 'https://www.ku.sk/',
     logo: '/img/ku-logo.png',
-    role: 'Second deployment — proof the platform travels beyond the faculty that made it.',
+    role: 'The second university to run ELVIRA, on its own infrastructure.',
   },
 ];
 
 export function getNode(id) {
   return NODES.find((n) => n.id === id);
-}
-
-export function nodesByCategory(category) {
-  return NODES.filter((n) => n.category === category);
 }

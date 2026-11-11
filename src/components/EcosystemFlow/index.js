@@ -1,63 +1,58 @@
 import React from 'react';
 import {FaGithub} from 'react-icons/fa';
 
-import {getNode, NODES} from '@site/src/data/ecosystem';
+import {getNode, NODES, STATUSES} from '@site/src/data/ecosystem';
 import styles from './styles.module.css';
 
 /**
- * The ecosystem, told as a story: what happens to a publication from the
- * moment it arrives to the moment someone reads it. Each stage names the
- * repositories that do that job. No graph, no filters — just the path.
+ * What happens to one publication, from upload to reader, and which
+ * repositories do each step. Stages marked `dev` run in the development
+ * environment and are not in production yet.
  */
 const STAGES = [
   {
     key: 'arrives',
     title: 'It arrives',
     blurb:
-      'A PDF, EPUB or scanned collection lands — uploaded by a librarian, or pulled in automatically from Kramerius and WebDAV with an LLM filling in the missing metadata.',
-    nodes: ['importer'],
-  },
-  {
-    key: 'read-by-machines',
-    title: 'Machines read it first',
-    blurb:
-      'Before a human ever opens it, a fleet of independent workers goes through every page — pulling out text, OCR-ing scans, captioning figures, rebuilding equations as LaTeX, transcribing any video.',
-    nodes: [
-      'svc-analyzer',
-      'svc-text',
-      'worker-ocr',
-      'svc-image',
-      'svc-equation',
-      'svc-video',
-    ],
-  },
-  {
-    key: 'searchable',
-    title: 'It becomes searchable',
-    blurb:
-      'The extracted text is embedded into a vector index, so a Slovak query can surface a matching English or German passage — down to the sentence, next to classic keyword hits.',
-    nodes: ['svc-search'],
-  },
-  {
-    key: 'protected',
-    title: 'It can be lent, safely',
-    blurb:
-      'If a title needs protecting, it’s encrypted with Readium LCP — the same open lending standard public libraries use — so it can be borrowed, renewed and returned.',
-    nodes: ['worker-lcp', 'lcp-server'],
+      'A librarian uploads a PDF or EPUB in the portal, a script posts it to the REST API, or a published Dataverse dataset is imported automatically. Printed books go through the digitalizer first: scans in, OCR’d PDF/A and EPUB out, published to the catalog with their metadata and cover.',
+    nodes: ['catalog', 'digitalizer', 'protocol-py'],
   },
   {
     key: 'catalogued',
-    title: 'The catalog holds it',
+    title: 'The catalog files it',
     blurb:
-      'Everything lands in the catalog at the centre — one install hosting many libraries — and is served over OPDS 1.2 and 2.0 through a single documented protocol.',
-    nodes: ['catalog', 'protocol', 'protocol-py'],
+      'The publication gets a record with authors, categories, language and files, and lands in a catalog with its own permissions. One install can host a whole university’s catalogs side by side. The data lives in PostgreSQL; the files on disk or in S3.',
+    nodes: ['catalog', 'postgresql'],
+  },
+  {
+    key: 'read-by-machines',
+    title: 'Workers take it apart',
+    dev: true,
+    blurb:
+      'The catalog queues an extraction run. The analyzer finds the page layout, the text service splits paragraphs into sentences and embeds them, the image service crops figures and the equation service turns formulas into LaTeX. Each worker posts its results back to the catalog, which keeps them next to the publication.',
+    nodes: ['svc-analyzer', 'svc-text', 'svc-image', 'svc-equation'],
+  },
+  {
+    key: 'searchable',
+    title: 'It becomes searchable by passage',
+    dev: true,
+    blurb:
+      'With paragraphs and their embeddings in PostgreSQL, a search can match the words of a query and its meaning, and return the passage with the hit highlighted. The assistant uses the same passages to answer questions and cites the ones it used.',
+    nodes: ['catalog', 'svc-text'],
+  },
+  {
+    key: 'protected',
+    title: 'It can be lent',
+    blurb:
+      'If a title is lent with DRM, the lcpencrypt worker encrypts it and registers it with the Readium LCP server. Readers borrow, renew and return it in the portal or in any LCP-capable app such as Thorium. A reservation queue handles titles with a limited number of copies.',
+    nodes: ['worker-lcp', 'lcp-server'],
   },
   {
     key: 'read',
     title: 'Someone reads it',
     blurb:
-      'Students meet all of this as one thing: a portal they log into and a reader that opens any title in the browser — search inside, highlight, cite, borrow.',
-    nodes: ['portal', 'viewer'],
+      'Most readers open it in the portal’s built-in reader, where they can search the text, highlight and cite. Others add the catalog’s OPDS feed to their e-reader app. AI agents can search and curate the catalog through its MCP server.',
+    nodes: ['portal', 'viewer', 'catalog'],
   },
 ];
 
@@ -66,22 +61,6 @@ const STANDARDS = NODES.filter((n) => n.category === 'standard');
 function RepoChip({id}) {
   const node = getNode(id);
   if (!node) return null;
-  const chip = (
-    <>
-      <FaGithub aria-hidden="true" />
-      <span className={styles.chipName}>{node.name}</span>
-      {node.language && (
-        <span className={styles.chipLang}>{node.language}</span>
-      )}
-    </>
-  );
-  if (!node.repo) {
-    return (
-      <span className={styles.chip} title={node.description}>
-        {chip}
-      </span>
-    );
-  }
   return (
     <a
       href={node.repo}
@@ -89,7 +68,9 @@ function RepoChip({id}) {
       rel="noopener noreferrer"
       className={styles.chip}
       title={node.description}>
-      {chip}
+      <FaGithub aria-hidden="true" />
+      <span className={styles.chipName}>{node.name}</span>
+      {node.language && <span className={styles.chipLang}>{node.language}</span>}
     </a>
   );
 }
@@ -104,7 +85,16 @@ export default function EcosystemFlow() {
               <span className={styles.markerNum}>{i + 1}</span>
             </div>
             <div className={styles.stageBody}>
-              <h3 className={styles.stageTitle}>{stage.title}</h3>
+              <h3 className={styles.stageTitle}>
+                {stage.title}
+                {stage.dev && (
+                  <span
+                    className={styles.devBadge}
+                    style={{'--badge': STATUSES.dev.color}}>
+                    In development
+                  </span>
+                )}
+              </h3>
               <p className={styles.stageBlurb}>{stage.blurb}</p>
               <div className={styles.chips}>
                 {stage.nodes.map((id) => (
@@ -117,7 +107,7 @@ export default function EcosystemFlow() {
       </ol>
 
       <aside className={styles.standards}>
-        <span className={styles.standardsLabel}>Speaking, underneath</span>
+        <span className={styles.standardsLabel}>Standards it speaks</span>
         <div className={styles.standardsRow}>
           {STANDARDS.map((s) => (
             <a

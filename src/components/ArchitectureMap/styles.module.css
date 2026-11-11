@@ -1,0 +1,205 @@
+.figure {
+  margin: 0;
+  --map-box: var(--ifm-background-surface-color);
+  --map-bg: var(--ifm-background-color);
+  --map-border: var(--ifm-color-emphasis-300);
+  --map-line: var(--ifm-color-emphasis-500);
+  --map-text: var(--ifm-font-color-base);
+  --map-muted: var(--ifm-color-emphasis-600);
+  --map-group: var(--ifm-color-emphasis-100);
+  --map-accent: var(--ifm-color-primary);
+  --map-dev: #e59a2f;
+}
+
+.scroller {
+  overflow-x: auto;
+  border-radius: 18px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  background: var(--map-bg);
+  padding: 0.75rem;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  min-width: 760px;
+  height: auto;
+  font-family: var(--ifm-font-family-base);
+}
+
+/* ----- Boxes ----- */
+
+.box rect {
+  fill: var(--map-box);
+  stroke: var(--map-border);
+  stroke-width: 1.2;
+  transition: stroke 0.15s ease;
+}
+
+.boxTitle {
+  fill: var(--map-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.boxSub {
+  fill: var(--map-muted);
+  font-size: 12px;
+}
+
+.external rect {
+  fill: transparent;
+  stroke-dasharray: 5 4;
+}
+
+.catalog rect {
+  stroke: var(--map-accent);
+  stroke-width: 2;
+  fill: color-mix(in srgb, var(--map-accent) 6%, var(--map-box));
+}
+
+.catalogTitle {
+  fill: var(--map-text);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.link {
+  cursor: pointer;
+}
+
+.link:hover .box rect,
+.link:focus-visible .box rect,
+.link:hover rect,
+.link:focus-visible rect {
+  stroke: var(--map-accent);
+  stroke-width: 2;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+/* ----- Interfaces on the catalog's edge ----- */
+
+.pill rect {
+  fill: var(--map-bg);
+  stroke: var(--map-accent);
+  stroke-width: 1.2;
+}
+
+.pill text {
+  fill: var(--map-text);
+  font-size: 11.5px;
+  font-weight: 600;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+.pillDev rect {
+  stroke: var(--map-dev);
+  stroke-dasharray: 4 3;
+}
+
+/* ----- Groups ----- */
+
+.group rect {
+  fill: var(--map-group);
+  stroke: none;
+  opacity: 0.6;
+}
+
+.groupDev rect {
+  fill: color-mix(in srgb, var(--map-dev) 9%, transparent);
+  stroke: color-mix(in srgb, var(--map-dev) 45%, transparent);
+  stroke-dasharray: 6 5;
+  opacity: 1;
+}
+
+.groupLabel {
+  fill: var(--map-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  paint-order: stroke;
+  stroke: var(--map-bg);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+
+/* ----- Edges ----- */
+
+.edge line {
+  stroke: var(--map-line);
+  stroke-width: 1.5;
+}
+
+.dashed {
+  stroke-dasharray: 5 4;
+}
+
+.arrowHead {
+  fill: var(--map-line);
+}
+
+.edgeLabel,
+.note {
+  fill: var(--map-muted);
+  font-size: 11.5px;
+  paint-order: stroke;
+  stroke: var(--map-bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+.note {
+  stroke: none;
+  font-style: italic;
+}
+
+/* ----- Legend ----- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.3rem;
+  align-items: center;
+  margin-top: 0.85rem;
+  font-size: 0.84rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend i.legendExternal {
+  width: 18px;
+  height: 12px;
+  border-radius: 4px;
+  border: 1.5px dashed var(--ifm-color-emphasis-500);
+}
+
+.legendHint {
+  margin-left: auto;
+  color: var(--ifm-color-emphasis-600);
+}
+
+@media (max-width: 996px) {
+  .legendHint::after {
+    content: ' Scroll sideways to see the whole map.';
+  }
+  .legendHint {
+    margin-left: 0;
+  }
+}

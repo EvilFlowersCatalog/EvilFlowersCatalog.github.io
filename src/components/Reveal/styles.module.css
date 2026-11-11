@@ -1,19 +1,20 @@
-.reveal {
+.hidden {
   opacity: 0;
   transform: translateY(18px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  will-change: opacity, transform;
 }
 
-.revealIn {
+.shown {
   opacity: 1;
   transform: none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .hidden {
     opacity: 1;
     transform: none;
+  }
+  .shown {
     transition: none;
   }
 }

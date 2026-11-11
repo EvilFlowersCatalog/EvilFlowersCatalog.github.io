@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 title: Reference
 description: External references and authoritative sources.
 ---
@@ -21,6 +21,10 @@ This site is the **on-ramp**. For full documentation, here is where to go:
   tasks and storage notes.
 - **[CHANGELOG](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/blob/master/CHANGELOG.md)** —
   every release with feature, change, fix entries.
+- **[MCP guide](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/wiki/Model-Context-Protocol)** —
+  connecting AI agents to the catalog.
+- **[Books digitalizer docs](https://evilflowerscatalog.github.io/evilflowers-books-digitalizer/)** —
+  the scan-to-catalog pipeline.
 
 ## Protocol & bindings
 
@@ -50,5 +54,6 @@ Peer-reviewed work from the ELVIRA research line, indexed in IEEE Xplore:
 
 ## Status reports
 
+- [2026-11 — What's new since May](/docs/whats-new)
 - [2026-05-25 — English summary](/docs/status-2026) ·
   [Slovak original (DOCX)](/docs/Sprava_stav_prac_ELVIRA_2026-05-25.docx)

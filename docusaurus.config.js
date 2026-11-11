@@ -8,7 +8,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'ELVIRA',
-  tagline: 'An open digital library for universities — catalog, reader and cross-language search. Built at STU Bratislava.',
+  tagline: 'The open-source digital library of the Slovak University of Technology: an OPDS catalog, a web reader and Readium LCP lending.',
   favicon: 'img/favicon.ico',
 
   url: 'https://elvira.digital',
@@ -57,7 +57,7 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
-          {to: '/ecosystem', label: 'Ecosystem', position: 'left'},
+          {to: '/ecosystem', label: 'How it works', position: 'left'},
           {to: '/projects', label: 'Projects', position: 'left'},
           {to: '/docs/intro', label: 'Docs', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
@@ -79,7 +79,7 @@ const config = {
           {
             title: 'Project',
             items: [
-              {label: 'Ecosystem', to: '/ecosystem'},
+              {label: 'How it works', to: '/ecosystem'},
               {label: 'Projects', to: '/projects'},
               {label: 'Documentation', to: '/docs/intro'},
               {label: 'About', to: '/about'},

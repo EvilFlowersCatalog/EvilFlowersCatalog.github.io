@@ -4,17 +4,27 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
+import CodeBlock from '@theme/CodeBlock';
 import {
   FaArrowRight,
   FaBookOpen,
-  FaSearch,
   FaLock,
   FaQuoteRight,
-  FaRobot,
   FaGithub,
+  FaRss,
+  FaLayerGroup,
+  FaCode,
+  FaSearch,
+  FaShapes,
+  FaRobot,
+  FaPrint,
+  FaUniversity,
+  FaTabletAlt,
+  FaServer,
 } from 'react-icons/fa';
 
 import Reveal from '@site/src/components/Reveal';
+import ArchitectureMap from '@site/src/components/ArchitectureMap';
 import {DEPLOYMENTS, ORG_URL} from '@site/src/data/ecosystem';
 import styles from './index.module.css';
 
@@ -22,24 +32,90 @@ const FEATURES = [
   {
     title: 'Read in the browser',
     Icon: FaBookOpen,
-    body: 'Open any title in the built-in reader — search the text, jump between pages, highlight, print or download. No app to install, nothing to configure.',
+    body: 'Every PDF opens in the built-in reader. Search inside the text, page through thumbnails, highlight and take notes. Nothing to install.',
   },
   {
-    title: 'Search across languages',
-    Icon: FaSearch,
-    body: 'Ask in Slovak and still find matching passages in English, Czech and German. Meaning-based and keyword search run side by side, down to the sentence.',
-  },
-  {
-    title: 'Borrow securely',
+    title: 'Borrow protected titles',
     Icon: FaLock,
-    body: 'Borrow, renew and return protected titles with Readium LCP — the same open standard public libraries use. EdRLab certification is in progress.',
+    body: 'Lend e-books with Readium LCP, the open DRM public libraries use. Readers borrow, renew, return and join a waiting list when all copies are out.',
   },
   {
-    title: 'Cite in one click',
+    title: 'Use any e-reader app',
+    Icon: FaRss,
+    body: 'Every catalog is also an OPDS 1.2 and 2.0 feed. Add it to Thorium or another OPDS app and browse, borrow and read there.',
+  },
+  {
+    title: 'Cite and share',
     Icon: FaQuoteRight,
-    body: 'Export a citation in BibTeX, BibLaTeX or RIS, or share a single page range instead of passing around the whole file.',
+    body: 'Copy a citation as BibTeX, BibLaTeX or RIS. Share a page range instead of the whole file.',
+  },
+  {
+    title: 'Many libraries, one install',
+    Icon: FaLayerGroup,
+    body: 'One server hosts separate catalogs, each with its own publications and permissions. Sign in with local accounts or your university’s LDAP.',
+  },
+  {
+    title: 'An API for everything',
+    Icon: FaCode,
+    body: 'Whatever the portal can do, a script can do over the documented REST API. AI agents connect over the Model Context Protocol.',
   },
 ];
+
+const IN_PROGRESS = [
+  {
+    title: 'Search by passage',
+    Icon: FaSearch,
+    body: 'Search returns the paragraph that matches, with the hit highlighted. It matches the words of a query and its meaning, so a Slovak question can find an English paragraph.',
+  },
+  {
+    title: 'Structure from every PDF',
+    Icon: FaShapes,
+    body: 'Extraction workers split each publication into paragraphs and sentences, crop its figures and tables, and turn its formulas into LaTeX.',
+  },
+  {
+    title: 'An assistant that cites',
+    Icon: FaRobot,
+    body: 'Ask a question about the collection and get an answer built from its passages, with a link to each one it used.',
+  },
+  {
+    title: 'Printed books, digitized',
+    Icon: FaPrint,
+    body: 'The digitalizer turns scans into an OCR’d PDF, a PDF/A archival copy and an EPUB, and publishes them to the catalog.',
+  },
+];
+
+const REASONS = [
+  {
+    title: 'Open standards, no lock-in',
+    body: 'OPDS for catalogs, Readium LCP for lending, OpenAPI for the API. Reader apps you already use work with it, and your data leaves in formats other software reads.',
+  },
+  {
+    title: 'Open source',
+    body: 'The code is public on GitHub under permissive licenses. Read it, run it, change it, and send your changes back if you like.',
+  },
+  {
+    title: 'In daily use',
+    body: 'It serves the whole Slovak University of Technology, and the Catholic University in Ružomberok runs its own instance.',
+  },
+  {
+    title: 'Your servers, your data',
+    body: 'It runs on your own hardware: PostgreSQL for records, a local disk or any S3 store for files. Nothing is sent to a vendor.',
+  },
+  {
+    title: 'Made for academic texts',
+    body: 'Citation export, annotations, page-range sharing and Dataverse research datasets are built in.',
+  },
+  {
+    title: 'A small core',
+    body: 'The catalog handles records, permissions and loans. OCR, AI and encryption run as separate workers you add when you need them.',
+  },
+];
+
+const QUICKSTART = `git clone https://github.com/EvilFlowersCatalog/EvilFlowersCatalog.git
+cd EvilFlowersCatalog
+docker compose up -d --build django
+docker compose exec django python3 manage.py setup
+docker compose exec django python3 manage.py createsuperuser`;
 
 function BrowserFrame({src, alt, url, className, tall = false}) {
   return (
@@ -66,7 +142,7 @@ function Hero() {
         <div className={styles.heroCopy}>
           <span className={styles.kicker}>
             <span className={styles.kickerDot} />
-            Digital library · Slovak University of Technology
+            Open-source digital library
           </span>
           <Heading as="h1" className={styles.heroTitle}>
             Your library,
@@ -74,17 +150,17 @@ function Hero() {
             open in the browser.
           </Heading>
           <p className={styles.heroSubtitle}>
-            ELVIRA holds a university&rsquo;s publications — textbooks,
-            lecture notes, papers and scanned collections — and makes them
-            searchable, readable and lendable in the browser. It runs a
-            whole university today, and every line of it is open source.
+            ELVIRA is an open-source digital library: a catalog, a web portal
+            with a built-in reader, and Readium LCP lending. The Slovak
+            University of Technology keeps its publications in it, and any
+            university can run its own.
           </p>
           <div className={styles.heroButtons}>
-            <a
+            <Link
               className={clsx('button button--primary button--lg', styles.btn)}
-              href="#reader">
-              See how it works <FaArrowRight />
-            </a>
+              to="/docs/quickstart">
+              Run your own <FaArrowRight />
+            </Link>
             <a
               className={clsx(
                 'button button--secondary button--lg',
@@ -93,18 +169,19 @@ function Hero() {
               href={ORG_URL}
               target="_blank"
               rel="noopener noreferrer">
-              <FaGithub />&nbsp;Browse the source
+              <FaGithub />
+              &nbsp;Source on GitHub
             </a>
           </div>
           <p className={styles.heroMeta}>
-            In production across the Slovak University of Technology and at
-            KU Ružomberok · free for the academic community
+            In production at the Slovak University of Technology and the
+            Catholic University in Ružomberok. Free and open source.
           </p>
         </div>
         <div className={styles.heroVisual}>
           <BrowserFrame
             src={portalImg}
-            alt="The ELVIRA catalog — a grid of publication covers with search"
+            alt="The ELVIRA portal: a grid of publication covers with a search bar"
             url="elvira.stuba.sk"
             className={styles.heroFrame}
           />
@@ -114,27 +191,70 @@ function Hero() {
   );
 }
 
-function Features() {
+function Names() {
   return (
     <section className={styles.section}>
       <div className="container">
         <Reveal>
-          <div className={styles.sectionLabel}>What you can do</div>
-          <h2 className={styles.sectionTitle}>
-            A library that keeps up with how you actually read
-          </h2>
+          <div className={styles.sectionLabel}>Two names</div>
+          <h2 className={styles.sectionTitle}>ELVIRA and EvilFlowers</h2>
           <p className={styles.sectionLede}>
-            Everything happens in the browser — finding a title, reading it,
-            borrowing it and citing it. No queues, no reader software, no
-            copy sitting on a shared drive.
+            You will see both names on this site. ELVIRA is the platform you
+            run and readers use. EvilFlowers is the name of its catalog server
+            and of the GitHub organization that holds the code, so most
+            repositories carry it.
+          </p>
+        </Reveal>
+        <div className={styles.namesGrid}>
+          <Reveal className={styles.nameCard}>
+            <span className={styles.nameTag}>The platform</span>
+            <h3>ELVIRA</h3>
+            <p>
+              The whole digital library: the catalog, the portal readers sign
+              in to, the PDF reader, lending and the workers that process
+              publications. STU runs it at elvira.stuba.sk, and the Catholic
+              University in Ružomberok runs its own instance.
+            </p>
+          </Reveal>
+          <Reveal className={styles.nameCard} delay={70}>
+            <span className={styles.nameTag}>The catalog and the code</span>
+            <h3>EvilFlowers</h3>
+            <p>
+              <a
+                href="https://github.com/EvilFlowersCatalog/EvilFlowersCatalog"
+                target="_blank"
+                rel="noopener noreferrer">
+                EvilFlowersCatalog
+              </a>{' '}
+              is the catalog server at the centre of ELVIRA. It started as a
+              side project before ELVIRA existed and kept its name. All ELVIRA
+              code lives in the{' '}
+              <a href={ORG_URL} target="_blank" rel="noopener noreferrer">
+                EvilFlowersCatalog
+              </a>{' '}
+              organization on GitHub.
+            </p>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Features() {
+  return (
+    <section className={styles.sectionAlt}>
+      <div className="container">
+        <Reveal>
+          <div className={styles.sectionLabel}>What it does</div>
+          <h2 className={styles.sectionTitle}>Find it, read it, borrow it, cite it</h2>
+          <p className={styles.sectionLede}>
+            Everything below runs in production today.
           </p>
         </Reveal>
         <div className={styles.featuresGrid}>
           {FEATURES.map(({title, Icon, body}, i) => (
-            <Reveal
-              key={title}
-              className={styles.featureCard}
-              delay={i * 60}>
+            <Reveal key={title} className={styles.featureCard} delay={(i % 3) * 60}>
               <div className={styles.featureIcon}>
                 <Icon aria-hidden="true" />
               </div>
@@ -155,23 +275,23 @@ function Reader() {
       <div className={clsx('container', styles.showcaseInner)}>
         <Reveal className={styles.showcaseCopy}>
           <div className={styles.sectionLabelLight}>The reader</div>
-          <h2 className={styles.showcaseTitle}>Read it like it&rsquo;s yours</h2>
+          <h2 className={styles.showcaseTitle}>Built for reading papers and textbooks</h2>
           <p className={styles.showcaseBody}>
-            Every publication opens in the same reader, right where you left
-            off. Search inside the text, page through thumbnails, highlight
-            and annotate, switch to dark mode, and pull out a citation — all
-            without leaving the tab.
+            Every publication opens in the same reader, at the page where you
+            stopped. Search the full text, highlight and annotate, switch to
+            dark mode and copy a citation without leaving the tab. The reader
+            is a standalone npm package, so you can embed it in your own app.
           </p>
           <ul className={styles.checkList}>
             <li>Full-text search inside the document</li>
             <li>Highlights, notes and page-range sharing</li>
-            <li>Citation export &amp; download when it&rsquo;s allowed</li>
+            <li>Citation export, and download where the license allows</li>
           </ul>
         </Reveal>
         <Reveal className={styles.showcaseVisual} delay={80}>
           <BrowserFrame
             src={readerImg}
-            alt="The ELVIRA reader with a book open, page thumbnails along the bottom"
+            alt="The ELVIRA reader with a book open and page thumbnails along the bottom"
             url="elvira.stuba.sk/reader"
             tall
           />
@@ -181,28 +301,125 @@ function Reader() {
   );
 }
 
-function Assistant() {
+function InProgress() {
   return (
     <section className={styles.section}>
       <div className="container">
-        <Reveal className={styles.assistantCard}>
-          <div className={styles.assistantIcon}>
-            <FaRobot aria-hidden="true" />
-          </div>
-          <div className={styles.assistantBody}>
-            <div className={styles.assistantHead}>
-              <h2>Ask the library a question</h2>
-              <span className={styles.badge}>In development</span>
-            </div>
-            <p>
-              An assistant that reads the collection answers in plain
-              language and links back to the exact passage it drew from —
-              so you can check the source, not just trust the summary. It
-              runs today in our development environment and is rolling out
-              to the academic community.
-            </p>
-          </div>
+        <Reveal>
+          <div className={styles.sectionLabel}>In development</div>
+          <h2 className={styles.sectionTitle}>What we are building now</h2>
+          <p className={styles.sectionLede}>
+            These run in our development environment and are moving to
+            production. The code is already public.{' '}
+            <Link to="/docs/whats-new">What changed since May</Link>.
+          </p>
         </Reveal>
+        <div className={styles.devGrid}>
+          {IN_PROGRESS.map(({title, Icon, body}, i) => (
+            <Reveal key={title} className={styles.devCard} delay={(i % 2) * 60}>
+              <div className={styles.devHead}>
+                <Icon aria-hidden="true" className={styles.devIcon} />
+                <h3>{title}</h3>
+                <span className={styles.badge}>In development</span>
+              </div>
+              <p>{body}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HowItWorks() {
+  return (
+    <section className={styles.sectionAlt}>
+      <div className="container">
+        <Reveal>
+          <div className={styles.sectionLabel}>How it works</div>
+          <h2 className={styles.sectionTitle}>One catalog, everything around it</h2>
+          <p className={styles.sectionLede}>
+            A catalog server holds the records and serves them over standard
+            protocols. The portal, e-reader apps, AI agents and the digitalizer
+            are its clients. Encryption and extraction run as separate workers.
+          </p>
+        </Reveal>
+        <Reveal>
+          <ArchitectureMap />
+        </Reveal>
+        <Reveal className={styles.mapMore}>
+          <Link to="/ecosystem">
+            Follow one publication through the system <FaArrowRight />
+          </Link>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Why() {
+  return (
+    <section className={styles.section}>
+      <div className="container">
+        <Reveal>
+          <div className={styles.sectionLabel}>Why ELVIRA</div>
+          <h2 className={styles.sectionTitle}>Reasons to run it</h2>
+        </Reveal>
+        <div className={styles.whyGrid}>
+          {REASONS.map((r, i) => (
+            <Reveal key={r.title} className={styles.whyItem} delay={(i % 3) * 60}>
+              <h3>{r.title}</h3>
+              <p>{r.body}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function GetStarted() {
+  return (
+    <section className={styles.sectionAlt}>
+      <div className="container">
+        <Reveal>
+          <div className={styles.sectionLabel}>Get started</div>
+          <h2 className={styles.sectionTitle}>Pick where you start</h2>
+        </Reveal>
+        <div className={styles.startGrid}>
+          <Reveal className={styles.startCard}>
+            <FaUniversity className={styles.startIcon} aria-hidden="true" />
+            <h3>Read at STU</h3>
+            <p>
+              Go to{' '}
+              <a href="https://elvira.stuba.sk" target="_blank" rel="noopener noreferrer">
+                elvira.stuba.sk
+              </a>{' '}
+              and sign in with your university account. Search, open a book,
+              borrow it.
+            </p>
+            <Link to="/docs/using#readers">Reader guide →</Link>
+          </Reveal>
+          <Reveal className={styles.startCard} delay={60}>
+            <FaTabletAlt className={styles.startIcon} aria-hidden="true" />
+            <h3>Use your own app</h3>
+            <p>
+              Add the catalog’s OPDS feed to Thorium Reader or another OPDS
+              app to browse and borrow outside the browser.
+            </p>
+            <Link to="/docs/using#reading-apps">Connect an app →</Link>
+          </Reveal>
+          <Reveal className={clsx(styles.startCard, styles.startWide)} delay={120}>
+            <FaServer className={styles.startIcon} aria-hidden="true" />
+            <h3>Run your own</h3>
+            <p>
+              The catalog starts with Docker Compose and is ready on{' '}
+              <code>localhost:8000</code>:
+            </p>
+            <CodeBlock language="bash">{QUICKSTART}</CodeBlock>
+            <Link to="/docs/quickstart">Full quickstart, with the portal →</Link>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
@@ -222,12 +439,7 @@ function DeployCard({d, index}) {
         className={styles.deployLink}>
         <div className={styles.deployTop}>
           <span className={styles.deployPlaque}>
-            <img
-              src={logo}
-              alt={d.name}
-              className={styles.deployLogo}
-              loading="lazy"
-            />
+            <img src={logo} alt={d.name} className={styles.deployLogo} loading="lazy" />
           </span>
           <span className={styles.deploySince}>Since {d.since}</span>
         </div>
@@ -244,17 +456,14 @@ function DeployCard({d, index}) {
 
 function Deployments() {
   return (
-    <section className={styles.deployments}>
+    <section className={styles.section}>
       <div className="container">
         <Reveal>
           <div className={styles.sectionLabel}>Where it runs</div>
-          <h2 className={styles.sectionTitle}>
-            Two universities, one codebase
-          </h2>
+          <h2 className={styles.sectionTitle}>Two universities, one codebase</h2>
           <p className={styles.sectionLede}>
-            The same catalog and reader run at both — the portal just wears
-            each campus&rsquo;s colours. This isn&rsquo;t a demo: real
-            students borrow real books here every day.
+            Both run the same catalog and portal. Each instance has its own
+            servers, accounts and colours.
           </p>
         </Reveal>
         <div className={styles.deploymentsGrid}>
@@ -267,44 +476,6 @@ function Deployments() {
   );
 }
 
-function OpenSource() {
-  return (
-    <section className={styles.section}>
-      <div className="container">
-        <Reveal className={styles.osCard}>
-          <div>
-            <div className={styles.sectionLabelLight}>Open source</div>
-            <h2>Built in the open at FIIT STU</h2>
-            <p>
-              The catalog, the reader and the wire protocol are all public
-              and permissively licensed. ELVIRA speaks the standards
-              e-readers already know — OPDS for catalogs, Readium LCP for
-              lending — so nothing here is locked to us. It&rsquo;s open
-              source, and we help faculties and universities run it.
-            </p>
-          </div>
-          <div className={styles.osActions}>
-            <Link
-              className={clsx('button button--primary button--lg', styles.btn)}
-              href={ORG_URL}>
-              <FaGithub />
-              &nbsp;Browse the source
-            </Link>
-            <Link
-              className={clsx(
-                'button button--secondary button--lg',
-                styles.btn,
-              )}
-              to="/docs/intro">
-              Read the docs
-            </Link>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
 function ClosingCTA() {
   return (
     <section className={styles.closing}>
@@ -312,20 +483,15 @@ function ClosingCTA() {
         <div className={styles.closingCard}>
           <h2>Could your library run on this?</h2>
           <p>
-            ELVIRA is free to stand up and built on standards e-readers
-            already speak. Start with the docs, or read how it grew from a
-            side project into a campus library.
+            Start with the quickstart, or write to us. We help faculties and
+            universities set it up.
           </p>
           <div className={styles.closingButtons}>
-            <Link
-              className={clsx('button button--lg', styles.btnLight)}
-              to="/docs/intro">
-              Read the docs <FaArrowRight />
+            <Link className={clsx('button button--lg', styles.btnLight)} to="/docs/adopting">
+              Adopting ELVIRA <FaArrowRight />
             </Link>
-            <Link
-              className={clsx('button button--lg', styles.btnGhost)}
-              to="/about">
-              The story
+            <Link className={clsx('button button--lg', styles.btnGhost)} to="/about">
+              Contact the team
             </Link>
           </div>
         </div>
@@ -339,14 +505,17 @@ export default function Home() {
   return (
     <Layout
       title={siteConfig.title}
-      description="ELVIRA — the digital library of the Slovak University of Technology. Search, read and borrow academic publications in your browser. Open source, built at FIIT STU, in production at STU and KU Ružomberok.">
+      description="ELVIRA is an open-source digital library platform, used by the Slovak University of Technology: an OPDS catalog (EvilFlowersCatalog), a web portal with an in-browser reader, and Readium LCP lending.">
       <Hero />
       <main>
+        <Names />
         <Features />
         <Reader />
-        <Assistant />
+        <InProgress />
+        <HowItWorks />
+        <Why />
+        <GetStarted />
         <Deployments />
-        <OpenSource />
         <ClosingCTA />
       </main>
     </Layout>

@@ -10,6 +10,11 @@ description: Project status snapshot for AI multimodal processing in the ELVIRA 
 > [`Sprava_stav_prac_ELVIRA_2026-05-25.docx`](/docs/Sprava_stav_prac_ELVIRA_2026-05-25.docx)
 > · Ing. Jakub Dubec, FIIT STU · 25 May 2026
 
+:::info Newer
+This is the May 2026 snapshot, kept as written. For what changed since, see
+[What's new (November 2026)](./whats-new).
+:::
+
 This page is an English condensation of the most recent status report on
 the research line **"AI processing of multimodal data for the ELVIRA
 digital library"**. The Slovak original is the authoritative source.

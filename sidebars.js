@@ -4,6 +4,7 @@
 const sidebars = {
   docsSidebar: [
     'intro',
+    'using',
     {
       type: 'category',
       label: 'Platform',
@@ -12,7 +13,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Get hands-on',
+      label: 'Run it',
       collapsed: false,
       items: ['quickstart', 'adopting'],
     },
@@ -26,7 +27,7 @@ const sidebars = {
       type: 'category',
       label: 'Project status',
       collapsed: false,
-      items: ['status-2026'],
+      items: ['whats-new', 'status-2026'],
     },
   ],
 };

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 title: Standards
 description: Every specification the platform implements and where the catalog mounts them.
 ---
@@ -20,15 +20,17 @@ clients work without bespoke integration.
 | [RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807) | every error response | Problem Details for HTTP APIs. |
 | [RFC 7617](https://datatracker.ietf.org/doc/html/rfc7617) | HTTP Basic auth | Advertised via OPDS Authentication Document. |
 | [RFC 6750](https://datatracker.ietf.org/doc/html/rfc6750) | HTTP Bearer auth | JWT and short-lived access tokens. |
-| [RFC 5005](https://datatracker.ietf.org/doc/html/rfc5005) | feed paging | OPDS 1.2 — in progress. |
+| [RFC 5005](https://datatracker.ietf.org/doc/html/rfc5005) | feed paging | OPDS 1.2, in progress. |
+| [OpenAPI 3.1](https://spec.openapis.org/oas/v3.1.0) | `/docs/` | The REST API description, also published as [evilflowers-protocol](https://github.com/EvilFlowersCatalog/evilflowers-protocol). |
+| [Model Context Protocol](https://modelcontextprotocol.io/) | `/mcp/v1` | Search and curation tools for AI agents; Bearer API key. |
 
-## Reading apps that just work
+## Reading apps
 
-- **Thorium Reader** — see the
+- **Thorium Reader**: OPDS 2.0 browsing and LCP borrowing. See the
   [setup guide](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/wiki/Thorium-Reader-Setup-Guide)
   on the wiki.
-- **Aldiko Next** — works out of the box with OPDS 2.0 + LCP borrowing.
-- Any OPDS 1.2 reader (Calibre, Marvin, etc.) sees the legacy feed.
+- **Aldiko Next**: OPDS 2.0 with LCP borrowing.
+- Any OPDS 1.2 reader (Calibre, Marvin and others) can read the 1.2 feed.
 
 ## What we don't implement
 

@@ -36,28 +36,26 @@ const CHAPTERS = [
   {
     year: '2022',
     title: 'The first team',
-    body: 'A FIIT STU student team took the side project and turned it into a real platform — a proper catalog, a portal, a reader. Where ELVIRA as we know it actually started.',
+    body: 'A FIIT STU student team built a portal and a reader on top of the catalog. That is where ELVIRA as a library started.',
   },
   {
     year: 'Every year since',
     title: 'Handed down, team to team',
-    body: 'Each academic year a new student squad adds a piece as their thesis work — a worker, a language, a feature — and hands it on. The project is a relay, not a sprint.',
+    body: 'Each academic year a new student team adds a piece as their team project or thesis, such as a worker, a feature or a translation, and the next team picks it up.',
   },
   {
     year: '2024',
     title: 'A second university',
-    body: 'The Catholic University in Ružomberok stood up its own instance, re-themed in KU’s colours on the same catalog software. Proof the thing travels.',
+    body: 'The Catholic University in Ružomberok set up its own instance of the same software, in its own colours.',
   },
   {
-    year: 'Today',
-    title: 'Campus-wide, and reading back',
-    body: 'ELVIRA runs across the whole Slovak University of Technology, lends protected titles with Readium LCP, and is growing an AI assistant that answers from the text — with the passage it drew from, so you can check it.',
+    year: '2026',
+    title: 'Extraction, search and an assistant',
+    body: 'ELVIRA serves the whole Slovak University of Technology and lends protected titles with Readium LCP. In development: workers that split every PDF into paragraphs, figures and formulas, passage search, an assistant that cites its sources, and a pipeline for digitizing printed books.',
   },
 ];
 
-const TEAMS = NODES.filter((n) => n.category === 'team' && n.repo).sort(
-  (a, b) => (b.pushed_at || '').localeCompare(a.pushed_at || ''),
-);
+const TEAMS = NODES.filter((n) => n.category === 'team' && n.repo);
 
 function initials(name) {
   return name
@@ -159,13 +157,12 @@ export default function AboutPage() {
             A university library, built in the open
           </h1>
           <p className={styles.lede}>
-            ELVIRA began as a side project — somewhere to keep books that
-            wouldn&rsquo;t vanish on the next OS reinstall — and grew into a
-            library that now runs a whole university. A dozen student teams
-            later it catalogs, lends and searches publications across
-            languages, and is teaching itself to answer questions about them.
-            It&rsquo;s open source, built mainly at FIIT STU, and supported for
-            the faculties and universities that run it.
+            ELVIRA began as a side project, somewhere to keep e-books safe
+            from the next OS reinstall. Today it is the digital library of
+            the Slovak University of Technology and runs at a second
+            university. It is open source, built mostly at FIIT STU by staff,
+            PhD candidates and student teams, and we help the faculties and
+            universities that run it.
           </p>
         </div>
       </header>
@@ -208,9 +205,9 @@ export default function AboutPage() {
               <div className={styles.sectionLabel}>Who builds it</div>
               <h2 className={styles.sectionTitle}>A small core, a rotating crew</h2>
               <p className={styles.introText}>
-                A handful of people hold the thread across years; the rest of
-                the code comes from students and PhD candidates building their
-                thesis work into something real people use.
+                A few people keep the project going from year to year. Much
+                of the code comes from students and PhD candidates, as team
+                projects and theses that end up in production.
               </p>
             </Reveal>
             <div className={styles.peopleGrid}>
@@ -238,11 +235,11 @@ export default function AboutPage() {
         <section className={styles.sectionAlt}>
           <div className="container">
             <Reveal>
-              <div className={styles.sectionLabel}>The relay</div>
-              <h2 className={styles.sectionTitle}>Student teams that carried it</h2>
+              <div className={styles.sectionLabel}>Student teams</div>
+              <h2 className={styles.sectionTitle}>Team projects on GitHub</h2>
               <p className={styles.introText}>
-                Every FIIT STU team project (TP) leaves its mark in the repos.
-                Here are the squads whose work is still in the tree.
+                FIIT STU team projects (TP) that worked on ELVIRA, and the
+                repositories they left.
               </p>
             </Reveal>
             <div className={styles.teamGrid}>
@@ -259,11 +256,6 @@ export default function AboutPage() {
                     <FaGithub /> {t.name}
                   </span>
                   <p>{t.description}</p>
-                  {t.pushed_at && (
-                    <span className={styles.teamMeta}>
-                      last active {t.pushed_at}
-                    </span>
-                  )}
                 </Reveal>
               ))}
             </div>
@@ -274,7 +266,7 @@ export default function AboutPage() {
           <div className="container">
             <Reveal>
               <div className={styles.sectionLabel}>Where it runs</div>
-              <h2 className={styles.sectionTitle}>In production, not in a demo</h2>
+              <h2 className={styles.sectionTitle}>In production at two universities</h2>
             </Reveal>
             <div className={styles.deploymentGrid}>
               {DEPLOYMENTS.map((d, i) => (
@@ -291,10 +283,10 @@ export default function AboutPage() {
                 <div className={styles.sectionLabel}>Open source</div>
                 <h2 className={styles.sectionTitle}>Nothing here is locked to us</h2>
                 <p className={styles.osText}>
-                  The catalog, the reader and the wire protocol are all
-                  public and permissively licensed. ELVIRA speaks the
-                  standards e-readers already know, so a library can adopt
-                  it without betting on a single vendor.
+                  The catalog, the portal, the reader and the protocol are
+                  public and permissively licensed. ELVIRA uses the
+                  standards e-reader apps already support, so a library that
+                  adopts it does not depend on us.
                 </p>
                 <div className={styles.chips}>
                   {STANDARDS.map((s) => (
