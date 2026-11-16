@@ -10,11 +10,11 @@ ELVIRA runs at two universities on two separate installs. This page covers
 what you get, what you need to bring, and where the limits are.
 
 You can run it entirely on your own. If you would rather have help, the team
-supports faculties and universities setting it up.
+supports universities, faculties and research institutions setting it up.
 
 ## Who it fits
 
-- A **university or faculty library** that wants its publications searchable
+- An **academic or research library** that wants its publications searchable
   and readable in the browser, on its own servers.
 - Anyone who needs **standards-based lending**, so readers can use OPDS apps
   and Readium LCP.

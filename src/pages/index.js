@@ -28,7 +28,7 @@ const FEATURES = [
   },
   {
     title: 'Many libraries, one install',
-    body: 'One server hosts separate catalogs, each with its own publications and permissions. Sign in with a local account or the university’s LDAP.',
+    body: 'One server hosts separate catalogs, each with its own publications and permissions. Sign in with a local account or your institution’s LDAP.',
   },
   {
     title: 'An API for everything',
@@ -83,7 +83,7 @@ function Hero() {
     <header className={styles.hero}>
       <div className={styles.heroText}>
         <h1 className={styles.heroTitle}>
-          An open-source digital library for universities
+          An open-source digital library for research and academia
         </h1>
         <p className="e-lede">
           ELVIRA puts a library’s publications in one catalog, opens them in a
@@ -291,7 +291,7 @@ function Start() {
 export default function Home() {
   return (
     <Layout
-      title="Open-source digital library for universities"
+      title="Open-source digital library for research and academia"
       description="ELVIRA is an open-source digital library platform developed at the Slovak University of Technology in Bratislava: a catalog, a web reader, Readium LCP lending and search inside every book.">
       <main className="e-page">
         <Hero />
