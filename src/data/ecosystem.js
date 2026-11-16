@@ -3,14 +3,15 @@
  *
  * Consumed by:
  *   - the architecture map (src/components/ArchitectureMap)
- *   - /ecosystem (the journey of one publication)
- *   - /projects  (repositories grouped by job)
- *   - /about     (student team repos)
+ *   - /how-it-works (the journey of one publication, repositories by job)
+ *   - /about        (deployments, people, partners)
+ *   - the catalog card on the home page
  *
  * `status` says where a component stands today, not how often it is pushed:
  *   live     — runs in production at STU
  *   dev      — runs in the development environment, not yet in production
  *   library  — a package other components use; nothing to deploy
+ *   released — a versioned tool you download and run yourself
  *   dormant  — no recent work, nothing runs it
  *   spec     — an external standard
  *
@@ -26,7 +27,7 @@ export const CATEGORIES = {
     color: '#0077CC',
   },
   content: {
-    label: 'Ingest',
+    label: 'Ingest and sync',
     color: '#2BA6A0',
   },
   lending: {
@@ -34,7 +35,7 @@ export const CATEGORIES = {
     color: '#E0712C',
   },
   extraction: {
-    label: 'Extraction',
+    label: 'Processing',
     color: '#7C5CFF',
   },
   foundation: {
@@ -63,6 +64,7 @@ export const STATUSES = {
   live: {label: 'In production', color: '#2FAE7F'},
   dev: {label: 'In development', color: '#E59A2F'},
   library: {label: 'Library', color: '#3B8FD9'},
+  released: {label: 'Released', color: '#8B5CF6'},
   dormant: {label: 'Dormant', color: '#8B8FA3'},
   spec: {label: 'Specification', color: '#F1A33A'},
 };
@@ -85,9 +87,10 @@ export const NODES = [
     highlights: [
       'OPDS 1.2 and 2.0 feeds, REST API with OpenAPI docs',
       'Readium LCP lending: borrow, reserve, renew, return',
-      'Local accounts, LDAP, JWT and long-lived API keys',
-      'MCP server and AI assistant endpoints',
+      'Search in PostgreSQL with Slovak and Czech stemming',
+      'Local accounts, LDAP, API keys; an MCP server for AI agents',
     ],
+    releases: true,
   },
   {
     id: 'portal',
@@ -114,12 +117,13 @@ export const NODES = [
     npm: '@evilflowers/evilflowersviewer',
     docs: 'https://www.npmjs.com/package/@evilflowers/evilflowersviewer',
     description:
-      'EvilFlowersViewer is the PDF reader inside the portal. It is built on pdf.js, published on npm, and supports search inside the document, highlights and notes, page-range sharing and citation export.',
+      'EvilFlowersViewer is the PDF reader inside the portal. It is built on pdf.js, published on npm, and supports search inside the document, highlights and notes, page-range sharing and citation export. Asking the assistant about a selection or a figure is in beta.',
     highlights: [
       'Citation export: BibTeX, BibLaTeX, RIS',
       'Share a page range instead of the whole file',
       'Annotations stored in the catalog',
     ],
+    releases: true,
   },
 
   // -------- Getting content in --------
@@ -134,10 +138,27 @@ export const NODES = [
     description:
       'The digitalizer takes TIFF scans of printed books, cleans the pages and runs Slovak OCR. For each book it produces a fast distribution PDF, a PDF/A-2b archival master and an EPUB, then publishes the book to the catalog. It runs as a batch job or as a web studio for reviewing books page by page.',
     highlights: [
-      'Resumable: re-running skips finished books',
+      'Asks a person only about pages it was unsure of',
       'Publishes through the catalog API with an API key',
-      'Exports Internet Archive items',
+      'Output folders are Internet Archive items',
     ],
+  },
+  {
+    id: 'calibre',
+    name: 'calibre-evilflowers',
+    category: 'content',
+    status: 'released',
+    language: 'Python',
+    repo: repo('calibre-evilflowers'),
+    docs: 'https://github.com/EvilFlowersCatalog/calibre-evilflowers#use',
+    description:
+      'A Calibre plugin that keeps a Calibre library in sync with a catalog: books, metadata, covers and EPUB, PDF and MOBI files, in both directions. Point several computers at one catalog and they share a library. It also browses the catalog, manages your shelf and reads back your highlights from the reader.',
+    highlights: [
+      'Shows what it will do to every book before it does it',
+      'Never deletes anything, on either side',
+      'Signs in once and keeps only a revocable API key',
+    ],
+    releases: true,
   },
 
   // -------- Lending --------
@@ -162,7 +183,17 @@ export const NODES = [
       'This repository packages the upstream Readium LCP server for our deployments. The server issues licenses and the License Status Documents reading apps use to renew and return loans. Only the catalog talks to it.',
   },
 
-  // -------- Extraction --------
+  // -------- Processing --------
+  {
+    id: 'svc-ocr',
+    name: 'evilflowers-ocr-service',
+    category: 'extraction',
+    status: 'dev',
+    language: 'Python',
+    repo: repo('evilflowers-ocr-service'),
+    description:
+      'The OCR service adds an invisible text layer to scanned PDFs so they can be searched and extracted. It writes a new file and never touches the original, skips pages that already have text, and uses Tesseract by default with RapidOCR as an option.',
+  },
   {
     id: 'svc-analyzer',
     name: 'evilflowers-analyzer-service',
@@ -203,16 +234,6 @@ export const NODES = [
     description:
       'The equation service crops each formula and reads it back as LaTeX with a LaTeX-OCR model, so equations can be searched and copied.',
   },
-  {
-    id: 'svc-search',
-    name: 'evilflowers-search-service',
-    category: 'extraction',
-    status: 'dev',
-    language: 'Python',
-    repo: repo('evilflowers-search-service'),
-    description:
-      'This service keeps a separate keyword and vector index for the catalog’s OPDS search. It will be retired as search moves into the catalog’s own PostgreSQL, with full-text search and pgvector.',
-  },
 
   // -------- Protocol and data --------
   {
@@ -244,6 +265,27 @@ export const NODES = [
     repo: repo('evilflowers-postgresql'),
     description:
       'This is the PostgreSQL 18 image the catalog runs on, with pgvector for embeddings, pg_search for BM25 ranking, and pg_cron and pgaudit for operations.',
+    releases: true,
+  },
+  {
+    id: 'worker-lib',
+    name: 'evilflowers-worker',
+    category: 'foundation',
+    status: 'library',
+    language: 'Python',
+    repo: repo('evilflowers-worker'),
+    description:
+      'The shared runtime of the Celery workers: the message contract with the catalog, the catalog client, delivery and shutdown rules, and telemetry. A new worker is a few small files on top of it.',
+  },
+  {
+    id: 'actions',
+    name: 'evilflowers-actions',
+    category: 'foundation',
+    status: 'library',
+    language: 'GitHub Actions',
+    repo: repo('evilflowers-actions'),
+    description:
+      'Shared GitHub Actions for the services: build the container image, tag it for the branch or release, and deploy it. A service that uses them publishes the image :X.Y.Z for a release tag X.Y.Z. New this month; the services are moving to it.',
   },
 
   // -------- Student team projects --------
@@ -273,7 +315,7 @@ export const NODES = [
     language: 'TypeScript',
     repo: repo('elvira-ai-agent'),
     description:
-      'A student prototype of a chat assistant for the portal. The assistant now in development is part of the catalog.',
+      'A student prototype of a chat assistant for the portal. The assistant is now part of the catalog.',
   },
   {
     id: 'tp2024',
@@ -314,7 +356,17 @@ export const NODES = [
     language: 'Docker',
     repo: repo('evilflowers-ocr-worker'),
     description:
-      'A Celery worker around ocrmypdf. Scanned books now go through the digitalizer instead.',
+      'A Celery worker around ocrmypdf. Replaced by evilflowers-ocr-service, which keeps the original file.',
+  },
+  {
+    id: 'svc-search',
+    name: 'evilflowers-search-service',
+    category: 'earlier',
+    status: 'dormant',
+    language: 'Python',
+    repo: repo('evilflowers-search-service'),
+    description:
+      'A separate keyword and vector index for search. Archived: since catalog 0.15.0, search runs in the catalog’s own PostgreSQL.',
   },
   {
     id: 'svc-video',
@@ -324,15 +376,6 @@ export const NODES = [
     language: 'Python',
     repo: repo('evilflowers-video-service'),
     description: 'A Whisper transcription prototype for video publications.',
-  },
-  {
-    id: 'calibre',
-    name: 'calibre-evilflowers',
-    category: 'earlier',
-    status: 'dormant',
-    language: 'Python',
-    repo: repo('calibre-evilflowers'),
-    description: 'A Calibre plugin for syncing a library with the catalog.',
   },
   {
     id: 'notion-opds',
@@ -353,7 +396,7 @@ export const NODES = [
     description: 'The first admin frontend for the catalog, in Angular.',
   },
 
-  // -------- Supporting forks (not shown on /projects) --------
+  // -------- Supporting forks (not listed on /how-it-works) --------
   {
     id: 'isbnlib',
     name: 'isbnlib (fork)',
@@ -434,7 +477,7 @@ export const DEPLOYMENTS = [
     name: 'Catholic University in Ružomberok',
     place: 'Ružomberok',
     url: 'https://www.ku.sk/',
-    logo: '/img/ku-logo.png',
+    logo: '/img/ku-logo-480.png',
     accent: '#c99a2e',
     since: '2024',
     note: 'Its own instance on its own servers: the same catalog and portal, in KU’s colours.',
@@ -458,8 +501,8 @@ export const PEOPLE = [
   },
   {
     name: 'Tomáš Kordoš',
-    role: 'Developer',
-    bio: 'Day-to-day engineering across the catalog, the portal and the workers.',
+    role: 'Developer of the reader',
+    bio: 'Builds EvilFlowersViewer, the reader in the portal, and the AI features inside it: the chat that answers with cited pages, AI highlights and explanations of figures. Also works on the assistant in the catalog and on lending in the portal.',
   },
 ];
 
@@ -468,28 +511,36 @@ export const PEOPLE = [
  */
 export const PARTNERS = [
   {
+    short: 'STU',
+    name: 'Slovak University of Technology in Bratislava',
+    place: 'Bratislava',
+    url: 'https://www.stuba.sk/',
+    logo: '/img/stu-logo.png',
+    role: 'The university ELVIRA comes from. It has used ELVIRA as its digital library since 2020.',
+  },
+  {
     short: 'FIIT STU',
     name: 'Faculty of Informatics and Information Technologies',
     place: 'Slovak University of Technology, Bratislava',
     url: 'https://www.fiit.stuba.sk/',
     logo: '/img/fiit-logo.png',
-    role: 'Where ELVIRA is designed and built, much of it as student team projects and theses.',
-  },
-  {
-    short: 'SIK',
-    name: 'Slovenská informatická knižnica',
-    place: 'The library of FIIT STU',
-    url: 'https://www.fiit.stuba.sk/sik.html?page_id=587',
-    logo: null,
-    role: 'FIIT’s own library: cataloguing and lending practice, and what readers ask for.',
+    role: 'Where ELVIRA is designed and built, much of it as student team projects and theses. Its library, the Slovenská informatická knižnica, brings cataloguing and lending practice.',
   },
   {
     short: 'KU',
     name: 'Catholic University in Ružomberok',
     place: 'Ružomberok',
     url: 'https://www.ku.sk/',
-    logo: '/img/ku-logo.png',
+    logo: '/img/ku-logo-480.png',
     role: 'The second university to run ELVIRA, on its own infrastructure.',
+  },
+  {
+    short: 'BACKBONE',
+    name: 'BACKBONE, s.r.o.',
+    place: 'Bratislava',
+    url: 'https://www.backbone.sk/en/',
+    logo: null,
+    role: 'Supports the development with infrastructure, software licences and people.',
   },
 ];
 

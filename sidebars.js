@@ -27,7 +27,7 @@ const sidebars = {
       type: 'category',
       label: 'Project status',
       collapsed: false,
-      items: ['whats-new', 'status-2026'],
+      items: ['whats-new', 'releases', 'status-2026'],
     },
   ],
 };

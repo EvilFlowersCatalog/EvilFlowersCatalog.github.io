@@ -1,0 +1,26 @@
+@startuml activity-digitalizer
+!include elvira.iuml
+' What: the digitalizer runs every book through the same pipeline and asks a person only about the pages it was unsure of.
+' Source: evilflowers-books-digitalizer README and docs/studio.md (2026-11-16)
+' Scope: the Restoration Studio flow for one book. Left out: the classic batch CLI, Internet Archive upload, training-data export.
+
+title Books digitalizer: one scanned book (2026-11)
+
+start
+:TIFF scans of two-page spreads;
+:Split spreads, clean pages\n(ScanTailor);
+:OCR (Tesseract)\nlayout regions, formulas;
+:Quality gate\nOCR confidence, disputed regions,\nformula fallbacks, missing pages;
+if (score high enough?) then (yes)
+  :Approved automatically;
+else (no)
+  :Review queue;
+  :Operator fixes regions on a page\nand re-runs that page;
+  :Operator approves the book;
+endif
+:Render distribution PDF,\nPDF/A-2b master, EPUB;
+:Publish to the catalog\n(REST API with an API key);
+stop
+
+caption A republish updates the same catalog entry. The output folder is also a valid Internet Archive item.
+@enduml

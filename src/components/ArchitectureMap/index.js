@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import {getNode, STATUSES} from '@site/src/data/ecosystem';
+import {getNode} from '@site/src/data/ecosystem';
 import styles from './styles.module.css';
 
 /**
@@ -17,10 +17,9 @@ import styles from './styles.module.css';
 const W = 1240;
 const H = 640;
 
-function Box({x, y, w, h = 64, id, title, sub, status, external, href}) {
+function Box({x, y, w, h = 64, id, title, sub, external, href}) {
   const node = id ? getNode(id) : null;
   const link = href ?? node?.repo;
-  const st = STATUSES[status ?? node?.status];
   const label = title ?? node?.name;
   const body = (
     <g className={clsx(styles.box, external && styles.external)}>
@@ -33,14 +32,6 @@ function Box({x, y, w, h = 64, id, title, sub, status, external, href}) {
         <text x={x + 14} y={y + 44} className={styles.boxSub}>
           {sub}
         </text>
-      )}
-      {st && st !== STATUSES.spec && (
-        <circle
-          cx={x + w - 14}
-          cy={y + 15}
-          r="4.5"
-          style={{fill: st.color}}
-        />
       )}
     </g>
   );
@@ -57,9 +48,9 @@ function Box({x, y, w, h = 64, id, title, sub, status, external, href}) {
   );
 }
 
-function Pill({cx, cy, w, text, dev}) {
+function Pill({cx, cy, w, text}) {
   return (
-    <g className={clsx(styles.pill, dev && styles.pillDev)}>
+    <g className={styles.pill}>
       <rect x={cx - w / 2} y={cy - 12} width={w} height="24" rx="12" />
       <text x={cx} y={cy + 4} textAnchor="middle">
         {text}
@@ -92,9 +83,9 @@ function Edge({from, to, label, lx, ly, dashed, anchor = 'start'}) {
   );
 }
 
-function Group({x, y, w, h, dev}) {
+function Group({x, y, w, h}) {
   return (
-    <g className={clsx(styles.group, dev && styles.groupDev)}>
+    <g className={styles.group}>
       <rect x={x} y={y} width={w} height={h} rx="14" />
     </g>
   );
@@ -121,12 +112,13 @@ export default function ArchitectureMap({caption = true}) {
           aria-labelledby="elvira-map-title elvira-map-desc">
           <title id="elvira-map-title">ELVIRA component diagram</title>
           <desc id="elvira-map-desc">
-            The web portal, OPDS reading apps, AI agents and the books
-            digitalizer all talk to EvilFlowersCatalog through its HTTP
-            interfaces. The catalog stores data in PostgreSQL, sends encryption
-            tasks to the lcpencrypt worker and extraction tasks to the analyzer
-            through Redis, and proxies the Readium LCP server. Extraction
-            workers post their results back to the catalog.
+            The web portal, OPDS reading apps, the Calibre plugin, AI agents
+            and the books digitalizer all talk to EvilFlowersCatalog through
+            its HTTP interfaces. The catalog stores data in PostgreSQL, sends
+            encryption tasks to the lcpencrypt worker and OCR and extraction
+            tasks to the processing workers through Redis, and proxies the
+            Readium LCP server. Extraction workers post their results back to
+            the catalog.
           </desc>
           <defs>
             <marker
@@ -142,58 +134,67 @@ export default function ArchitectureMap({caption = true}) {
           </defs>
 
           {/* ---------- Clients ---------- */}
-          <Group x={20} y={20} w={470} h={112} />
-          <Box x={36} y={52} w={200} id="portal" sub="React web app" />
-          <Box x={262} y={52} w={212} id="viewer" sub="PDF reader, npm package" />
-          <Edge from={[236, 84]} to={[262, 84]} dashed />
+          <Group x={20} y={20} w={420} h={112} />
+          <Box x={36} y={52} w={180} id="portal" sub="React web app" />
+          <Box x={232} y={52} w={194} id="viewer" sub="PDF reader, npm" />
+          <Edge from={[216, 84]} to={[232, 84]} dashed />
 
           <Box
-            x={520}
+            x={460}
             y={52}
-            w={200}
+            w={170}
             title="Reading apps"
-            sub="Thorium, any OPDS client"
+            sub="Thorium, any OPDS app"
             external
             href="https://opds.io/"
           />
           <Box
-            x={750}
+            x={650}
             y={52}
-            w={200}
+            w={180}
+            id="calibre"
+            title="Calibre plugin"
+            sub="two-way library sync"
+          />
+          <Box
+            x={850}
+            y={52}
+            w={160}
             title="AI agents"
             sub="any MCP client"
             external
             href="https://modelcontextprotocol.io/"
           />
           <Box
-            x={980}
+            x={1030}
             y={52}
-            w={240}
+            w={190}
             id="digitalizer"
             title="books-digitalizer"
             sub="scans → PDF/A, EPUB"
           />
 
           {/* ---------- Client → catalog ---------- */}
-          <Edge from={[136, 116]} to={[136, 186]} label="REST, files, chat" />
+          <Edge from={[126, 116]} to={[126, 186]} label="REST, files, chat" />
           <Edge
-            from={[214, 116]}
+            from={[200, 116]}
             to={[330, 186]}
             label="loans"
-            lx={270}
+            lx={262}
             ly={146}
           />
-          <Edge from={[620, 116]} to={[620, 186]} label="catalog feeds" />
+          <Edge from={[560, 116]} to={[560, 186]} label="catalog feeds" />
           <Edge
-            from={[548, 116]}
+            from={[480, 116]}
             to={[384, 186]}
             label="loan status"
-            lx={452}
+            lx={412}
             ly={146}
             anchor="middle"
           />
-          <Edge from={[850, 116]} to={[850, 186]} label="tools, API key" />
-          <Edge from={[1100, 116]} to={[1100, 186]} label="publish, API key" />
+          <Edge from={[740, 116]} to={[740, 186]} label="sync, API key" />
+          <Edge from={[930, 116]} to={[930, 186]} label="tools, API key" />
+          <Edge from={[1125, 116]} to={[1125, 186]} label="publish, API key" />
 
           {/* ---------- Catalog ---------- */}
           <a
@@ -215,20 +216,15 @@ export default function ArchitectureMap({caption = true}) {
               <text x={40} y={296} className={styles.boxSub}>
                 One install hosts many separate libraries.
               </text>
-              <circle
-                cx={1204}
-                cy={216}
-                r="5"
-                style={{fill: STATUSES.live.color}}
-              />
             </g>
           </a>
-          <Pill cx={150} cy={200} w={264} text="/api/v1 · /data/v1 · /assistant/v1" />
+          <Pill cx={160} cy={200} w={264} text="/api/v1 · /data/v1 · /assistant/v1" />
           <Pill cx={354} cy={200} w={110} text="/readium/v1" />
-          <Pill cx={620} cy={200} w={172} text="/opds/v1.2 · /opds/v2" />
-          <Pill cx={850} cy={200} w={90} text="/mcp/v1" />
-          <Pill cx={1100} cy={200} w={80} text="/api/v1" />
-          <Pill cx={1100} cy={330} w={124} text="/extraction/v1" dev />
+          <Pill cx={560} cy={200} w={172} text="/opds/v1.2 · /opds/v2" />
+          <Pill cx={740} cy={200} w={80} text="/api/v1" />
+          <Pill cx={930} cy={200} w={90} text="/mcp/v1" />
+          <Pill cx={1125} cy={200} w={80} text="/api/v1" />
+          <Pill cx={1100} cy={330} w={124} text="/extraction/v1" />
 
           {/* ---------- Lending ---------- */}
           <Group x={20} y={420} w={400} h={196} />
@@ -282,11 +278,12 @@ export default function ArchitectureMap({caption = true}) {
           />
 
           {/* ---------- Extraction ---------- */}
-          <Group x={820} y={420} w={400} h={196} dev />
+          <Group x={820} y={420} w={400} h={196} />
           <Box x={836} y={462} w={170} h={56} id="svc-analyzer" title="analyzer" sub="page layout" />
           <Box x={836} y={546} w={118} h={56} id="svc-text" title="text" sub="paragraphs" />
           <Box x={966} y={546} w={118} h={56} id="svc-image" title="image" sub="figures" />
           <Box x={1096} y={546} w={112} h={56} id="svc-equation" title="equation" sub="LaTeX" />
+          <Box x={1030} y={462} w={176} h={56} id="svc-ocr" title="ocr-service" sub="text layer for scans" />
           <Edge from={[900, 518]} to={[895, 546]} />
           <Edge from={[960, 518]} to={[1020, 546]} />
           <Edge from={[995, 518]} to={[1140, 546]} />
@@ -301,28 +298,30 @@ export default function ArchitectureMap({caption = true}) {
             from={[1100, 420]}
             to={[1100, 342]}
             label="results"
+            lx={1093}
+            anchor="end"
             dashed
+          />
+          <Edge
+            from={[1185, 330]}
+            to={[1185, 462]}
+            label="OCR task"
+            lx={1178}
+            ly={400}
+            anchor="end"
           />
 
           <GroupLabel x={20} y={20} label="In the reader’s browser" />
           <GroupLabel x={20} y={420} label="Lending · Readium LCP" />
           <GroupLabel x={450} y={420} label="Storage" />
-          <GroupLabel x={820} y={420} label="Extraction · in development" />
+          <GroupLabel x={820} y={420} label="Processing" />
         </svg>
       </div>
       {caption && (
         <figcaption className={styles.legend}>
           <span>
-            <i style={{background: STATUSES.live.color}} /> In production
-          </span>
-          <span>
-            <i style={{background: STATUSES.dev.color}} /> In development
-          </span>
-          <span>
-            <i style={{background: STATUSES.library.color}} /> Library
-          </span>
-          <span>
-            <i className={styles.legendExternal} /> Not part of the project
+            <i className={styles.legendExternal} /> Dashed: not part of the
+            project
           </span>
           <span className={styles.legendHint}>
             Click a box to open its repository.

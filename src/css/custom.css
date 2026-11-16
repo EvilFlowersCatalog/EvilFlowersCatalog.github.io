@@ -1,135 +1,515 @@
-/**
- * Global Infima overrides + ELVIRA design tokens.
+/*
+ * ELVIRA site theme.
+ *
+ * Everything visual starts from the tokens below. The accent is STU red
+ * (#a80331), the primary colour of the "stu" theme in elvira-portal.
+ * The rest of this file restyles what Docusaurus renders (navbar, docs,
+ * blog) so every page shares one look.
  */
 
-:root {
-  --ifm-color-primary: #01a9e0;
-  --ifm-color-primary-dark: #0298c9;
-  --ifm-color-primary-darker: #028fbe;
-  --ifm-color-primary-darkest: #02769d;
-  --ifm-color-primary-light: #1cb6e4;
-  --ifm-color-primary-lighter: #2ebbe5;
-  --ifm-color-primary-lightest: #66ceec;
-  --ifm-code-font-size: 95%;
-  --ifm-font-family-base: 'Inter', system-ui, -apple-system,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --ifm-heading-font-weight: 700;
-  --ifm-navbar-shadow: 0 1px 0 var(--ifm-color-emphasis-200);
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.08);
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
 
-  /* ELVIRA accent palette — used in modules for swatches and gradients. */
-  --elvira-accent-purple: #7c5cff;
-  --elvira-accent-coral: #f25c77;
-  --elvira-accent-amber: #f1a33a;
-  --elvira-accent-mint: #34c38f;
+:root {
+  --e-paper: #ffffff;
+  --e-ink: #1e1b1a;
+  --e-muted: #625a55;
+  --e-rule: #e5dfdb;
+  --e-rule-strong: #cbc2bc;
+  --e-wash: #f6f4f3; /* code, table heads, quiet panels */
+  --e-accent: #a80331; /* STU red */
+  --e-accent-wash: #fbeef1;
+  --e-card-line: #d6e0ea; /* ruled lines of a catalog card */
+
+  --e-font-display: 'Literata Variable', Georgia, 'Times New Roman', serif;
+  --e-font-text: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --e-font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --e-measure: 40rem; /* about 68 characters of body text */
+  --e-wide: 72rem;
+
+  /* Infima, from the tokens */
+  --ifm-color-primary: #a80331;
+  --ifm-color-primary-dark: #97032c;
+  --ifm-color-primary-darker: #8f032a;
+  --ifm-color-primary-darkest: #760222;
+  --ifm-color-primary-light: #b90336;
+  --ifm-color-primary-lighter: #c10339;
+  --ifm-color-primary-lightest: #da0440;
+
+  --ifm-background-color: var(--e-paper);
+  --ifm-background-surface-color: var(--e-paper);
+  --ifm-font-color-base: var(--e-ink);
+  --ifm-heading-color: var(--e-ink);
+  --ifm-font-family-base: var(--e-font-text);
+  --ifm-heading-font-family: var(--e-font-display);
+  --ifm-font-family-monospace: var(--e-font-mono);
+  --ifm-font-size-base: 106.25%; /* 17px */
+  --ifm-line-height-base: 1.6;
+  --ifm-heading-font-weight: 600;
+  --ifm-heading-line-height: 1.2;
+  --ifm-h1-font-size: 2.4rem;
+  --ifm-h2-font-size: 1.65rem;
+  --ifm-h3-font-size: 1.25rem;
+  --ifm-code-font-size: 88%;
+  --ifm-code-background: var(--e-wash);
+  --ifm-code-border-radius: 3px;
+  --ifm-pre-background: var(--e-wash);
+  --ifm-link-color: var(--e-accent);
+  --ifm-link-hover-color: var(--e-ink);
+  --ifm-link-decoration: underline;
+  --ifm-link-hover-decoration: underline;
+  --ifm-hr-background-color: var(--e-rule);
+  --ifm-toc-border-color: var(--e-rule);
+  --ifm-table-border-color: var(--e-rule);
+  --ifm-table-stripe-background: transparent;
+  --ifm-table-head-background: transparent;
+  --ifm-global-radius: 4px;
+  --ifm-global-shadow-lw: none;
+  --ifm-global-shadow-md: none;
+  --ifm-global-shadow-tl: none;
+  --ifm-navbar-height: 4rem;
+  --ifm-navbar-shadow: none;
+  --ifm-navbar-background-color: var(--e-paper);
+  --ifm-navbar-link-color: var(--e-ink);
+  --ifm-navbar-link-hover-color: var(--e-accent);
+  --ifm-menu-color: var(--e-muted);
+  --ifm-menu-color-active: var(--e-ink);
+  --ifm-menu-color-background-active: transparent;
+  --ifm-menu-color-background-hover: transparent;
+  --ifm-color-emphasis-100: #f6f4f3;
+  --ifm-color-emphasis-200: var(--e-rule);
+  --ifm-color-emphasis-300: var(--e-rule-strong);
+  --ifm-color-emphasis-600: var(--e-muted);
+  --ifm-color-emphasis-700: var(--e-muted);
+  --docusaurus-highlighted-code-line-bg: rgba(168, 3, 49, 0.07);
 }
 
 [data-theme='dark'] {
-  --ifm-color-primary: #2ebbe5;
-  --ifm-color-primary-dark: #18b1e0;
-  --ifm-color-primary-darker: #16a7d4;
-  --ifm-color-primary-darkest: #1289ae;
-  --ifm-color-primary-light: #4ec5e9;
-  --ifm-color-primary-lighter: #62ccec;
-  --ifm-color-primary-lightest: #9cdef4;
-  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.1);
+  --e-paper: #151313;
+  --e-ink: #ece7e4;
+  --e-muted: #a8a09b;
+  --e-rule: #2f2a28;
+  --e-rule-strong: #4a4340;
+  --e-wash: #1f1c1b;
+  --e-accent: #ec7a94; /* 6.9:1 on the dark paper */
+  --e-accent-wash: #2a1a1e;
+  --e-card-line: #2c3640;
+
+  --ifm-color-primary: #ec7a94;
+  --ifm-color-primary-dark: #e8607f;
+  --ifm-color-primary-darker: #e65374;
+  --ifm-color-primary-darkest: #dc2e56;
+  --ifm-color-primary-light: #f094a9;
+  --ifm-color-primary-lighter: #f2a1b4;
+  --ifm-color-primary-lightest: #f8c7d2;
+  --ifm-color-emphasis-100: #1f1c1b;
+  --docusaurus-highlighted-code-line-bg: rgba(236, 122, 148, 0.12);
 }
 
-html,
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+
 body {
-  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  background: var(--e-paper);
+  -webkit-font-smoothing: antialiased;
 }
 
-html {
-  scroll-behavior: smooth;
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--e-font-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.005em;
 }
 
-@media (prefers-reduced-motion: reduce) {
+h1 {
+  font-weight: 600;
+}
+
+a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--e-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--e-accent-wash);
+}
+
+hr {
+  height: 1px;
+}
+
+code {
+  border: none;
+  padding: 0.1em 0.3em;
+}
+
+pre code {
+  padding: var(--ifm-pre-padding);
+}
+
+.theme-code-block {
+  border: 1px solid var(--e-rule);
+  box-shadow: none !important;
+}
+
+table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+}
+
+table thead tr {
+  border-bottom: 1px solid var(--e-rule-strong);
+}
+
+table tr {
+  border-top: none;
+  border-bottom: 1px solid var(--e-rule);
+}
+
+table th,
+table td {
+  border: none;
+  padding: 0.55rem 0.75rem 0.55rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+table th {
+  font-weight: 600;
+}
+
+.button {
+  border-radius: 4px;
+  font-family: var(--e-font-text);
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: no-preference) {
   html {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
   }
 }
 
-/* Tighten the navbar visually so the new ecosystem CTA breathes. */
-.navbar__title {
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
+/* ------------------------------------------------------------------ */
+/* Navbar (markup in src/theme/Navbar/Content)                         */
+/* ------------------------------------------------------------------ */
 
-.navbar__link {
-  font-weight: 600;
-}
-
-/* Add a discreet "Powered by FIIT STU" strip under the navbar on light mode. */
 .navbar {
-  backdrop-filter: saturate(160%) blur(10px);
+  border-bottom: 1px solid var(--e-rule);
+  padding: 0 1.25rem;
 }
 
-/* Buttons feel a little chunkier — fits the design language. */
-.button {
-  border-radius: 10px;
-  font-weight: 600;
+.navbar__inner {
+  max-width: var(--e-wide);
+  margin: 0 auto;
 }
 
-.button--lg {
+.navbar-sidebar {
+  background: var(--e-paper);
+}
+
+.navbar-sidebar__brand {
+  border-bottom: 1px solid var(--e-rule);
+  box-shadow: none;
+}
+
+.navbar-sidebar .menu__link {
   font-size: 1rem;
 }
 
-.hero {
-  --ifm-hero-background-color: transparent;
-  --ifm-hero-text-color: var(--ifm-color-emphasis-900);
+.navbar-sidebar__brand .navbar__brand,
+.navbar-sidebar__brand .navbar__title {
+  font-family: var(--e-font-display);
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  color: var(--e-ink);
+  text-decoration: none;
 }
 
-.hero__title,
-.hero__subtitle {
-  color: inherit;
+/* ------------------------------------------------------------------ */
+/* Docs: sidebar, table of contents, breadcrumbs, pagination           */
+/* ------------------------------------------------------------------ */
+
+.theme-doc-sidebar-container {
+  border-right: 1px solid var(--e-rule) !important;
 }
 
-/* Code blocks blend better with surface cards. */
-code {
-  border-radius: 6px;
+.menu {
+  padding: 1.5rem 1rem 2rem 1.25rem !important;
+  font-size: 0.93rem;
 }
 
-/* Footer polish — slightly more spaced, classic dark. */
-.footer--dark {
-  --ifm-footer-background-color: #0f1622;
-  --ifm-footer-color: #c7ccd6;
-  --ifm-footer-link-color: #ffffff;
-  --ifm-footer-title-color: #ffffff;
+.menu__link,
+.menu__caret {
+  border-radius: 0;
 }
 
-.footer__title {
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
+.menu__link {
+  padding: 0.3rem 0.6rem;
+  border-left: 2px solid transparent;
+  text-decoration: none;
 }
 
-.footer__copyright {
+.menu__link:hover {
+  color: var(--e-ink);
+  text-decoration: none;
+}
+
+.menu__link--active:not(.menu__link--sublist) {
+  border-left-color: var(--e-accent);
+  color: var(--e-ink);
+  font-weight: 600;
+}
+
+.menu__list-item-collapsible:hover {
+  background: transparent;
+}
+
+.menu__link--sublist-caret::after,
+.menu__caret::before {
+  opacity: 0.5;
+}
+
+.theme-doc-sidebar-item-category-level-1 > .menu__list-item-collapsible > .menu__link {
+  color: var(--e-ink);
+  font-weight: 600;
+}
+
+.table-of-contents {
   font-size: 0.85rem;
-  opacity: 0.85;
 }
 
-.footerAttribution p {
-  margin: 0 0 0.5rem;
-  max-width: 64ch;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.55;
+.table-of-contents__link {
+  color: var(--e-muted);
+  text-decoration: none;
 }
 
-.footerAttribution p:last-child {
-  margin-bottom: 0;
-  opacity: 0.7;
+.table-of-contents__link:hover,
+.table-of-contents__link--active {
+  color: var(--e-accent);
+}
+
+.breadcrumbs__link {
+  border-radius: 0;
+  background: transparent !important;
+  padding: 0;
+  color: var(--e-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.breadcrumbs__item:not(:last-child)::after {
+  margin: 0 0.4rem;
+}
+
+.breadcrumbs__item--active .breadcrumbs__link {
+  color: var(--e-ink);
+}
+
+.pagination-nav {
+  border-top: 1px solid var(--e-rule);
+  padding-top: 1.5rem;
+  gap: 2rem;
+}
+
+.pagination-nav__link {
+  border: none;
+  padding: 0;
+  text-decoration: none;
+}
+
+.pagination-nav__link:hover {
+  border: none;
+}
+
+.pagination-nav__sublabel {
+  color: var(--e-muted);
   font-size: 0.8rem;
+  font-weight: 400;
+  margin-bottom: 0.15rem;
 }
 
-.footerAttribution a {
-  color: var(--ifm-footer-link-color);
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.25);
-  text-underline-offset: 3px;
+.pagination-nav__label {
+  font-family: var(--e-font-display);
+  font-weight: 600;
+  color: var(--e-ink);
 }
 
-.footerAttribution a:hover {
-  text-decoration-color: var(--ifm-color-primary-light);
+.theme-doc-markdown {
+  max-width: 46rem;
+}
+
+.theme-doc-markdown h1 {
+  font-size: 2.2rem;
+  margin-bottom: 1.25rem;
+}
+
+.theme-doc-markdown h2 {
+  margin-top: 2.5rem;
+}
+
+.theme-edit-this-page,
+.theme-last-updated {
+  font-size: 0.85rem;
+  color: var(--e-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Admonitions: a rule on the left, no tinted box                      */
+/* ------------------------------------------------------------------ */
+
+.theme-admonition {
+  background: transparent;
+  border: none;
+  border-left: 3px solid var(--e-rule-strong);
+  border-radius: 0;
+  padding: 0.2rem 0 0.2rem 1rem;
+  box-shadow: none;
+}
+
+.theme-admonition [class*='admonitionHeading'] {
+  font-family: var(--e-font-text);
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--e-ink);
+}
+
+.theme-admonition [class*='admonitionIcon'] svg {
+  display: none;
+}
+
+.alert--info,
+.alert--note {
+  border-left-color: var(--e-rule-strong);
+}
+
+.alert--warning,
+.alert--danger {
+  border-left-color: var(--e-accent);
+}
+
+.alert--success,
+.alert--tip {
+  border-left-color: #3f7d5c;
+}
+
+/* ------------------------------------------------------------------ */
+/* Blog (News)                                                         */
+/* ------------------------------------------------------------------ */
+
+.blog-wrapper .container {
+  max-width: var(--e-wide);
+}
+
+article.margin-bottom--xl {
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--e-rule);
+}
+
+.blog-list-page article h2 a,
+article header h2 a {
+  color: var(--e-ink);
+  text-decoration: none;
+}
+
+.blog-list-page article h2 a:hover {
+  color: var(--e-accent);
+}
+
+.avatar__name {
+  font-family: var(--e-font-text);
+  font-size: 0.9rem;
+}
+
+.avatar__subtitle {
+  color: var(--e-muted);
+  font-size: 0.82rem;
+}
+
+aside.col--3 nav[class*='sidebar'] {
+  border: none;
+}
+
+[class*='sidebarItemTitle'] {
+  font-family: var(--e-font-display);
+  font-size: 1.05rem;
+}
+
+[class*='sidebarItemLink'] {
+  color: var(--e-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+[class*='sidebarItemLinkActive'] {
+  color: var(--e-accent) !important;
+}
+
+.blog-list-page article header h2,
+.blog-tags-post-list-page article header h2 {
+  font-size: 1.9rem;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+}
+
+article header h1 {
+  font-size: clamp(2rem, 3.6vw, 2.6rem);
+  line-height: 1.12;
+}
+
+article header time {
+  color: var(--e-muted);
+  font-size: 0.9rem;
+}
+
+.tag,
+a[class*='tag_'] {
+  font-family: var(--e-font-text);
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 0.88rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Shared page helpers (used by src/pages and src/components)          */
+/* ------------------------------------------------------------------ */
+
+.e-page {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: var(--e-wide);
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 5rem;
+}
+
+.e-measure {
+  max-width: var(--e-measure);
+}
+
+.e-lede {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--e-ink);
+}
+
+.e-muted {
+  color: var(--e-muted);
 }

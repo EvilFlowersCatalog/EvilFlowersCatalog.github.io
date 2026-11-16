@@ -1,0 +1,116 @@
+/*
+ * A library catalog card: white stock, a red rule under the heading line,
+ * pale blue ruled lines, and the hole for the drawer rod at the bottom.
+ */
+.card {
+  --line: 1.7rem;
+  margin: 0;
+  background-color: var(--e-paper);
+  border: 1px solid var(--e-rule-strong);
+  border-radius: 3px;
+  padding: 0 1.5rem;
+  font-family: var(--e-font-mono);
+  font-size: 0.82rem;
+  line-height: var(--line);
+  color: var(--e-ink);
+  box-shadow: 0 1px 0 var(--e-rule), 0 18px 40px -28px rgba(30, 27, 26, 0.35);
+}
+
+[data-theme='dark'] .card {
+  box-shadow: none;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 3.4rem;
+  padding-top: 0.9rem;
+  border-bottom: 2px solid var(--e-accent);
+}
+
+.title {
+  font-family: var(--e-font-display);
+  font-size: 1.4rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+.kind {
+  color: var(--e-muted);
+}
+
+/* Ruled lines only below the heading, one per line of text. */
+.fields,
+.foot {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--line) - 1px),
+    var(--e-card-line) calc(var(--line) - 1px),
+    var(--e-card-line) var(--line)
+  );
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  column-gap: 0.75rem;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.fields dt {
+  color: var(--e-muted);
+  font-weight: 400;
+}
+
+.fields dd {
+  margin: 0;
+}
+
+.fields a {
+  color: var(--e-accent);
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--line) * 2);
+}
+
+.hole {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  border: 1px solid var(--e-rule-strong);
+  background: var(--e-wash);
+}
+
+@media (max-width: 420px) {
+  .card {
+    padding: 0 1rem;
+  }
+
+  .fields,
+  .foot {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .fields {
+    grid-template-columns: 5.2rem 1fr;
+  }
+
+  .kind {
+    display: none;
+  }
+}

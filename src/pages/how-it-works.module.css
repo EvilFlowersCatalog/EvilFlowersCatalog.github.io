@@ -1,0 +1,118 @@
+.head {
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--e-rule);
+}
+
+.head h1 {
+  font-size: clamp(2.1rem, 4vw, 2.8rem);
+  margin-bottom: 1rem;
+}
+
+.section {
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--e-rule);
+  scroll-margin-top: 5rem;
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.section > h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.group {
+  margin-top: 2.5rem;
+  scroll-margin-top: 5rem;
+}
+
+.group h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.repos {
+  margin-top: 1rem;
+}
+
+.repos td {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.repoName {
+  width: 16rem;
+}
+
+.repoName a {
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.lang {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--e-muted);
+}
+
+.repoText {
+  color: var(--e-muted);
+  max-width: 40rem;
+}
+
+.repoLinks {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.3rem;
+  font-size: 0.88rem;
+}
+
+.status {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.compact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: 50rem;
+}
+
+.compact li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--e-rule);
+  color: var(--e-muted);
+}
+
+.compact li a {
+  font-weight: 500;
+  margin-right: 0.4rem;
+}
+
+@media (max-width: 760px) {
+  .repos thead {
+    display: none;
+  }
+
+  .repos tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 0.5rem 0;
+  }
+
+  .repos td {
+    padding: 0.15rem 0;
+  }
+
+  .repoName {
+    width: auto;
+  }
+
+  .repoText {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
