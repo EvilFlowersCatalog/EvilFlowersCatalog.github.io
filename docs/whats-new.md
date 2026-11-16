@@ -1,87 +1,51 @@
 ---
-sidebar_position: 9
-title: What's new (November 2026)
-description: What changed in ELVIRA between the May 2026 status report and November 2026.
+sidebar_position: 7
+title: What's new
+description: Where to find what changed in ELVIRA, and a summary of the changes since the May 2026 status report.
 ---
 
-# What's new — November 2026
+# What's new
 
-What changed since the [May 2026 status report](./status-2026). Items marked
-**development** run in our development environment and are not in production
-yet; the code is public in each repository.
+Changes are announced in two places:
 
-## Extraction pipeline (development)
+- **[News](/news)**: a post for every release that changes something for
+  readers, librarians or operators.
+- **[Releases](/releases)**: every release of every public repository, rebuilt
+  from GitHub daily.
 
-PDFs are now taken apart into structured content. The catalog queues one
-extraction run per file; the
-[analyzer](https://github.com/EvilFlowersCatalog/evilflowers-analyzer-service)
-finds the page layout with Docling and sends each part to the right worker:
+## Since the May 2026 status report
 
-- the [text service](https://github.com/EvilFlowersCatalog/evilflowers-text-service)
-  stores paragraphs and their sentences with positions on the page, embeds
-  each paragraph, and converts tables to Markdown;
-- the [image service](https://github.com/EvilFlowersCatalog/evilflowers-image-service)
-  crops figures;
-- the [equation service](https://github.com/EvilFlowersCatalog/evilflowers-equation-service)
-  reads formulas as LaTeX with a LaTeX-OCR model.
+A summary of what changed after the [May 2026 status report](./status-2026),
+as of November 2026. Details are in the linked posts.
 
-Results go back to the catalog. Readers get a publication's figures, its
-structured text, and a list of similar publications.
+**Released**
 
-## Passage search (development)
+- [EvilFlowersCatalog 0.15.0](/news/catalog-0.15.0): search inside PostgreSQL
+  with Slovak and Czech stemming, facets with counts, ratings and reviews,
+  lending statistics, branded e-mails, much cheaper list endpoints. Search by
+  meaning, extraction and the assistant are included and work once an
+  embedding service, the extraction workers or a language model are set up.
+- [Calibre plugin 2.1](/news/calibre-plugin-2.1): two-way sync between a
+  Calibre library and a catalog.
+- [evilflowers-postgresql](https://github.com/EvilFlowersCatalog/evilflowers-postgresql):
+  the PostgreSQL 18 image the catalog runs on, with pgvector and pg_search.
+  Production at STU runs on it.
 
-`/api/v1/entries/passages` searches inside publications and returns
-paragraphs with the matching words highlighted. It matches both the words of
-a query and its meaning.
+**Also new**
 
-We also decided where search lives: **in the catalog's own PostgreSQL**.
-Full-text search with accent-insensitive matching (PostgreSQL
-has no Slovak stemmer, so prefix matching covers inflection), BM25 ranking
-with pg_search, and vector search with pgvector, in the same query as
-permissions and facets. The code is on the catalog's `develop` branch, and
-`evilflowers-search-service` will be retired.
+- Extraction workers that take each PDF apart into paragraphs, figures, tables
+  and formulas. See [Architecture](./architecture#processing).
+- An [OCR service](https://github.com/EvilFlowersCatalog/evilflowers-ocr-service)
+  that adds a text layer to scanned PDFs and keeps the original file.
+- An assistant that answers from the library's passages and links to the pages
+  it used.
+- The [books digitalizer](/news/books-digitalizer), which turns scans of
+  printed books into PDFs, PDF/A masters and EPUBs.
 
-## Assistant (development)
+**Operations**
 
-The assistant answers from the library's passages, labels how strongly each
-passage supports the answer, and cites them. It can also summarise chapters.
-Evaluation tooling is in the catalog; tuning it against a reference question
-set is the open task.
-
-## Digitizing printed books
-
-[evilflowers-books-digitalizer](https://github.com/EvilFlowersCatalog/evilflowers-books-digitalizer)
-is new. It turns TIFF scans into a linearized distribution PDF, a PDF/A-2b
-archival master and an EPUB, with Slovak OCR, metadata and covers, and
-publishes the book to the catalog. It runs as a resumable batch job or as a
-web studio for reviewing books page by page.
-[Documentation](https://evilflowerscatalog.github.io/evilflowers-books-digitalizer/).
-
-## Catalog
-
-On `develop`, coming in the next release:
-
-- reviews and ratings on publications;
-- HTTP range requests for downloads, so large files stream;
-- password change, and upload checks that refuse empty or mislabelled files;
-- branded notification e-mails, and nightly sync of names from LDAP;
-- optional rate limits;
-- the MCP server requires an API key by default.
-
-## Database
-
-Production moved to PostgreSQL 18 on our own image,
-[evilflowers-postgresql](https://github.com/EvilFlowersCatalog/evilflowers-postgresql),
-with pgvector and pg_search built in.
-
-## Readium LCP certification
-
-The sample licenses EDRLab asks for (three purchase and two loan licenses
-in their required states) are generated by the catalog and verified against
-our status server. Certification is in progress.
-
-## Operations
-
-The development environment moved to Kubernetes. The catalog and its workers
-send traces, metrics and logs through OpenTelemetry, so a slow page or a
-stuck job can be followed from the request to the worker that handled it.
+- The development environment moved to Kubernetes. The catalog and its workers
+  send traces, metrics and logs through OpenTelemetry.
+- Readium LCP certification with EDRLab is in progress: the sample licenses
+  they require are generated by the catalog and verified against our status
+  server.

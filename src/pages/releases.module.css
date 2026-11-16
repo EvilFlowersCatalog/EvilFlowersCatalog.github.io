@@ -1,0 +1,236 @@
+.hero {
+  border-bottom: 1px solid var(--e-rule);
+}
+
+.heroInner,
+.main {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: var(--e-wide);
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 2.5rem;
+}
+
+.main {
+  padding-top: 2.5rem;
+  padding-bottom: 5rem;
+}
+
+.title {
+  font-size: clamp(2.1rem, 4vw, 2.8rem);
+  margin-bottom: 1rem;
+}
+
+.heroLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.heroLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  margin-bottom: 1.1rem;
+}
+
+/* ----- Latest per repository ----- */
+
+.latestGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+}
+
+.latestCard {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0 0;
+  border-top: 2px solid var(--e-ink);
+}
+
+.repoRole {
+  font-family: var(--e-font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.repoName {
+  font-family: var(--e-font-text);
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--e-muted);
+  margin: 0.1rem 0 0.6rem;
+  word-break: break-word;
+}
+
+.latestTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-700);
+  margin-bottom: 0.8rem;
+}
+
+.links {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.links a,
+.rowLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tag {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 0.05rem 0.35rem;
+  border-radius: 3px;
+  background: var(--e-wash);
+}
+
+.name {
+  color: var(--e-ink);
+}
+
+.pre {
+  font-size: 0.8rem;
+  color: var(--e-muted);
+  font-style: italic;
+}
+
+.note {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* ----- Filters and list ----- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter {
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 0.3rem 0.8rem;
+  border-radius: 3px;
+  border: 1px solid var(--e-rule-strong);
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-color-emphasis-800);
+  cursor: pointer;
+}
+
+.filter:hover {
+  border-color: var(--ifm-color-primary);
+}
+
+.filterOn {
+  background: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+  color: #fff;
+}
+
+.month {
+  margin-bottom: 1.5rem;
+}
+
+.monthTitle {
+  font-size: 1.05rem;
+  color: var(--e-ink);
+  margin-bottom: 0.25rem;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--e-rule-strong);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 7.5rem 13rem 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.55rem 0;
+  margin: 0;
+  border-bottom: 1px solid var(--e-rule);
+  font-size: 0.92rem;
+}
+
+.row:first-child {
+  border-top: none;
+}
+
+.rowDate {
+  color: var(--ifm-color-emphasis-700);
+}
+
+.rowRepo {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.rowTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.rowLinks {
+  display: flex;
+  gap: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .row {
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .rowDate {
+    grid-column: 1 / -1;
+    font-size: 0.8rem;
+  }
+
+  .rowRepo {
+    grid-column: 1 / -1;
+  }
+
+  .rowLinks {
+    grid-column: 2;
+    grid-row: 3;
+  }
+}

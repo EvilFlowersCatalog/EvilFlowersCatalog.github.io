@@ -1,0 +1,43 @@
+@startuml sequence-publication-journey
+!include elvira.iuml
+' What: the catalog is the only component that writes records; every worker gets a task through Redis and reports back to the catalog.
+' Source: EvilFlowersCatalog 0.15.0 release notes; READMEs of evilflowers-lcpencrypt-worker, evilflowers-ocr-service, evilflowers-analyzer-service (2026-11-16)
+' Scope: one PDF publication. Left out: Redis itself (named on the arrows), storage, the e-mail and statistics side effects.
+
+title One publication, from upload to loan (2026-11)
+
+actor "Librarian" as librarian
+participant "EvilFlowersCatalog" as catalog <<focus>>
+participant "ocr-service" as ocr
+participant "lcpencrypt-worker" as lcp
+participant "Readium LCP server" as lcpserver
+participant "Extraction workers\nanalyzer · text · image · equation" as extraction
+actor "Reader" as reader
+
+librarian -> catalog : upload PDF and metadata\n(portal, REST API, Calibre plugin or MCP)
+catalog -> catalog : store record and file
+
+opt Scanned PDF, OCR enabled
+  catalog -> ocr : OCR task (Redis)
+  ocr -> ocr : add text layer to scanned pages\n(original is kept)
+  ocr --> catalog : outcome: new file or skipped
+end
+
+opt Title lent with Readium LCP
+  catalog -> lcp : encryption task (Redis)
+  lcp -> lcpserver : register encrypted file
+  lcp --> catalog : report: encrypted, registered
+end
+
+opt Extraction enabled, title not lent with LCP
+  catalog -> extraction : extraction run (Redis)
+  extraction --> catalog : paragraphs, figures, formulas\nPOST /extraction/v1
+end
+
+reader -[$accent_msg()]> catalog : <b>borrow</b> /readium/v1
+catalog -[$accent_msg()]> lcpserver : <b>issue license</b>
+lcpserver --> catalog : license
+catalog --> reader : license; open in the portal or an LCP app
+
+caption The catalog is the only writer. Workers take a task from Redis and report back; they never call each other,\nexcept lcpencrypt registering files with the LCP server and the analyzer handing work to the other extraction workers.
+@enduml

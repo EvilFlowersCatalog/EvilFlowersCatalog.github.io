@@ -1,54 +1,83 @@
-.band {
-  background: #0f1622;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 2.25rem 0 0.5rem;
+.footer {
+  border-top: 1px solid var(--e-rule);
+  padding: 2.5rem 1.25rem 3rem;
+  font-size: 0.9rem;
 }
 
-.band .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.1rem;
-  text-align: center;
+.inner {
+  max-width: var(--e-wide);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 26rem) 1fr;
+  gap: 2.5rem 4rem;
 }
 
-.eyebrow {
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(199, 204, 214, 0.55);
-  font-weight: 600;
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.9rem;
-}
-
-.chip {
+/* The logos are drawn on white; in dark mode they sit on a white plate. */
+.logos {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  height: 52px;
-  padding: 0 1.3rem;
-  border-radius: 12px;
+  gap: 1.25rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
   background: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  text-decoration: none;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  border-radius: 3px;
+  margin-left: -0.75rem;
 }
 
-.chip:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 26px -14px rgba(0, 0, 0, 0.6);
-  text-decoration: none;
+[data-theme='dark'] .logos {
+  margin-left: 0;
 }
 
-.chipLogo {
-  max-height: 28px;
-  max-width: 170px;
+.logos img {
+  display: block;
+  height: 32px;
   width: auto;
-  object-fit: contain;
+}
+
+.about {
+  color: var(--e-muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.about a {
+  color: inherit;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.columns ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.columns li {
+  margin-bottom: 0.4rem;
+}
+
+.columns a {
+  color: var(--e-ink);
+  text-decoration: none;
+}
+
+.columns a:hover {
+  color: var(--e-accent);
+  text-decoration: underline;
+}
+
+@media (max-width: 860px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .columns {
+    grid-template-columns: 1fr 1fr;
+  }
 }

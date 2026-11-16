@@ -29,9 +29,9 @@ supports faculties and universities setting it up.
 - The **portal** and its **reader**, themed for your institution.
 - **Readium LCP** lending, if you want it.
 - A **REST API** and an **MCP server** for scripts and AI agents.
-- Optional workers that you add as needed: **extraction** (paragraphs,
-  figures, tables, formulas), **passage search** and the **assistant**. These
-  are still in development.
+- Optional workers that you add as needed: **OCR**, **extraction**
+  (paragraphs, figures, tables, formulas) for **passage search**, and the
+  **assistant**.
 
 ## What you need
 
@@ -61,6 +61,6 @@ supports faculties and universities setting it up.
 
 ELVIRA is built by students and researchers, and it moves at that pace. The
 catalog, portal and lending have run in production for years. The extraction
-workers, passage search and the assistant are newer and still change from
+workers, passage search and the assistant are newer and change more from
 release to release. The REST API is still being extended, so pin a release if
 you build on it.

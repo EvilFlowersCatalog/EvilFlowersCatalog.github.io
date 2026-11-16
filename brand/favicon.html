@@ -1,0 +1,48 @@
+<!doctype html>
+<!--
+  Source of the favicon: a white Literata "E" on STU red (#a80331), at the
+  text optical size so it stays legible at 16 px. It becomes
+  static/img/favicon.ico, favicon-512.png and apple-touch-icon.png; see
+  "Brand images" in README.md.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ELVIRA favicon</title>
+<style>
+  @font-face {
+    font-family: 'Literata';
+    font-weight: 200 900;
+    src: url('../node_modules/@fontsource-variable/literata/files/literata-latin-opsz-normal.woff2') format('woff2');
+  }
+
+  * { margin: 0; padding: 0; }
+
+  html, body { width: 512px; height: 512px; background: transparent; }
+
+  .icon {
+    width: 512px;
+    height: 512px;
+    border-radius: 96px;
+    background: #a80331;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon span {
+    font-family: 'Literata', serif;
+    /* Text optical size and a heavy weight keep the strokes visible at 16 px. */
+    font-weight: 800;
+    font-variation-settings: 'opsz' 12;
+    font-size: 440px;
+    line-height: 1;
+    color: #fff;
+    transform: translateY(-10px);
+  }
+</style>
+</head>
+<body>
+  <div class="icon"><span>E</span></div>
+</body>
+</html>

@@ -36,11 +36,16 @@ which is why most repositories are called `evilflowers-…`.
   [OpenAPI](https://elvira.digital/EvilFlowersCatalog/).
 - **Accounts.** Local users, LDAP, JWT sessions and long-lived API keys.
 - **Research data.** Datasets published in Dataverse appear in the catalog.
+- **Search.** Full-text search with Slovak and Czech stemming, ranked by
+  meaning as well as words, down to the paragraph inside a publication.
+- **Structure.** Workers add a text layer to scans and take PDFs apart into
+  paragraphs, figures, tables and formulas.
+- **An assistant** that answers questions from the library's passages and
+  links to the pages it used.
+- **Getting books in.** A Calibre plugin that syncs a Calibre library, and a
+  pipeline that digitizes printed books.
 
-In development, and public on GitHub: passage-level search, extraction of
-paragraphs, figures, tables and formulas, an assistant that answers with
-citations, and a pipeline for digitizing printed books. See
-[What's new](./whats-new).
+See [What's new](./whats-new) for recent changes.
 
 ## The shape of it
 
@@ -48,8 +53,8 @@ A publication arrives, uploaded in the portal, over the API, or from the
 digitalizer. The catalog stores the record in PostgreSQL and the file on disk
 or in S3. Slow work goes to workers through a Redis queue: the lcpencrypt
 worker encrypts titles for lending, and the extraction workers take PDFs apart.
-Readers reach it all through the portal or an OPDS app. The
-[architecture page](./architecture) has the component diagram.
+Readers reach it all through the portal or an OPDS app.
+[How it works](/how-it-works) has the component diagram.
 
 ## Where to go from here
 
@@ -62,4 +67,4 @@ Readers reach it all through the portal or an OPDS app. The
 5. **[Standards](./standards)** and **[Reference](./reference)**: specs, the
    wiki, the OpenAPI docs and publications.
 
-Every repository is listed on the **[Projects](/projects)** page.
+Every repository is listed on **[How it works](/how-it-works#repositories)**.

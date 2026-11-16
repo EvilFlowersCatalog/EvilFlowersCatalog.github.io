@@ -1,22 +1,21 @@
 .figure {
   margin: 0;
-  --map-box: var(--ifm-background-surface-color);
-  --map-bg: var(--ifm-background-color);
-  --map-border: var(--ifm-color-emphasis-300);
-  --map-line: var(--ifm-color-emphasis-500);
-  --map-text: var(--ifm-font-color-base);
-  --map-muted: var(--ifm-color-emphasis-600);
-  --map-group: var(--ifm-color-emphasis-100);
-  --map-accent: var(--ifm-color-primary);
-  --map-dev: #e59a2f;
+  --map-box: var(--e-paper);
+  --map-bg: var(--e-paper);
+  --map-border: var(--e-rule-strong);
+  --map-line: var(--e-muted);
+  --map-text: var(--e-ink);
+  --map-muted: var(--e-muted);
+  --map-group: var(--e-wash);
+  --map-accent: var(--e-accent);
 }
 
 .scroller {
   overflow-x: auto;
-  border-radius: 18px;
-  border: 1px solid var(--ifm-color-emphasis-200);
+  border: 1px solid var(--e-rule);
+  border-radius: 3px;
   background: var(--map-bg);
-  padding: 0.75rem;
+  padding: 0.5rem;
 }
 
 .svg {
@@ -24,22 +23,22 @@
   width: 100%;
   min-width: 760px;
   height: auto;
-  font-family: var(--ifm-font-family-base);
+  font-family: var(--e-font-text);
 }
 
 /* ----- Boxes ----- */
 
 .box rect {
+  rx: 3px;
   fill: var(--map-box);
   stroke: var(--map-border);
-  stroke-width: 1.2;
-  transition: stroke 0.15s ease;
+  stroke-width: 1;
 }
 
 .boxTitle {
   fill: var(--map-text);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .boxSub {
@@ -54,27 +53,27 @@
 
 .catalog rect {
   stroke: var(--map-accent);
-  stroke-width: 2;
-  fill: color-mix(in srgb, var(--map-accent) 6%, var(--map-box));
+  stroke-width: 1.5;
+  fill: var(--map-box);
 }
 
 .catalogTitle {
   fill: var(--map-text);
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-family: var(--e-font-display);
+  font-size: 22px;
+  font-weight: 600;
 }
 
-.link {
+.link,
+.link text {
   cursor: pointer;
+  text-decoration: none;
 }
 
-.link:hover .box rect,
-.link:focus-visible .box rect,
 .link:hover rect,
 .link:focus-visible rect {
   stroke: var(--map-accent);
-  stroke-width: 2;
+  stroke-width: 1.5;
 }
 
 .link:focus-visible {
@@ -84,46 +83,32 @@
 /* ----- Interfaces on the catalog's edge ----- */
 
 .pill rect {
+  rx: 3px;
   fill: var(--map-bg);
   stroke: var(--map-accent);
-  stroke-width: 1.2;
+  stroke-width: 1;
 }
 
 .pill text {
   fill: var(--map-text);
   font-size: 11.5px;
-  font-weight: 600;
-  font-family: var(--ifm-font-family-monospace);
-}
-
-.pillDev rect {
-  stroke: var(--map-dev);
-  stroke-dasharray: 4 3;
+  font-family: var(--e-font-mono);
 }
 
 /* ----- Groups ----- */
 
 .group rect {
+  rx: 3px;
   fill: var(--map-group);
   stroke: none;
-  opacity: 0.6;
-}
-
-.groupDev rect {
-  fill: color-mix(in srgb, var(--map-dev) 9%, transparent);
-  stroke: color-mix(in srgb, var(--map-dev) 45%, transparent);
-  stroke-dasharray: 6 5;
-  opacity: 1;
 }
 
 .groupLabel {
   fill: var(--map-muted);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 12.5px;
+  font-weight: 600;
   paint-order: stroke;
-  stroke: var(--map-bg);
+  stroke: var(--map-group);
   stroke-width: 5px;
   stroke-linejoin: round;
 }
@@ -132,7 +117,7 @@
 
 .edge line {
   stroke: var(--map-line);
-  stroke-width: 1.5;
+  stroke-width: 1.2;
 }
 
 .dashed {
@@ -165,9 +150,9 @@
   flex-wrap: wrap;
   gap: 0.5rem 1.3rem;
   align-items: center;
-  margin-top: 0.85rem;
-  font-size: 0.84rem;
-  color: var(--ifm-color-emphasis-700);
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--e-muted);
 }
 
 .legend span {
@@ -176,29 +161,23 @@
   gap: 0.45rem;
 }
 
-.legend i {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
 .legend i.legendExternal {
+  display: inline-block;
   width: 18px;
   height: 12px;
-  border-radius: 4px;
-  border: 1.5px dashed var(--ifm-color-emphasis-500);
+  border-radius: 2px;
+  border: 1px dashed var(--e-muted);
 }
 
 .legendHint {
   margin-left: auto;
-  color: var(--ifm-color-emphasis-600);
 }
 
 @media (max-width: 996px) {
   .legendHint::after {
     content: ' Scroll sideways to see the whole map.';
   }
+
   .legendHint {
     margin-left: 0;
   }

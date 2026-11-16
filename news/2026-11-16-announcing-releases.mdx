@@ -1,0 +1,53 @@
+---
+slug: announcing-releases
+title: Where to follow ELVIRA releases
+authors: [jdubec]
+tags: [project]
+description: Every release of every public ELVIRA repository is now listed on one page, and notable releases get a post here.
+---
+
+import Diagram from '@site/src/components/Diagram';
+
+ELVIRA is made of many repositories, and their releases were scattered across
+GitHub. From now on there are two places to follow them on this site.
+
+- **[Releases](/releases)** lists every release of every public repository in
+  the [EvilFlowersCatalog](https://github.com/EvilFlowersCatalog) organization,
+  newest first, with a link to its notes. It is rebuilt from GitHub every day.
+- **News**, this blog, has a post for releases that change something for
+  readers, librarians or the people who run ELVIRA. Posts explain what changed
+  and what to do about it; the full notes stay on GitHub.
+
+<!-- truncate -->
+
+The first posts are [EvilFlowersCatalog 0.15.0](/news/catalog-0.15.0), the
+[Calibre plugin 2.1](/news/calibre-plugin-2.1), and an introduction to the
+[books digitalizer](/news/books-digitalizer), which has no release yet.
+
+## How a release gets here
+
+<Diagram
+  name="activity-release-flow"
+  alt="Activity diagram: a maintainer publishes a GitHub release with tag X.Y.Z; CI builds what the tag ships; the site rebuild fetches the releases of every public repository and lists them on /releases; a notable release also gets a post on /news."
+/>
+
+A release is a GitHub release with a version tag. Nothing else needs to happen
+for it to appear on the releases page. The site picks it up at the next daily
+rebuild, or sooner if the repository asks for a rebuild.
+
+## Which repositories release today
+
+Four repositories publish GitHub releases: the
+[catalog](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/releases),
+the [PDF reader](https://github.com/EvilFlowersCatalog/EvilFlowersViewer/releases),
+the [Calibre plugin](https://github.com/EvilFlowersCatalog/calibre-evilflowers/releases)
+and the [PostgreSQL image](https://github.com/EvilFlowersCatalog/evilflowers-postgresql/releases).
+The portal, the digitalizer and the workers do not tag releases yet. The
+[releases guide](/docs/releases) describes how we intend to tag them.
+
+## Subscribe
+
+- This blog has an [RSS feed](pathname:///news/rss.xml) and an
+  [Atom feed](pathname:///news/atom.xml).
+- On GitHub, *Watch → Custom → Releases* on a repository notifies you of each of
+  its releases.

@@ -4,11 +4,12 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import {themes as prismThemes} from 'prism-react-renderer';
+import {NAV, GITHUB} from './src/data/site.js';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'ELVIRA',
-  tagline: 'The open-source digital library of the Slovak University of Technology: an OPDS catalog, a web reader and Readium LCP lending.',
+  tagline: 'Open-source digital library platform from the Slovak University of Technology: a catalog, a web reader, Readium LCP lending and search inside every book.',
   favicon: 'img/favicon.ico',
 
   url: 'https://elvira.digital',
@@ -18,12 +19,46 @@ const config = {
   projectName: 'EvilFlowersCatalog.github.io',
 
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+    },
+  },
 
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
   },
+
+  clientModules: ['./src/fonts.js'],
+
+  // Icons and colour are rendered from brand/*.html (see the README).
+  headTags: [
+    {
+      tagName: 'link',
+      attributes: {rel: 'icon', type: 'image/png', sizes: '512x512', href: '/img/favicon-512.png'},
+    },
+    {
+      tagName: 'link',
+      attributes: {rel: 'apple-touch-icon', sizes: '180x180', href: '/img/apple-touch-icon.png'},
+    },
+    {
+      tagName: 'meta',
+      attributes: {name: 'theme-color', content: '#a80331'},
+    },
+  ],
+
+  plugins: [
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {from: '/ecosystem', to: '/how-it-works'},
+          {from: '/projects', to: '/how-it-works'},
+        ],
+      },
+    ],
+  ],
 
   presets: [
     [
@@ -34,6 +69,27 @@ const config = {
           sidebarPath: './sidebars.js',
           editUrl:
             'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog.github.io/edit/main/',
+        },
+        blog: {
+          path: 'news',
+          routeBasePath: 'news',
+          blogTitle: 'News',
+          blogDescription:
+            'Release announcements and project news from ELVIRA and EvilFlowers.',
+          blogSidebarTitle: 'Recent posts',
+          blogSidebarCount: 10,
+          postsPerPage: 10,
+          showReadingTime: false,
+          authorsMapPath: 'authors.yml',
+          onInlineAuthors: 'throw',
+          onUntruncatedBlogPosts: 'throw',
+          feedOptions: {
+            type: ['rss', 'atom'],
+            title: 'ELVIRA news',
+            description: 'Release announcements and project news from ELVIRA.',
+            copyright: `© ${new Date().getFullYear()} EvilFlowers Catalog`,
+            limit: 20,
+          },
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -50,94 +106,25 @@ const config = {
         defaultMode: 'light',
         respectPrefersColorScheme: true,
       },
+      // The desktop header is src/theme/Navbar/Content; these items feed the
+      // mobile menu. The footer is src/theme/Footer (no themeConfig.footer).
       navbar: {
         title: 'ELVIRA',
-        logo: {
-          alt: 'ELVIRA',
-          src: 'img/logo.svg',
-        },
         items: [
-          {to: '/ecosystem', label: 'How it works', position: 'left'},
-          {to: '/projects', label: 'Projects', position: 'left'},
-          {to: '/docs/intro', label: 'Docs', position: 'left'},
-          {to: '/about', label: 'About', position: 'left'},
-          {
-            href: 'https://elvira.digital/EvilFlowersCatalog/',
-            label: 'API',
-            position: 'right',
-          },
-          {
-            href: 'https://github.com/EvilFlowersCatalog',
-            label: 'GitHub',
-            position: 'right',
-          },
+          ...NAV.map(({to, label}) => ({to, label, position: 'left'})),
+          {href: GITHUB, label: 'GitHub', position: 'left'},
         ],
       },
-      footer: {
-        style: 'dark',
-        links: [
-          {
-            title: 'Project',
-            items: [
-              {label: 'How it works', to: '/ecosystem'},
-              {label: 'Projects', to: '/projects'},
-              {label: 'Documentation', to: '/docs/intro'},
-              {label: 'About', to: '/about'},
-            ],
-          },
-          {
-            title: 'Resources',
-            items: [
-              {
-                label: 'Wiki',
-                href: 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/wiki',
-              },
-              {
-                label: 'OpenAPI reference',
-                href: 'https://elvira.digital/EvilFlowersCatalog/',
-              },
-              {
-                label: 'Protocol spec',
-                href: 'https://github.com/EvilFlowersCatalog/evilflowers-protocol',
-              },
-              {
-                label: 'Container image',
-                href: 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/pkgs/container/evilflowerscatalog',
-              },
-            ],
-          },
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'GitHub',
-                href: 'https://github.com/EvilFlowersCatalog',
-              },
-              {
-                label: 'Discussions',
-                href: 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/discussions',
-              },
-              {label: 'Contact', to: '/about'},
-            ],
-          },
-        ],
-        copyright: `
-          <div class="footerAttribution">
-            <p>
-              Open source at
-              <a href="https://www.fiit.stuba.sk/" target="_blank" rel="noopener noreferrer">FIIT STU</a>,
-              Bratislava.
-            </p>
-            <p>
-              © ${new Date().getFullYear()} EvilFlowers Catalog · MIT &amp; BSD-3-Clause ·
-              <a href="https://github.com/EvilFlowersCatalog" target="_blank" rel="noopener noreferrer">github.com/EvilFlowersCatalog</a>
-            </p>
-          </div>
-        `,
+      docs: {
+        sidebar: {hideable: false},
+      },
+      tableOfContents: {
+        minHeadingLevel: 2,
+        maxHeadingLevel: 3,
       },
       prism: {
         theme: prismThemes.github,
-        darkTheme: prismThemes.dracula,
+        darkTheme: prismThemes.vsDark,
       },
     }),
 };

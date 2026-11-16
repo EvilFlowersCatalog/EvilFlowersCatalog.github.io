@@ -37,7 +37,9 @@ The catalog is now on `http://localhost:8000`:
 | `/opds/v2/` | OPDS 2.0 feeds |
 
 The repository's `compose.yml` also defines the Readium LCP server, the
-lcpencrypt worker, the text and search services and a local Dataverse.
+lcpencrypt worker, an OCR worker, the extraction workers (analyzer, text, image,
+equation) and a local Dataverse. Search runs in the catalog's PostgreSQL; for
+ranking by meaning, point `EVILFLOWERS_EMBEDDING_URL` at an embedding service.
 `docker compose up -d --build` starts all of them. The LCP server needs its
 configuration and certificates first: follow the
 [Readium LCP deployment guide](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/wiki/Readium-LCP-Deployment).

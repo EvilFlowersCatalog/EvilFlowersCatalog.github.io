@@ -1,0 +1,175 @@
+<!doctype html>
+<!--
+  Source of static/img/social-card.jpg (1200x630, the preview shown when a
+  link to the site is shared). Same tokens and fonts as the site. To render,
+  see "Brand images" in README.md.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ELVIRA social card</title>
+<style>
+  @font-face {
+    font-family: 'Literata';
+    font-weight: 200 900;
+    src: url('../node_modules/@fontsource-variable/literata/files/literata-latin-opsz-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Plex Mono';
+    font-weight: 400;
+    src: url('../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Plex Sans';
+    font-weight: 400;
+    src: url('../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+  }
+
+  :root {
+    --ink: #1e1b1a;
+    --muted: #625a55;
+    --rule-strong: #cbc2bc;
+    --wash: #f6f4f3;
+    --accent: #a80331;
+    --card-line: #d6e0ea;
+    --line: 46px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { width: 1200px; height: 630px; }
+
+  body {
+    background: var(--wash);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .card {
+    width: 1080px;
+    height: 530px;
+    background: #fff;
+    border: 1px solid var(--rule-strong);
+    border-radius: 4px;
+    padding: 0 56px;
+    box-shadow: 0 2px 0 #e5dfdb, 0 30px 60px -40px rgba(30, 27, 26, 0.45);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 34px;
+    padding-bottom: 14px;
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .wordmark {
+    font-family: 'Literata', serif;
+    font-weight: 650;
+    font-size: 40px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+
+  .site {
+    font-family: 'Plex Mono', monospace;
+    font-size: 22px;
+    color: var(--muted);
+  }
+
+  h1 {
+    font-family: 'Literata', serif;
+    font-weight: 600;
+    font-size: 58px;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin: 30px 0 22px;
+    max-width: 900px;
+  }
+
+  .fields {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    font-family: 'Plex Mono', monospace;
+    font-size: 22px;
+    line-height: var(--line);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--line) - 1px),
+      var(--card-line) calc(var(--line) - 1px),
+      var(--card-line) var(--line)
+    );
+    border-top: 1px solid var(--card-line);
+    margin: 0 -56px;
+    padding: 0 56px;
+  }
+
+  .fields dt { color: var(--muted); }
+  .fields dd { color: var(--ink); }
+
+  .foot {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding-bottom: 26px;
+  }
+
+  .licence {
+    justify-self: end;
+  }
+
+  .logos {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .logos img { height: 40px; display: block; }
+
+  .hole {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--rule-strong);
+    background: var(--wash);
+  }
+
+  .licence {
+    font-family: 'Plex Sans', sans-serif;
+    font-size: 20px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="head">
+      <span class="wordmark">ELVIRA</span>
+      <span class="site">elvira.digital</span>
+    </div>
+    <h1>An open-source digital library for universities</h1>
+    <dl class="fields">
+      <dt>Inside</dt>
+      <dd>catalog, web reader, e-book lending, search</dd>
+      <dt>Works with</dt>
+      <dd>OPDS apps, Readium LCP, Calibre</dd>
+    </dl>
+    <div class="foot">
+      <div class="logos">
+        <img src="../static/img/stu-logo.png" alt="Slovak University of Technology in Bratislava">
+        <img src="../static/img/fiit-logo.png" alt="FIIT STU">
+      </div>
+      <span class="hole"></span>
+      <span class="licence">Open source, MIT and BSD-3-Clause</span>
+    </div>
+  </div>
+</body>
+</html>

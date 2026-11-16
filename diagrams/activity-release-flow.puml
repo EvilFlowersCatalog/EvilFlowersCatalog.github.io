@@ -1,0 +1,24 @@
+@startuml activity-release-flow
+!include elvira.iuml
+' What: a GitHub release is the announcement; the site lists every release by itself and adds a hand-written post only for notable ones.
+' Source: scripts/fetch-releases.mjs and .github/workflows/deploy.yml in this repository; evilflowers-actions README (2026-11-16)
+' Scope: public repositories of the EvilFlowersCatalog organization. Left out: deployment to the STU servers.
+
+title How a release reaches elvira.digital (2026-11)
+
+|Repository|
+start
+:Maintainer updates the changelog\nand publishes a GitHub release\nwith tag X.Y.Z;
+:CI builds what the tag ships\n(the Calibre plugin ZIP today;\nimage :X.Y.Z with evilflowers-actions);
+|elvira.digital|
+:Site rebuild\n(daily, on push, or by hand);
+:Fetch releases of every public repository;
+:List the release on /releases\nwith a link to its notes on GitHub;
+if (notable release?) then (yes)
+  :Write a post on /news:\nwhat changed for readers, librarians, operators;
+else (no)
+endif
+stop
+
+caption Release notes live on GitHub. The site links to them and does not copy them.
+@enduml
