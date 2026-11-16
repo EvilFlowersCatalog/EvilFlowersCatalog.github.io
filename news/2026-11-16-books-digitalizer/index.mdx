@@ -4,9 +4,8 @@ title: "Introducing the books digitalizer"
 authors: [jdubec]
 tags: [project, digitalizer]
 description: A pipeline and a web studio that turn scans of printed books into searchable PDFs, PDF/A masters and EPUBs, and publish them to the catalog.
+image: ./cover.jpg
 ---
-
-import Diagram from '@site/src/components/Diagram';
 
 [evilflowers-books-digitalizer](https://github.com/EvilFlowersCatalog/evilflowers-books-digitalizer)
 turns scans of printed books into files a reader can search and an archive can
@@ -52,18 +51,18 @@ standard Internet Archive tools work on it directly.
 Only books the gate flagged need a person. The review queue lists them with the
 reason, lowest score first.
 
-![Review queue: one flagged book with a quality score of 0.48 and the reason, 17 disputed regions and 54 of 55 formulas left as images](/img/digitalizer/review-queue.png)
+![Review queue: one flagged book with a quality score of 0.48 and the reason, 17 disputed regions and 54 of 55 formulas left as images](./review-queue.png "The keyboard works too: j and k move through the queue, a approves the selected book.")
 
 In the page studio, regions are drawn over the cleaned page, coloured by kind.
 Where two detectors disagree, for example formula against text, the operator
 decides with one click and can re-run OCR on that region.
 
-![Page studio: a page from a Slovak physics textbook with text, heading, picture and formula regions outlined, and a disputed formula region waiting for a decision](/img/digitalizer/page-studio.png)
+![Page studio: a page from a Slovak physics textbook with text, heading, picture and formula regions outlined, and a disputed formula region waiting for a decision](./page-studio.png "Blue marks text, purple headings, pink pictures, teal captions and orange formulas.")
 
 A swipe compares the original scan with the cleaned page, so a bad crop or a
 lost column is easy to spot.
 
-![Swipe compare: the original scan on the left and the cleaned page with its regions on the right, divided by a slider](/img/digitalizer/compare-swipe.png)
+![Swipe compare: the original scan on the left and the cleaned page with its regions on the right, divided by a slider](./compare-swipe.png "Drag the slider to move the line between the scan and the cleaned page.")
 
 ## Status
 

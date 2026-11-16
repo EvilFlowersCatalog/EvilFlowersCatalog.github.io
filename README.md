@@ -39,6 +39,32 @@ GitHub's anonymous rate limit. The process is described in `docs/releases.md`.
 To announce a release, add a post to `news/` and a line to
 `src/data/announcements.js`.
 
+## News posts and images
+
+Each post is a folder, `news/YYYY-MM-DD-<slug>/index.mdx`, with its images next
+to it. Start by copying `news/_template/` (folders starting with `_` are not
+published). Images referenced with `./` are checked by the build, so a missing
+file fails it instead of shipping a broken picture.
+
+- **Cover.** Front matter `image: ./cover.jpg`. It appears next to the post on
+  `/news` and is the post's social card. Make it 1200×630 JPEG (quality about
+  85) cropped from a real screenshot to the part worth seeing at thumbnail
+  size, not a whole window scaled down. A post without a cover is fine; do not
+  add a stock photo or a placeholder.
+- **Pictures in the text.** Plain markdown:
+  `![What the picture shows](./shot.png "Caption")`. The quoted title becomes
+  the visible caption. Every picture gets a frame and links to its full-size
+  file. A picture without alt text fails the build.
+- **Dark mode, or a caption with links:** `<Figure src={…} dark={…} alt="…">`
+  with the images imported at the top of the post. **Two pictures side by
+  side:** wrap them in `<Figures>`. **Diagrams:** `<Diagram name="…" alt="…" />`.
+  `Figure`, `Figures` and `Diagram` need no import (`src/theme/MDXComponents.js`).
+- **Screenshots.** PNG, taken at 1× or 2× of a window around 1100–1440 px wide.
+  Crop empty space away before committing. Use test data, never a real
+  reader's account or loans.
+
+The template shows each of these.
+
 ## Diagrams
 
 Diagrams are PlantUML sources in `diagrams/`, drawn with the ELVIRA theme
@@ -46,7 +72,7 @@ Diagrams are PlantUML sources in `diagrams/`, drawn with the ELVIRA theme
 kit; do not edit it here). `npm run diagrams` renders them to
 `static/diagrams/*.svg` with a local `plantuml` (`brew install plantuml`). Commit
 the SVGs; the build does not need PlantUML. Use them in MDX with
-`<Diagram name="<slug>" alt="…" />` from `@site/src/components/Diagram`.
+`<Diagram name="<slug>" alt="…" />` (available without an import).
 
 ## Brand images
 

@@ -1,0 +1,32 @@
+.page {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: var(--e-wide);
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 5rem;
+}
+
+.main {
+  min-width: 0;
+}
+
+.withToc {
+  display: grid;
+  grid-template-columns: minmax(0, 46rem) 13rem;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+.toc {
+  min-width: 0;
+}
+
+@media (max-width: 996px) {
+  .withToc {
+    display: block;
+  }
+
+  .toc {
+    display: none;
+  }
+}

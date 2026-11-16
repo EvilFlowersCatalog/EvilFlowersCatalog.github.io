@@ -1,0 +1,133 @@
+.header {
+  max-width: 50rem;
+  margin-bottom: 3rem;
+}
+
+.pageTitle {
+  font-size: clamp(2.1rem, 4vw, 2.8rem);
+  margin-bottom: 1rem;
+}
+
+.header :global(.e-lede) p:last-child {
+  margin-bottom: 0;
+}
+
+.headerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+}
+
+.headerLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.index {
+  max-width: 50rem;
+}
+
+.month + .month {
+  margin-top: 2.5rem;
+}
+
+.monthTitle {
+  font-size: 1.05rem;
+  margin: 0 0 0.25rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--e-rule-strong);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 1.5rem;
+  margin: 0;
+  padding: 1.4rem 0 1.5rem;
+  border-bottom: 1px solid var(--e-rule);
+}
+
+.cover {
+  display: block;
+  max-width: var(--e-measure);
+  margin: 1rem 0 0.9rem;
+  line-height: 0;
+  border: 1px solid var(--e-rule);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--e-wash);
+}
+
+.cover img {
+  width: 100%;
+  aspect-ratio: 1200 / 630;
+  object-fit: cover;
+  object-position: top left;
+}
+
+.cover:hover {
+  border-color: var(--e-rule-strong);
+}
+
+.date {
+  font-family: var(--e-font-mono);
+  font-size: 0.85rem;
+  color: var(--e-muted);
+  padding-top: 0.35rem;
+  white-space: nowrap;
+}
+
+.title {
+  font-size: 1.45rem;
+  line-height: 1.2;
+  margin: 0 0 0.45rem;
+}
+
+.title a {
+  color: var(--e-ink);
+  text-decoration: none;
+}
+
+.title a:hover {
+  color: var(--e-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
+.description {
+  margin: 0 0 0.5rem;
+  max-width: var(--e-measure);
+}
+
+.tags {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--e-muted);
+}
+
+.tags a {
+  color: var(--e-muted);
+}
+
+.tags a:hover {
+  color: var(--e-accent);
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem;
+  }
+
+  .date {
+    padding-top: 0;
+  }
+}

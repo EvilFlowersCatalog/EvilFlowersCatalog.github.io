@@ -4,10 +4,11 @@ title: Sync a Calibre library with ELVIRA
 authors: [jdubec]
 tags: [release, calibre]
 description: calibre-evilflowers 2.1.0 keeps a Calibre library and an EvilFlowers catalog in sync, in both directions, and never deletes a book.
+image: ./cover.jpg
 ---
 
-import ThemedImage from '@theme/ThemedImage';
-import useBaseUrl from '@docusaurus/useBaseUrl';
+import syncPlan from './sync-plan-conflict-light.png';
+import syncPlanDark from './sync-plan-conflict-dark.png';
 
 [calibre-evilflowers 2.1.0](https://github.com/EvilFlowersCatalog/calibre-evilflowers/releases/tag/2.1.0)
 is a [Calibre](https://calibre-ebook.com/) plugin that keeps a Calibre library
@@ -25,13 +26,13 @@ every book with what the plugin will do: upload, download or skip. You can
 change any row. When a book was edited on both sides, the plugin does not guess:
 it shows the two versions field by field and you pick one.
 
-<ThemedImage
-  alt="The sync window: seven books grouped as to upload, to download, needs a decision and in sync, with a side-by-side comparison of a book changed in both Calibre and the catalog"
-  sources={{
-    light: useBaseUrl('/img/calibre/sync-plan-conflict-light.png'),
-    dark: useBaseUrl('/img/calibre/sync-plan-conflict-dark.png'),
-  }}
-/>
+<Figure
+  src={syncPlan}
+  dark={syncPlanDark}
+  alt="The sync window: seven books grouped as to upload, to download, needs a decision and in sync, with a side-by-side comparison of a book changed in both Calibre and the catalog">
+  Each row is coloured by what will happen to the book. The panel on the right
+  compares the two versions of a book that changed on both sides.
+</Figure>
 
 What travels: title, authors, language, tags (as categories), comments (as the
 summary), publisher, publication date, identifiers such as ISBN and DOI, the
@@ -49,13 +50,13 @@ You do not have to sync a whole catalog. **Browse catalog** searches it, filters
 by language and category, and downloads only the books you pick. Badges show
 which books are already in your library or on your EvilFlowers shelf.
 
-![The catalog browser: search box, language and category filters, and a list of books with "In your library" and "On your shelf" badges](/img/calibre/browse-results-light.png)
+![The catalog browser: search box, language and category filters, and a list of books with "In your library" and "On your shelf" badges](./browse-results-light.png)
 
 **Highlights for selected book** shows the passages you highlighted while
 reading in the ELVIRA reader, with page numbers. Copy them, or save them into a
 Calibre column. Nothing is sent back to the catalog.
 
-![The highlights window: highlighted passages grouped by book, each with its page number](/img/calibre/highlights-light.png)
+![The highlights window: highlighted passages grouped by book, each with its page number](./highlights-light.png)
 
 ## Signing in
 

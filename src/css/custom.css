@@ -414,69 +414,14 @@ table th {
 /* Blog (News)                                                         */
 /* ------------------------------------------------------------------ */
 
-.blog-wrapper .container {
-  max-width: var(--e-wide);
-}
+/*
+ * Layout, the post index, and a post's header and footer live in
+ * src/theme/Blog* and src/components/NewsIndex. What is left here are
+ * Docusaurus pieces those pages still render.
+ */
 
-article.margin-bottom--xl {
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--e-rule);
-}
-
-.blog-list-page article h2 a,
-article header h2 a {
-  color: var(--e-ink);
-  text-decoration: none;
-}
-
-.blog-list-page article h2 a:hover {
-  color: var(--e-accent);
-}
-
-.avatar__name {
-  font-family: var(--e-font-text);
-  font-size: 0.9rem;
-}
-
-.avatar__subtitle {
-  color: var(--e-muted);
-  font-size: 0.82rem;
-}
-
-aside.col--3 nav[class*='sidebar'] {
-  border: none;
-}
-
-[class*='sidebarItemTitle'] {
-  font-family: var(--e-font-display);
-  font-size: 1.05rem;
-}
-
-[class*='sidebarItemLink'] {
-  color: var(--e-muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-[class*='sidebarItemLinkActive'] {
-  color: var(--e-accent) !important;
-}
-
-.blog-list-page article header h2,
-.blog-tags-post-list-page article header h2 {
-  font-size: 1.9rem;
-  line-height: 1.15;
-  margin-bottom: 0.5rem;
-}
-
-article header h1 {
-  font-size: clamp(2rem, 3.6vw, 2.6rem);
-  line-height: 1.12;
-}
-
-article header time {
-  color: var(--e-muted);
-  font-size: 0.9rem;
+.blog-post-page .pagination-nav {
+  margin-top: 1.5rem;
 }
 
 .tag,

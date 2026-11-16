@@ -1,0 +1,46 @@
+---
+# Copy this folder to news/YYYY-MM-DD-<slug>/ and edit. Folders and files
+# starting with "_" are not published.
+slug: my-post
+title: What changed, in plain words
+authors: [jdubec]
+tags: [release]
+description: One or two sentences for the News list and for link previews.
+# Cover: shown next to the post on /news and used as its social card.
+# 1200×630 JPEG, a crop of a real screenshot (see README.md, "News images").
+image: ./cover.jpg
+---
+
+The first paragraph says what happened and links to the release.
+
+<!-- truncate -->
+
+## A section
+
+A picture with a caption. The text in quotes becomes the caption; the alt
+text describes what the picture shows, for people who cannot see it.
+
+![The sync window with seven books and a comparison panel](./screenshot.png "Rows are coloured by what will happen to the book.")
+
+A picture with a dark-mode variant, or a caption that needs links:
+
+import shot from './screenshot.png';
+import shotDark from './screenshot-dark.png';
+
+<Figure src={shot} dark={shotDark} alt="What the picture shows">
+  A caption that may contain [links](/docs/intro) and **emphasis**.
+</Figure>
+
+Two pictures side by side (one above the other on a phone):
+
+<Figures>
+
+![First picture](./a.png "Caption")
+
+![Second picture](./b.png "Caption")
+
+</Figures>
+
+A PlantUML diagram from diagrams/ (see README.md, "Diagrams"):
+
+<Diagram name="activity-release-flow" alt="What the diagram shows" />

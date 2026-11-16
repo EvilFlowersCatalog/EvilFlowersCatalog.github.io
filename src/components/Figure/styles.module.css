@@ -1,0 +1,69 @@
+/*
+ * One look for every picture in MDX: markdown images (Img), <Figure> and
+ * <Diagram>. A picture sits in a thin frame, links to its full-size file,
+ * and may have a caption underneath.
+ *
+ * Img renders inside a markdown paragraph, so these classes go on <span>s
+ * as well as on <figure>; everything here is display: block.
+ */
+
+.figure {
+  display: block;
+  margin: 1.75rem 0 2rem;
+}
+
+.frame {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+  line-height: 0;
+  border: 1px solid var(--e-rule);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--e-wash);
+  cursor: zoom-in;
+}
+
+.frame:hover {
+  border-color: var(--e-rule-strong);
+}
+
+.frame img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.caption {
+  display: block;
+  max-width: var(--e-measure);
+  margin-top: 0.55rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--e-muted);
+}
+
+/* <Figures>: two pictures side by side, one above the other on a phone. */
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+  margin: 1.75rem 0 2rem;
+}
+
+.row > p,
+.row > .figure {
+  margin: 0;
+}
+
+.row .figure {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

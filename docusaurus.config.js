@@ -89,6 +89,15 @@ const config = {
             description: 'Release announcements and project news from ELVIRA.',
             copyright: `© ${new Date().getFullYear()} EvilFlowers Catalog`,
             limit: 20,
+            // <Figure dark={…}> renders a light and a dark image and lets CSS
+            // pick one. Feed readers have no such CSS, so keep the light one.
+            createFeedItems: async ({blogPosts, defaultCreateFeedItems, ...rest}) => {
+              const items = await defaultCreateFeedItems({blogPosts, ...rest});
+              return items.map((item) => ({
+                ...item,
+                content: item.content?.replace(/<img[^>]*themedComponent--dark[^>]*>/g, ''),
+              }));
+            },
           },
         },
         theme: {
