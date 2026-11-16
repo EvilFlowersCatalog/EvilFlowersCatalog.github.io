@@ -1,0 +1,30 @@
+.hero {
+  border-bottom: 1px solid var(--e-rule);
+}
+
+.heroInner,
+.main {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: var(--e-wide);
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 2.5rem;
+}
+
+.main {
+  padding-top: 2.5rem;
+  padding-bottom: 5rem;
+}
+
+.title {
+  font-size: clamp(2.1rem, 4vw, 2.8rem);
+  margin-bottom: 1rem;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: 0.95rem;
+  margin: 0;
+}
