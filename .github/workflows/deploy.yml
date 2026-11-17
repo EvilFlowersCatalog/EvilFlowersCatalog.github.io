@@ -36,8 +36,10 @@ jobs:
       # /deploy runs the generator from EvilFlowersCatalog/deploy (submodule at
       # packages/elvira-deploy). Build with the head of its main, not the
       # commit recorded here, so the page never lags behind the CLI.
-      - run: git submodule update --remote --depth 1 packages/elvira-deploy
-      - run: git -C packages/elvira-deploy log -1 --format='Generator: EvilFlowersCatalog/deploy@%h %s'
+      - name: Generator at the head of deploy/main
+        run: |
+          git submodule update --remote --depth 1 packages/elvira-deploy
+          git -C packages/elvira-deploy log -1 --format='EvilFlowersCatalog/deploy@%h %s'
 
       - uses: actions/setup-node@v5
         with:
