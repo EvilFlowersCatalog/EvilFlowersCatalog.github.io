@@ -1,13 +1,15 @@
 /**
- * What the deployment configurator (/deploy) knows about ELVIRA's services.
+ * What the generator knows about ELVIRA's services.
  *
- * Sources, read in November 2026:
- * - EvilFlowersCatalog `develop`: compose.yml, .env.example, Dockerfile, conf/entrypoint.sh,
- *   conf/supervisor.conf, evil_flowers_catalog/settings/base.py
- * - the k8s role in EvilFlowersCatalog/knowledge (ansible/roles/evilflowers_k8s): commands,
- *   queues, mount points and environment of every worker
+ * Sources, read in November 2026 (see SOURCES.md for what each value came from):
+ * - EvilFlowersCatalog `master` and `develop`: Dockerfile, conf/entrypoint.sh, conf/supervisor.conf,
+ *   conf/gunicorn.conf.py, evil_flowers_catalog/settings/{base,production}.py, urls.py
+ * - the Kubernetes deployment of the reference installation: commands, queues, mount points and
+ *   environment of every worker
+ * - the reference installation's nginx vhosts: proxy headers, timeouts, body size, SPA caching
+ * - elvira-portal `master`: vite.config.ts (dist/, hashed chunks in dist/assets/)
  *
- * When a worker changes its queue, command or environment, change it here.
+ * When a worker changes its queue, command or environment, change it here and in SOURCES.md.
  */
 
 export const IMAGES = {
@@ -40,12 +42,26 @@ export const EMBEDDING_REVISION = '274baa43b0e13e37fafa6428dbc7938e62e5c439';
 /** Where every container that reads or writes publication files mounts the shared storage. */
 export const DATA_PATH = '/var/local/evilflowers';
 
+/**
+ * The catalog's STATIC_ROOT inside its image (settings: BASE_DIR / "static"). The develop images
+ * collect the admin assets there at build time and serve them with WhiteNoise. The master images
+ * do neither, so the generator runs collectstatic into a bind mount that nginx serves.
+ */
+export const STATIC_ROOT = '/usr/src/app/static';
+
 /** Celery broker database shared by the catalog and every worker. */
 export const BROKER_DB = 7;
 /** Redis database of the catalog's cache. */
 export const CACHE_DB = 1;
 /** Redelivery timeout of unacknowledged tasks; the shortest value on a broker db wins. */
 export const VISIBILITY_TIMEOUT = 43200;
+
+/** Gunicorn's worker timeout (conf/gunicorn.conf.py). The proxy must wait longer than this. */
+export const GUNICORN_TIMEOUT = 240;
+/** Gunicorn --keep-alive: above nginx's upstream keepalive_timeout (60 s), so nginx closes first. */
+export const GUNICORN_KEEPALIVE = 75;
+/** Largest request body the proxy accepts: publication uploads. */
+export const UPLOAD_LIMIT = '500m';
 
 export const DEFAULTS = {
   target: 'compose',
@@ -54,6 +70,8 @@ export const DEFAULTS = {
   database: 'bundled',
   redis: 'bundled',
   storage: 'filesystem',
+  proxy: 'host',
+  portal: true,
   lending: false,
   ocr: false,
   search: 'off',
@@ -67,6 +85,8 @@ export const DEFAULTS = {
   domain: 'library.example.org',
   portalUrl: 'https://portal.example.org',
   contactEmail: 'library@example.org',
+  installDir: '/opt/elvira',
+  portalRoot: '/var/www/elvira-portal',
   dbHost: 'db.example.org',
   dbPort: '5432',
   dbName: 'evilflowers',
@@ -93,6 +113,7 @@ export const DEFAULTS = {
  * Choices a reader makes. `requires` lists what must hold while the option is on:
  * `{key, value}` demands that exact value, `{key, not, set}` demands anything but `not`
  * and turns it to `set` when needed. resolve.js keeps every requirement satisfied.
+ * `targets` limits an option to some platforms; elsewhere it is hidden and ignored.
  */
 export const OPTIONS = [
   // ----- platform -----
@@ -110,8 +131,8 @@ export const OPTIONS = [
     group: 'platform',
     label: 'Release channel',
     choices: [
-      {value: 'stable', label: 'Stable', hint: 'The master images, what STU runs in production.'},
-      {value: 'develop', label: 'Development', hint: 'The develop images. Hybrid search, OCR and extraction live here for now.'},
+      {value: 'stable', label: 'Stable', hint: 'The master images: the released catalog.'},
+      {value: 'develop', label: 'Development', hint: 'The develop images, with hybrid search, OCR and extraction.'},
     ],
   },
   {
@@ -150,8 +171,31 @@ export const OPTIONS = [
       {value: 's3', label: 'S3', hint: 'Any S3 API. The workers read files from a shared volume, so S3 rules them out.'},
     ],
   },
+  {
+    key: 'proxy',
+    group: 'platform',
+    label: 'Reverse proxy',
+    targets: ['compose'],
+    choices: [
+      {value: 'host', label: 'nginx on this machine', hint: 'A ready nginx file: TLS with certbot, static files, uploads, streaming answers.'},
+      {value: 'none', label: 'My own proxy', hint: 'Port 8000 stays open. Forward Host and X-Forwarded-Proto.'},
+    ],
+  },
 
   // ----- features -----
+  {
+    key: 'portal',
+    group: 'features',
+    label: 'Serve the portal',
+    description:
+      'nginx also serves elvira-portal, the reader-facing web app, from a directory on this machine: deep links fall back to index.html and hashed files are cached for a year.',
+    off: false,
+    targets: ['compose'],
+    requires: [
+      {key: 'target', value: 'compose'},
+      {key: 'proxy', value: 'host'},
+    ],
+  },
   {
     key: 'lending',
     group: 'features',
@@ -252,6 +296,11 @@ export const OPTIONS = [
 ];
 
 export const OPTION_BY_KEY = Object.fromEntries(OPTIONS.map((o) => [o.key, o]));
+
+/** Whether an option applies to the chosen platform. */
+export function appliesTo(option, settings) {
+  return !option.targets || option.targets.includes(settings.target);
+}
 
 /** Short names for the notices that explain an automatic change. */
 export function optionLabel(key) {

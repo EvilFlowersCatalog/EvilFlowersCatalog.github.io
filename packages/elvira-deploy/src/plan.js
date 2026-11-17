@@ -1,16 +1,19 @@
 /**
- * Turns the reader's settings into a platform-neutral plan: services, volumes, the .env file
- * and the steps after the first start. render.js writes the plan as Compose or Kubernetes.
+ * Turns settings into a platform-neutral plan: services, volumes, the .env file, the reverse
+ * proxy and the steps after the first start. render.js writes the plan as Compose or Kubernetes,
+ * nginx.js writes the proxy.
  */
 import {
   IMAGES,
   EMBEDDING_MODEL,
   EMBEDDING_REVISION,
   DATA_PATH,
+  STATIC_ROOT,
   BROKER_DB,
   CACHE_DB,
   VISIBILITY_TIMEOUT,
-} from '../../data/deployment.js';
+  GUNICORN_KEEPALIVE,
+} from './data.js';
 
 const CATALOG = 'evilflowers';
 const CATALOG_URL = `http://${CATALOG}:8000`;
@@ -18,7 +21,9 @@ const TEI_URL = 'http://tei-embed';
 const OLLAMA_URL = 'http://ollama:11434/api/chat';
 const LGTM_URL = 'http://otel-lgtm:4318';
 
-/** Commands of the catalog image when its processes run apart (from the k8s role). */
+const COLLECTSTATIC = 'python3 manage.py collectstatic --noinput --verbosity 0';
+
+/** Commands of the catalog image when its processes run apart (from the Kubernetes deployment). */
 export const CATALOG_COMMANDS = {
   web: ['/root/.local/bin/gunicorn', 'evil_flowers_catalog.wsgi', '-c', 'conf/gunicorn.conf.py'],
   worker: ['/root/.local/bin/celery', '--quiet', '-A', 'evil_flowers_catalog.celery', 'worker', '--loglevel=info'],
@@ -37,11 +42,22 @@ export const CATALOG_COMMANDS = {
   ],
 };
 
+/** The one-container image's own start (conf/entrypoint.sh), with collectstatic in front. */
+const SINGLE_WITH_STATIC = ['/bin/sh', '-c', `${COLLECTSTATIC} && exec conf/entrypoint.sh`];
+
 function origin(url) {
   try {
     return new URL(url).origin;
   } catch {
     return url;
+  }
+}
+
+export function hostOf(url) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return '';
   }
 }
 
@@ -57,6 +73,15 @@ function secret(name, key = name) {
 export function buildPlan(s, secrets = {}) {
   const develop = s.channel === 'develop';
   const fs = s.storage === 'filesystem';
+  const compose = s.target === 'compose';
+  // nginx on the same machine: nothing needs to listen beyond loopback.
+  const hostProxy = compose && s.proxy === 'host';
+  const bindAddress = hostProxy ? '127.0.0.1' : undefined;
+  // The master images neither collect nor serve /static/ (no WhiteNoise): on Compose the catalog
+  // collects them into ./static at every start and the proxy serves that directory.
+  const collectStatic = compose && !develop;
+  const portal = compose && hostProxy && s.portal === true;
+
   const services = [];
   const volumes = {};
   const envFile = [];
@@ -119,12 +144,15 @@ export function buildPlan(s, secrets = {}) {
     env('CELERY_RESULT_BACKEND', broker),
     env('CELERY_BROKER_VISIBILITY_TIMEOUT', VISIBILITY_TIMEOUT),
     env('CELERY_WORKER_CONCURRENCY', 2),
-    // The worker started by supervisord consumes only the default queue; without this the
-    // nightly backup and cleanup tasks would wait on a queue nobody reads.
+    // The catalog's worker consumes only the default queue; without this the nightly backup and
+    // cleanup tasks would wait on a maintenance queue nobody reads.
     env('EVILFLOWERS_MAINTENANCE_QUEUE', 'celery'),
     env('EVILFLOWERS_EVENT_BROKER_EXECUTOR', 'apps.events.services.CeleryEventExecutionService'),
     env('EVILFLOWERS_EVENT_BROKER_TRANSFORMER', 'apps.events.transformers.DjangoTransformer'),
-    env('GUNICORN_CMD_ARGS', '-w 4 -b 0.0.0.0:8000 --keep-alive 75'),
+    // --keep-alive above nginx's upstream keepalive_timeout, so the proxy closes idle connections first.
+    env('GUNICORN_CMD_ARGS', `-w 4 -b 0.0.0.0:8000 --keep-alive ${GUNICORN_KEEPALIVE}`),
+    // One proxy in front appends to X-Forwarded-For.
+    env('EVILFLOWERS_RATE_LIMIT_PROXY_COUNT', 1),
     env('EVILFLOWERS_LOG_FORMAT', 'json'),
   ];
 
@@ -215,7 +243,8 @@ export function buildPlan(s, secrets = {}) {
   else catalogEnv.push(env('OTEL_SDK_DISABLED', 'true'));
 
   // ----- catalog containers -----
-  const catalogMounts = fs ? [{volume: 'data', path: DATA_PATH}] : [];
+  const dataMount = fs ? [{volume: 'data', path: DATA_PATH}] : [];
+  const staticMount = collectStatic ? [{bind: './static', path: STATIC_ROOT}] : [];
   const catalogDeps = [
     ...(s.database === 'bundled' ? [{name: 'postgres', condition: 'service_healthy'}] : []),
     ...(s.redis === 'bundled' ? [{name: 'redis', condition: 'service_healthy'}] : []),
@@ -226,43 +255,60 @@ export function buildPlan(s, secrets = {}) {
     feature: 'Catalog',
     env: catalogEnv,
     envFile: true,
-    mounts: catalogMounts,
+    mounts: dataMount,
   };
   if (fs) addVolume('data', '20Gi', 'Publications, covers, encrypted copies and extraction crops.');
+  const httpPort = {name: 'http', port: 8000, publish: 8000, bind: bindAddress};
 
   if (s.processes === 'single') {
     services.push({
       ...catalogBase,
       name: CATALOG,
-      summary: 'Web server, Celery worker, scheduler and event listener under supervisord. Migrates the database on start.',
-      ports: [{name: 'http', port: 8000, publish: 8000}],
+      summary: collectStatic
+        ? 'Web server, Celery worker, scheduler and event listener under supervisord. Collects the admin assets into ./static and migrates the database on start.'
+        : 'Web server, Celery worker, scheduler and event listener under supervisord. Migrates the database on start.',
+      args: collectStatic ? SINGLE_WITH_STATIC : undefined,
+      mounts: [...dataMount, ...staticMount],
+      ports: [httpPort],
       probe: {tcp: 8000, startupSeconds: 300},
       dependsOn: catalogDeps,
     });
   } else {
+    // Without supervisord, /api/v1/status checks the database, the broker and storage only. The
+    // switch exists on the develop images; the master images still ask supervisord and fail.
+    const splitEnv = [...catalogEnv, env('EVILFLOWERS_STATUS_SUPERVISOR', 'false')];
     const after = [{name: `${CATALOG}-migrate`, condition: 'service_completed_successfully'}];
+    const migrate = collectStatic
+      ? [CATALOG_COMMANDS.migrate[0], CATALOG_COMMANDS.migrate[1], `${CATALOG_COMMANDS.migrate[2]} && ${COLLECTSTATIC}`]
+      : CATALOG_COMMANDS.migrate;
     services.push(
       {
         ...catalogBase,
+        env: splitEnv,
         name: `${CATALOG}-migrate`,
-        summary: 'Migrates the database, loads languages and currencies, then exits.',
-        args: CATALOG_COMMANDS.migrate,
+        summary: collectStatic
+          ? 'Migrates the database, loads languages and currencies, collects the admin assets into ./static, then exits.'
+          : 'Migrates the database, loads languages and currencies, then exits.',
+        args: migrate,
+        mounts: [...dataMount, ...staticMount],
         oneShot: true,
         dependsOn: catalogDeps,
       },
       {
         ...catalogBase,
+        env: splitEnv,
         name: CATALOG,
         summary: 'Web server (gunicorn).',
         args: CATALOG_COMMANDS.web,
-        ports: [{name: 'http', port: 8000, publish: 8000}],
+        ports: [httpPort],
         probe: {tcp: 8000},
-        noImageHealthcheck: true,
+        noImageHealthcheck: !develop,
         dependsOn: [...catalogDeps, ...after],
         init: 'wait',
       },
       {
         ...catalogBase,
+        env: splitEnv,
         name: `${CATALOG}-worker`,
         summary: 'Celery worker: notifications, encryption jobs, backups.',
         args: CATALOG_COMMANDS.worker,
@@ -273,6 +319,7 @@ export function buildPlan(s, secrets = {}) {
       },
       {
         ...catalogBase,
+        env: splitEnv,
         name: `${CATALOG}-beat`,
         summary: 'Celery beat: the schedule of reminders, sweeps and backups. Keep exactly one.',
         args: CATALOG_COMMANDS.beat,
@@ -282,6 +329,7 @@ export function buildPlan(s, secrets = {}) {
       },
       {
         ...catalogBase,
+        env: splitEnv,
         name: `${CATALOG}-events`,
         summary: 'Listens for task events from the workers and records their outcome.',
         args: CATALOG_COMMANDS.events,
@@ -303,7 +351,9 @@ export function buildPlan(s, secrets = {}) {
       feature: 'Catalog',
       summary: 'PostgreSQL 18 with pgvector and pg_search.',
       env: [env('POSTGRES_DB', s.dbName), env('POSTGRES_USER', s.dbUser), secret('POSTGRES_PASSWORD', 'PGPASSWORD')],
-      mounts: [{volume: 'postgres', path: '/var/lib/postgresql/data'}],
+      // PostgreSQL 18 images keep their data in /var/lib/postgresql/18/docker and refuse to start
+      // with a volume on the old /var/lib/postgresql/data.
+      mounts: [{volume: 'postgres', path: '/var/lib/postgresql'}],
       ports: [{name: 'postgres', port: 5432}],
       probe: {cmd: ['pg_isready', '-h', '127.0.0.1', '-U', s.dbUser, '-d', s.dbName], tcp: 5432},
       shm: '1g',
@@ -370,14 +420,13 @@ export function buildPlan(s, secrets = {}) {
           env('CELERY_HOSTNAME', 'lcpencrypt'),
           ...telemetryEnv('lcpencrypt'),
         ],
-        noImageHealthcheck: false,
       }),
     );
     volumes.data.users += 1;
     steps.push({
       title: 'Prepare the license server',
       body:
-        'Put four files in readium/: config.yaml, htpasswd, cert.pem and privkey.pem. The Readium LCP deployment guide in the catalog wiki explains each one. Create htpasswd with the user and password from EVILFLOWERS_READIUM_LCPSV_URL in .env, and point auth_file in config.yaml at /usr/local/etc/readium/htpasswd. The test certificate baked into the image only works with test apps; production lending needs a certificate from EDRLab.',
+        'Put four files in readium/: config.yaml, htpasswd, cert.pem and privkey.pem. The Readium LCP deployment guide in the catalog wiki explains each one. Create htpasswd with the user and password from EVILFLOWERS_READIUM_LCPSV_URL in .env, point auth_file in config.yaml at /usr/local/etc/readium/htpasswd and keep both SQLite databases under /usr/local/var/readium/db, the readium volume. The test certificate baked into the image only works with test apps; production lending needs a certificate from EDRLab.',
       link: 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/wiki/Readium-LCP-Deployment',
       commands: {
         compose: ['htpasswd -bc readium/htpasswd evilflowers <password from .env>'],
@@ -406,6 +455,7 @@ export function buildPlan(s, secrets = {}) {
         runAsRoot: true,
         platform: 'linux/amd64',
         tmp: true,
+        grace: 30,
       }),
     );
     volumes.data.users += 1;
@@ -540,7 +590,7 @@ export function buildPlan(s, secrets = {}) {
       summary: 'Catches every e-mail; inbox on port 1080.',
       ports: [
         {name: 'smtp', port: 1025},
-        {name: 'http', port: 1080, publish: 1080},
+        {name: 'http', port: 1080, publish: 1080, bind: bindAddress},
       ],
       probe: {tcp: 1025},
     });
@@ -553,37 +603,58 @@ export function buildPlan(s, secrets = {}) {
       feature: 'Traces, metrics and logs',
       summary: 'OpenTelemetry collector with Tempo, Loki, Mimir and Grafana (port 3000).',
       ports: [
-        {name: 'grafana', port: 3000, publish: 3000},
+        {name: 'grafana', port: 3000, publish: 3000, bind: bindAddress},
         {name: 'otlp-http', port: 4318},
       ],
       probe: {tcp: 3000},
     });
   }
 
+  // ----- reverse proxy -----
+  const portalHost = hostOf(s.portalUrl);
+  const proxy = hostProxy
+    ? {
+        kind: 'nginx',
+        domain: s.domain,
+        upstream: '127.0.0.1:8000',
+        // Where nginx finds ./static: the directory that holds compose.yml.
+        staticRoot: collectStatic ? `${s.installDir.replace(/\/+$/, '')}/static/` : null,
+        streaming: [...(s.assistant !== 'off' ? ['/assistant/v1/'] : []), ...(s.mcp ? ['/mcp/v1'] : [])],
+        portal: portal && portalHost && portalHost !== s.domain ? {host: portalHost, root: s.portalRoot.replace(/\/+$/, '')} : null,
+      }
+    : null;
+
   // ----- warnings -----
-  if (fs && volumes.data.users > 1) {
-    warnings.push(
-      s.target === 'k8s'
-        ? 'Several pods share the data volume. Use a ReadWriteMany storage class, or keep every pod on one node with a ReadWriteOnce volume.'
-        : null,
-    );
+  if (fs && volumes.data.users > 1 && s.target === 'k8s') {
+    warnings.push('Several pods share the data volume. Use a ReadWriteMany storage class, or keep every pod on one node with a ReadWriteOnce volume.');
   }
-  if (s.ocr) {
-    warnings.push('The OCR worker needs an image built from evilflowers-ocr-service develop (efc2599 or later), which writes the outcome file the catalog reads. Check that :master has it before you switch OCR on.');
+  if (s.target === 'k8s' && !develop) {
+    warnings.push('The stable images do not serve /static/, so the admin console at /admin/ loads without its styles. The development images serve them themselves; on Kubernetes, use those or serve a collectstatic copy from your ingress.');
+  }
+  if (compose && !develop && !hostProxy) {
+    warnings.push('The stable images do not serve /static/. The catalog collects the admin assets into ./static next to compose.yml on every start: let your proxy serve that directory at /static/.');
   }
   if (s.database === 'external') {
     warnings.push('Your PostgreSQL needs the pgvector extension. With pg_search installed the catalog also ranks with BM25; without it, search falls back to PostgreSQL full text.');
+  }
+  if (portal && portalHost === s.domain) {
+    warnings.push('The portal and the catalog share one host name. Give the portal its own (the catalog accepts browser requests from that origin), or serve it yourself: the nginx file leaves it out.');
   }
 
   // ----- first start -----
   steps.unshift({
     title: 'Start it and create the first administrator',
     body:
-      s.processes === 'single'
+      (s.processes === 'single'
         ? 'The catalog migrates the database and loads languages and currencies each time it starts. Then create your administrator and the first catalog in /admin/.'
-        : 'The migrate step runs first; the other catalog containers wait for it. Then create your administrator and the first catalog in /admin/.',
+        : 'The migrate step runs first; the other catalog containers wait for it. Then create your administrator and the first catalog in /admin/.') +
+      (hostProxy ? ` Keep compose.yml and .env in ${s.installDir}: the nginx file serves ${s.installDir}/static.` : ''),
     commands: {
-      compose: ['docker compose up -d', 'docker compose exec evilflowers python3 manage.py createsuperuser'],
+      compose: [
+        ...(hostProxy ? [`cd ${s.installDir}`] : []),
+        'docker compose up -d',
+        'docker compose exec evilflowers python3 manage.py createsuperuser',
+      ],
       k8s: [
         `kubectl create namespace ${s.namespace}`,
         `kubectl -n ${s.namespace} create secret generic evilflowers --from-env-file=.env`,
@@ -598,11 +669,41 @@ export function buildPlan(s, secrets = {}) {
     const lending = steps.findIndex((x) => x.title === 'Prepare the license server');
     steps.unshift(steps.splice(lending, 1)[0]);
   }
-  steps.push({
-    title: 'Point the portal at the catalog',
-    body: `The catalog answers on ${publicUrl} once your reverse proxy or ingress terminates TLS for ${s.domain}. Build elvira-portal with ELVIRA_BASE_URL=${publicUrl} and serve it from ${s.portalUrl}; the catalog accepts browser requests from that origin only.`,
-    link: '/docs/quickstart#2-start-the-portal',
-  });
+  if (proxy) {
+    const names = [s.domain, ...(proxy.portal ? [proxy.portal.host] : [])];
+    steps.push({
+      title: 'Put nginx in front',
+      body: `nginx/elvira.conf answers on port 80 for ${names.join(' and ')}. certbot then adds TLS and the redirect from http. The file sets a 500 MB upload limit, timeouts above gunicorn's, and turns off buffering for streamed answers.${proxy.staticRoot ? ` It serves /static/ from ${proxy.staticRoot}, where the catalog collects the admin assets.` : ' /static/ goes to the catalog, which serves the admin assets itself.'}`,
+      commands: {
+        compose: [
+          'sudo cp nginx/elvira.conf /etc/nginx/conf.d/elvira.conf',
+          'sudo nginx -t && sudo systemctl reload nginx',
+          `sudo certbot --nginx ${names.map((n) => `-d ${n}`).join(' ')}`,
+        ],
+      },
+    });
+  }
+  if (proxy?.portal) {
+    steps.push({
+      title: 'Build and publish the portal',
+      body: `Build elvira-portal against ${publicUrl} with the id of the catalog it shows (from /admin/), then copy dist/ to ${proxy.portal.root}. A new build replaces the old one; open tabs keep working until they reload.`,
+      link: 'https://github.com/EvilFlowersCatalog/elvira-portal',
+      commands: {
+        compose: [
+          'git clone https://github.com/EvilFlowersCatalog/elvira-portal.git && cd elvira-portal',
+          `export ELVIRA_BASE_URL=${publicUrl} ELVIRA_CATALOG_ID=<catalog id> ELVIRA_THEME=default`,
+          'npm ci && npm run build:prod',
+          `sudo rsync -a --delete dist/ ${proxy.portal.root}/`,
+        ],
+      },
+    });
+  } else {
+    steps.push({
+      title: 'Point the portal at the catalog',
+      body: `The catalog answers on ${publicUrl} once your reverse proxy or ingress terminates TLS for ${s.domain}. Build elvira-portal with ELVIRA_BASE_URL=${publicUrl} and serve it from ${s.portalUrl}; the catalog accepts browser requests from that origin only.`,
+      link: '/docs/quickstart#2-start-the-portal',
+    });
+  }
 
-  return {services, volumes: Object.values(volumes), envFile, steps, warnings: warnings.filter(Boolean)};
+  return {services, volumes: Object.values(volumes), envFile, proxy, steps, warnings};
 }

@@ -11,7 +11,8 @@ with Compose v2.20 or newer, and Node.js for the portal.
 
 To install ELVIRA on a server or a Kubernetes cluster, use the
 [configurator](/deploy): it writes a Compose file or manifests with only the
-services your features need.
+services your features need, and an nginx file that serves the portal and the
+catalog's static files.
 
 ## 1. Start the catalog
 

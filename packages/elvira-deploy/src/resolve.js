@@ -1,4 +1,4 @@
-import {OPTIONS, optionLabel, choiceLabel} from '../../data/deployment.js';
+import {OPTIONS, optionLabel, choiceLabel} from './data.js';
 
 export function isOn(settings, option) {
   return option.off !== undefined && settings[option.key] !== option.off;
@@ -40,6 +40,22 @@ export function applyChange(settings, key, value) {
   }
 
   return {settings: next, notes};
+}
+
+/**
+ * Settings from a partial object (a CLI settings file, a saved link): defaults filled in, then
+ * every requirement applied in option order, the same way the page would have resolved them.
+ */
+export function normalize(partial = {}, defaults) {
+  let settings = {...defaults, ...partial};
+  const notes = [];
+  for (const option of OPTIONS) {
+    if (!(option.key in partial)) continue;
+    const result = applyChange(settings, option.key, settings[option.key]);
+    settings = result.settings;
+    notes.push(...result.notes);
+  }
+  return {settings, notes};
 }
 
 /** Requirements of an option, as text for its card. */

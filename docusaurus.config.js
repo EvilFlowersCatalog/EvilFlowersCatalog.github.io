@@ -134,6 +134,8 @@ const config = {
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.vsDark,
+        // The deploy page shows a generated nginx file.
+        additionalLanguages: ['nginx'],
       },
     }),
 };

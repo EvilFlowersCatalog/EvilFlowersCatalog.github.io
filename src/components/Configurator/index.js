@@ -4,12 +4,22 @@ import Link from '@docusaurus/Link';
 import CodeBlock from '@theme/CodeBlock';
 import {FaDownload, FaSyncAlt} from 'react-icons/fa';
 
-import {DEFAULTS, OPTIONS} from '../../data/deployment.js';
-import {applyChange, isOn, requirementText} from './resolve.js';
-import {buildPlan} from './plan.js';
-import {renderCompose, renderK8s, renderEnv} from './render.js';
-import {generateSecrets} from './secrets.js';
+// The generator lives in packages/elvira-deploy, the same code the elvira-deploy CLI runs: what
+// the page shows is byte for byte what `elvira-deploy --settings elvira-deploy.json` writes.
+import {
+  DEFAULTS,
+  OPTIONS,
+  VERSION,
+  appliesTo,
+  applyChange,
+  generate,
+  generateSecrets,
+  isOn,
+  requirementText,
+} from '@site/packages/elvira-deploy/src/index.js';
 import styles from './styles.module.css';
+
+const CLI_SOURCE = 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog.github.io/tree/main/packages/elvira-deploy';
 
 /** Text fields shown under an option while it has a given value. */
 const FIELDS = {
@@ -38,6 +48,18 @@ const FIELDS = {
       {key: 's3Host', label: 'S3 endpoint', placeholder: 'host:port'},
       {key: 's3Bucket', label: 'Bucket'},
     ],
+  },
+  proxy: {
+    host: [
+      {
+        key: 'installDir',
+        label: 'Installation directory',
+        hint: 'Where compose.yml and .env live. nginx serves the admin assets from its static/ folder.',
+      },
+    ],
+  },
+  portal: {
+    true: [{key: 'portalRoot', label: 'Portal directory', hint: 'Where the built portal (its dist/ folder) is copied.'}],
   },
   search: {
     external: [{key: 'searchUrl', label: 'Embedding service URL', hint: `Text Embeddings Inference or a compatible /embed API serving the same model.`}],
@@ -81,6 +103,14 @@ const ROLE_ORDER = [
   ['model', 'Models'],
   ['support', 'Support'],
 ];
+
+/** How each generated file is shown: tab label, highlighting, download name. */
+const FILE_VIEW = {
+  'compose.yml': {language: 'yaml'},
+  'evilflowers.yaml': {language: 'yaml'},
+  '.env': {language: 'bash'},
+  'nginx/elvira.conf': {label: 'nginx', language: 'nginx', download: 'elvira.conf'},
+};
 
 function Field({field, value, onChange}) {
   const id = `cfg-${field.key}`;
@@ -167,8 +197,8 @@ function FeatureOption({option, settings, onChange, onField}) {
   );
 }
 
-function download(name, text) {
-  const blob = new Blob([text], {type: 'text/plain'});
+function download(name, text, type = 'text/plain') {
+  const blob = new Blob([text], {type});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -197,6 +227,17 @@ function Services({plan}) {
           </div>
         );
       })}
+      {plan.proxy && (
+        <div className={styles.serviceGroup}>
+          <h3>On the host</h3>
+          <ul>
+            <li title="Terminates TLS, serves the admin assets and the portal, passes the rest to the catalog.">
+              <code>nginx</code>
+              {plan.proxy.portal && <span>with the portal</span>}
+            </li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -229,7 +270,7 @@ export default function Configurator() {
   const [settings, setSettings] = useState(DEFAULTS);
   const [notes, setNotes] = useState([]);
   const [secrets, setSecrets] = useState({});
-  const [tab, setTab] = useState('config');
+  const [tab, setTab] = useState(null);
 
   const refreshSecrets = () => {
     generateSecrets()
@@ -245,20 +286,18 @@ export default function Configurator() {
   };
   const field = (key, value) => setSettings((s) => ({...s, [key]: value}));
 
-  const plan = useMemo(() => buildPlan(settings, secrets), [settings, secrets]);
-  const files = useMemo(() => {
-    const k8s = settings.target === 'k8s';
-    return {
-      config: k8s
-        ? {name: 'evilflowers.yaml', language: 'yaml', text: renderK8s(settings, plan)}
-        : {name: 'compose.yml', language: 'yaml', text: renderCompose(settings, plan)},
-      env: {name: '.env', language: 'bash', text: renderEnv(settings, plan)},
-    };
-  }, [settings, plan]);
+  const {plan, files} = useMemo(() => generate(settings, secrets, {resolved: true}), [settings, secrets]);
+  // NEXT-STEPS.md is the steps tab, rendered; the rest are files to copy.
+  const fileNames = Object.keys(files).filter((n) => n !== 'NEXT-STEPS.md');
+  const current = tab === 'steps' || fileNames.includes(tab) ? tab : fileNames[0];
+  const view = FILE_VIEW[current] ?? {language: 'text'};
 
-  const platform = OPTIONS.filter((o) => o.group === 'platform');
-  const features = OPTIONS.filter((o) => o.group === 'features');
-  const current = files[tab];
+  const visible = (o) => appliesTo(o, settings);
+  const platform = OPTIONS.filter((o) => o.group === 'platform' && visible(o));
+  const features = OPTIONS.filter((o) => o.group === 'features' && visible(o));
+
+  const saveSettings = () =>
+    download('elvira-deploy.json', `${JSON.stringify({version: VERSION, settings}, null, 2)}\n`, 'application/json');
 
   return (
     <div className={styles.layout}>
@@ -315,48 +354,63 @@ export default function Configurator() {
         )}
 
         <div className={styles.tabs} role="tablist" aria-label="Files">
-          {[
-            ['config', files.config.name],
-            ['env', '.env'],
-            ['steps', 'Next steps'],
-          ].map(([id, label]) => (
+          {[...fileNames.map((n) => [n, FILE_VIEW[n]?.label ?? n]), ['steps', 'Next steps']].map(([id, label]) => (
             <button
               key={id}
               type="button"
               role="tab"
-              aria-selected={tab === id}
-              className={clsx(styles.tab, tab === id && styles.tabOn)}
+              aria-selected={current === id}
+              className={clsx(styles.tab, current === id && styles.tabOn)}
               onClick={() => setTab(id)}>
               {label}
             </button>
           ))}
         </div>
 
-        {tab === 'steps' ? (
+        {current === 'steps' ? (
           <Steps plan={plan} target={settings.target} />
         ) : (
           <div className={styles.file}>
             <div className={styles.fileBar}>
-              {tab === 'env' && (
+              {current === '.env' && (
                 <button type="button" onClick={refreshSecrets}>
                   <FaSyncAlt aria-hidden="true" /> New secrets
                 </button>
               )}
-              <button type="button" onClick={() => download(current.name, current.text)}>
-                <FaDownload aria-hidden="true" /> Download {current.name}
+              <button type="button" onClick={() => download(view.download ?? current, files[current])}>
+                <FaDownload aria-hidden="true" /> Download {view.download ?? current}
               </button>
             </div>
-            {tab === 'env' && (
+            {current === '.env' && (
               <p className={styles.fileNote}>
                 Secrets are generated in your browser and never sent anywhere. Download a fresh file for each
                 installation.
               </p>
             )}
-            <CodeBlock language={current.language} className={styles.code}>
-              {current.text}
+            {current === 'nginx/elvira.conf' && (
+              <p className={styles.fileNote}>
+                Save it as <code>nginx/elvira.conf</code> next to compose.yml; the next steps copy it into
+                /etc/nginx/conf.d/.
+              </p>
+            )}
+            <CodeBlock language={view.language} className={styles.code}>
+              {files[current]}
             </CodeBlock>
           </div>
         )}
+
+        <p className={styles.cli}>
+          The same files from a terminal:{' '}
+          <button type="button" className={styles.linkButton} onClick={saveSettings}>
+            download your choices
+          </button>{' '}
+          and run{' '}
+          <a href={CLI_SOURCE} target="_blank" rel="noopener noreferrer">
+            elvira-deploy
+          </a>{' '}
+          (Node.js 20, no dependencies): <code>node bin/elvira-deploy.js --settings elvira-deploy.json --out elvira</code>.
+          It keeps an existing .env, so running it again after a change keeps your secrets.
+        </p>
       </aside>
     </div>
   );
