@@ -1,0 +1,4 @@
+[submodule "packages/elvira-deploy"]
+	path = packages/elvira-deploy
+	url = https://github.com/EvilFlowersCatalog/deploy.git
+	branch = main

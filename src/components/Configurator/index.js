@@ -4,8 +4,9 @@ import Link from '@docusaurus/Link';
 import CodeBlock from '@theme/CodeBlock';
 import {FaDownload, FaSyncAlt} from 'react-icons/fa';
 
-// The generator lives in packages/elvira-deploy, the same code the elvira-deploy CLI runs: what
-// the page shows is byte for byte what `elvira-deploy --settings elvira-deploy.json` writes.
+// The generator is EvilFlowersCatalog/deploy, a git submodule at packages/elvira-deploy; the site
+// build checks out the head of its main. Change it there, not here: what the page shows is byte
+// for byte what `elvira-deploy --settings elvira-deploy.json` writes.
 import {
   DEFAULTS,
   OPTIONS,
@@ -19,7 +20,7 @@ import {
 } from '@site/packages/elvira-deploy/src/index.js';
 import styles from './styles.module.css';
 
-const CLI_SOURCE = 'https://github.com/EvilFlowersCatalog/EvilFlowersCatalog.github.io/tree/main/packages/elvira-deploy';
+const CLI_SOURCE = 'https://github.com/EvilFlowersCatalog/deploy';
 
 /** Text fields shown under an option while it has a given value. */
 const FIELDS = {

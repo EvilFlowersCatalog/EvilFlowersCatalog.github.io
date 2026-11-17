@@ -7,10 +7,12 @@ on:
   # rebuilds once a day and whenever another repository asks for it:
   #   gh api repos/EvilFlowersCatalog/EvilFlowersCatalog.github.io/dispatches \
   #     -f event_type=release-published
+  # EvilFlowersCatalog/deploy sends `deploy-updated` after each green push to
+  # its main, so /deploy follows the generator within minutes.
   schedule:
     - cron: '17 5 * * *'
   repository_dispatch:
-    types: [release-published]
+    types: [release-published, deploy-updated]
   workflow_dispatch:
 
 permissions:
@@ -29,6 +31,13 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          submodules: true
+
+      # /deploy runs the generator from EvilFlowersCatalog/deploy (submodule at
+      # packages/elvira-deploy). Build with the head of its main, not the
+      # commit recorded here, so the page never lags behind the CLI.
+      - run: git submodule update --remote --depth 1 packages/elvira-deploy
+      - run: git -C packages/elvira-deploy log -1 --format='Generator: EvilFlowersCatalog/deploy@%h %s'
 
       - uses: actions/setup-node@v5
         with:
