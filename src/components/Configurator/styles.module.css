@@ -349,14 +349,9 @@
   word-break: break-all;
 }
 
-.linkButton {
-  font: inherit;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--ifm-link-color);
-  text-decoration: underline;
-  cursor: pointer;
+.steps details {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
 }
 
 .steps {
