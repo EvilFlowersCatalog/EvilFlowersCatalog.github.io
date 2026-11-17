@@ -33,10 +33,10 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      # /deploy runs the generator from EvilFlowersCatalog/deploy (submodule at
-      # packages/elvira-deploy). Build with the head of its main, not the
-      # commit recorded here, so the page never lags behind the CLI.
-      - name: Generator at the head of deploy/main
+      # /deploy builds its downloads from EvilFlowersCatalog/deploy (submodule at
+      # packages/elvira-deploy). Use the head of its main, not the commit recorded
+      # here, so the page always hands out what the repository has.
+      - name: EvilFlowersCatalog/deploy at the head of main
         run: |
           git submodule update --remote --depth 1 packages/elvira-deploy
           git -C packages/elvira-deploy log -1 --format='EvilFlowersCatalog/deploy@%h %s'
@@ -47,6 +47,13 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      # Copies the deploy repository's files into src/data/deploy-blocks.json, then
+      # checks what /deploy assembles from them against the repository itself
+      # (docker compose config, nginx -t, kubeconform). A change on deploy/main the
+      # page cannot handle stops the build here.
+      - run: npm run deploy-blocks
+      - run: npm run check:deploy
 
       # Refreshes src/data/releases.json. On an API error it keeps the
       # committed snapshot, so the build never fails because of GitHub.

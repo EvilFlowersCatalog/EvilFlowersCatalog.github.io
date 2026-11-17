@@ -9,11 +9,11 @@ description: Run the catalog and the portal locally with Docker and Node.
 This gets a catalog and the portal running on your machine. You need Docker
 with Compose v2.20 or newer, and Node.js for the portal.
 
-To install ELVIRA on a server or a Kubernetes cluster, use the
-[deploy repository](https://github.com/EvilFlowersCatalog/deploy): pick your
-features in the [configurator](/deploy) or with `npm run configure`, then start
-it with Docker Compose, plain Docker, Kubernetes, or an Ansible playbook that sets
-up the whole server.
+To install ELVIRA on a server or a Kubernetes cluster, pick your features in the
+[configurator](/deploy) and download the finished files: `compose.yml`, `.env` and
+the nginx sites, or one Kubernetes manifest. The
+[deploy repository](https://github.com/EvilFlowersCatalog/deploy) they come from
+also runs it by hand, or sets up a whole server with Ansible.
 
 ## 1. Start the catalog
 

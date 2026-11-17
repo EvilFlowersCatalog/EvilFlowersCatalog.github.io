@@ -4,16 +4,19 @@ Website for [elvira.digital](https://elvira.digital), built with
 [Docusaurus](https://docusaurus.io/). Node.js 20 or newer.
 
 ```bash
-git submodule update --init --remote   # the deploy generator, see below
+git submodule update --init --remote   # EvilFlowersCatalog/deploy, see below
 npm ci
 npm start            # dev server with hot reload
 npm run build        # static site in build/
 ```
 
-The configurator at `/deploy` runs
-[EvilFlowersCatalog/deploy](https://github.com/EvilFlowersCatalog/deploy), checked
-out as a git submodule at `packages/elvira-deploy`. Change the generator in that
-repository, not here. The site's build always uses the head of its `main`.
+The configurator at `/deploy` hands out the files of
+[EvilFlowersCatalog/deploy](https://github.com/EvilFlowersCatalog/deploy) (a git
+submodule at `packages/elvira-deploy`): `compose.yml` trimmed to the chosen services,
+`.env` filled in, the nginx and license-server files, or one Kubernetes manifest.
+`npm run deploy-blocks` copies those files into `src/data/deploy-blocks.json`;
+`npm run check:deploy` checks what the page builds from them against the repository
+(needs Docker). The build does both with the head of the deploy repository's `main`.
 
 ## Content
 
