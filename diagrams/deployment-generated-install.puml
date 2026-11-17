@@ -1,0 +1,34 @@
+@startuml deployment-generated-install
+!include elvira.iuml
+' What: the default installation elvira-deploy writes (Compose, stable channel, nginx on the host, portal on).
+' Source: packages/elvira-deploy (plan.js, nginx.js), checked by booting it on 2026-11-17.
+' Scope: three containers and the host nginx. Left out: optional workers, models and support services.
+
+title The default installation from elvira-deploy (2026-11)
+
+actor Reader
+actor "OPDS / LCP app" as App
+
+node "Host" {
+  component "nginx\nnginx/elvira.conf" as nginx
+  folder "/var/www/elvira-portal\n(portal dist/)" as portalDir
+  folder "<installDir>/static\n(admin assets)" as staticDir
+
+  node "Docker Compose" {
+    component "evilflowers\ngunicorn + Celery\n(supervisord)" as catalog
+    database "postgres\nPostgreSQL 18" as pg
+    queue "redis\nbroker + cache" as redis
+    storage "data volume\npublications, covers" as data
+  }
+}
+
+Reader --> nginx : HTTPS 443\nportal host
+App --> nginx : HTTPS 443\ncatalog host
+nginx --> portalDir : SPA files\nhashed chunks immutable
+nginx --> staticDir : /static/
+nginx --> catalog : HTTP 127.0.0.1:8000\nHost, X-Forwarded-Proto
+catalog --> staticDir : collectstatic\nat start
+catalog --> pg : TCP 5432
+catalog --> redis : TCP 6379\ndb 1 cache, db 7 broker
+catalog --> data : /var/local/evilflowers
+@enduml

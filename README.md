@@ -4,10 +4,16 @@ Website for [elvira.digital](https://elvira.digital), built with
 [Docusaurus](https://docusaurus.io/). Node.js 20 or newer.
 
 ```bash
+git submodule update --init --remote   # the deploy generator, see below
 npm ci
 npm start            # dev server with hot reload
 npm run build        # static site in build/
 ```
+
+The configurator at `/deploy` runs
+[EvilFlowersCatalog/deploy](https://github.com/EvilFlowersCatalog/deploy), checked
+out as a git submodule at `packages/elvira-deploy`. Change the generator in that
+repository, not here. The site's build always uses the head of its `main`.
 
 ## Content
 
@@ -95,5 +101,6 @@ magick favicon-512.png -background "#a80331" -flatten -resize 180x180 static/img
 ## Deploy
 
 Pushing to `main` deploys to GitHub Pages (`.github/workflows/deploy.yml`). The
-site also rebuilds daily, by hand, and on a `release-published` repository
-dispatch.
+site also rebuilds daily, by hand, and on a `release-published` or
+`deploy-updated` repository dispatch (the latter sent by EvilFlowersCatalog/deploy
+after each green push to its `main`).

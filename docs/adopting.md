@@ -52,8 +52,9 @@ supports universities, faculties and research institutions setting it up.
 
 1. Run a local catalog and portal with the [Quickstart](./quickstart).
 2. Read the [Architecture](./architecture) so you know which pieces you need.
-3. Pick your features in the [configurator](/deploy) and get a Compose file or
-   Kubernetes manifests for them.
+3. Pick your features in the [configurator](/deploy) and run them from the
+   [deploy repository](https://github.com/EvilFlowersCatalog/deploy): Docker Compose
+   profiles, Kubernetes components, nginx and an Ansible playbook for a whole server.
 4. When you want to talk about theming, accounts, LCP or a real deployment,
    open a
    [discussion](https://github.com/EvilFlowersCatalog/EvilFlowersCatalog/discussions)
