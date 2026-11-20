@@ -127,8 +127,8 @@ function Features() {
       <Shot
         wide
         src="/img/viewer-preview.jpg"
-        alt="The ELVIRA reader with a book open and page thumbnails along the bottom"
-        caption="The reader. It is a separate npm package, EvilFlowersViewer, so other applications can embed it."
+        alt="The ELVIRA reader with a highlighted passage about European wolf populations and the notes panel listing it"
+        caption="The reader, with a highlight and the notes panel. It is a separate npm package, EvilFlowersViewer, so other applications can embed it. Book: Rewilding European Landscapes (Springer, CC BY-NC)."
       />
     </section>
   );
@@ -200,6 +200,12 @@ function SearchAndAI() {
           </div>
         ))}
       </dl>
+      <Shot
+        wide
+        src="/img/assistant-preview.jpg"
+        alt="The assistant beside the reader, answering where Europe’s largest wolf populations live and how EU law protects them, with numbered sources pointing to the page"
+        caption="Asking about the book open in the reader. Each claim links to the page it came from. Book: Rewilding European Landscapes (Springer, CC BY-NC)."
+      />
     </section>
   );
 }
