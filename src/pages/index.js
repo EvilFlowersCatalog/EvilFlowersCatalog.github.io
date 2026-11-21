@@ -8,6 +8,8 @@ import CatalogCard from '@site/src/components/CatalogCard';
 import releasesData from '@site/src/data/releases.json';
 import {announcementFor, latestPerRepo, REPO_ROLES} from '@site/src/data/announcements';
 import styles from './index.module.css';
+import calibreSyncPlan from '@site/news/2026-11-16-calibre-plugin/sync-plan-conflict-light.png';
+import digitalizerPageStudio from '@site/news/2026-11-16-books-digitalizer/page-studio.png';
 
 const FEATURES = [
   {
@@ -145,7 +147,7 @@ function Tools() {
       <div className={styles.pair}>
         <div>
           <Shot
-            src="/img/calibre/sync-plan-conflict-light.png"
+            src={calibreSyncPlan}
             alt="The Calibre plugin’s sync window: books grouped as to upload, to download and needs a decision, with a side-by-side comparison of a book changed on both sides"
           />
           <h3>Calibre plugin</h3>
@@ -161,7 +163,7 @@ function Tools() {
         </div>
         <div>
           <Shot
-            src="/img/digitalizer/page-studio.png"
+            src={digitalizerPageStudio}
             alt="The digitalizer’s page studio: a scanned textbook page with text, picture and formula regions outlined, and a disputed formula waiting for a decision"
           />
           <h3>Books digitalizer</h3>
